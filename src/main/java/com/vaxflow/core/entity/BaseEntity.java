@@ -1,4 +1,6 @@
 package com.vaxflow.core.entity;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,24 +16,44 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Column(name = "thoi_gian_tao")
+    private LocalDateTime thoiGianTao;
+
+    @Column(name = "thoi_gian_cap_nhat")
+    private LocalDateTime thoiGianCapNhat;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.thoiGianTao = LocalDateTime.now();
+        this.thoiGianCapNhat = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.thoiGianCapNhat = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Long getId() { 
+        return id; 
+    }
+    
+    public void setId(Long id) { 
+        this.id = id; 
+    }
+    
+    public LocalDateTime getThoiGianTao() { 
+        return thoiGianTao; 
+    }
+    
+    public void setThoiGianTao(LocalDateTime thoiGianTao) { 
+        this.thoiGianTao = thoiGianTao; 
+    }
+    
+    public LocalDateTime getThoiGianCapNhat() { 
+        return thoiGianCapNhat; 
+    }
+    
+    public void setThoiGianCapNhat(LocalDateTime thoiGianCapNhat) { 
+        this.thoiGianCapNhat = thoiGianCapNhat; 
+    }
 }
