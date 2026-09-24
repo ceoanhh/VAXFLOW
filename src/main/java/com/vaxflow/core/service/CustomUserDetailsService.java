@@ -20,19 +20,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
+    public UserDetails loadUserByUsername(String tenDangNhap)
             throws UsernameNotFoundException {
 
-        Admin admin = adminRepository.findByUsername(username)
+        Admin admin = adminRepository.findByTenDangNhap(tenDangNhap)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 "Không tìm thấy tài khoản đăng nhập"
                         )
                 );
 
-        return User.withUsername(admin.getUsername())
-                .password(admin.getPassword())
+        return User.withUsername(admin.getTenDangNhap())
+                .password(admin.getMatKhau())
                 .roles("ADMIN")
+                .disabled(!admin.isTrangThai())
                 .build();
     }
 }

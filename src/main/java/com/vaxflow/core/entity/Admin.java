@@ -5,60 +5,60 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "admins")
+@Table(name = "quan_tri_vien")
 public class Admin extends BaseEntity {
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String username;
+    @Column(name = "ten_dang_nhap", nullable = false, unique = true, length = 50)
+    private String tenDangNhap;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "mat_khau", nullable = false)
+    private String matKhau;
 
-    @Column(name = "full_name", nullable = false, length = 100)
-    private String fullName;
+    @Column(name = "ho_ten", nullable = false, length = 100)
+    private String hoTen;
 
-    @Column(nullable = false)
-    private boolean enabled = true;
+    @Column(name = "trang_thai", nullable = false)
+    private boolean trangThai = true;
 
     public Admin() {
     }
 
-    public Admin(String username, String password, String fullName) {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.enabled = true;
+    public Admin(String tenDangNhap, String matKhau, String hoTen) {
+        this.tenDangNhap = tenDangNhap;
+        this.matKhau = matKhau;
+        this.hoTen = hoTen;
+        this.trangThai = true;
     }
 
-    public String getUsername() {
-        return username;
+    public String getTenDangNhap() {
+        return tenDangNhap;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setTenDangNhap(String tenDangNhap) {
+        this.tenDangNhap = tenDangNhap;
     }
 
-    public String getPassword() {
-        return password;
+    public String getMatKhau() {
+        return matKhau;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMatKhau(String matKhau) {
+        this.matKhau = matKhau;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getHoTen() {
+        return hoTen;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setHoTen(String hoTen) {
+        this.hoTen = hoTen;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isTrangThai() {
+        return trangThai;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 }
