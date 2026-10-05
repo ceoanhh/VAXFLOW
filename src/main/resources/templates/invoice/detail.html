@@ -25,9 +25,10 @@
         </table></div>
     </div></section>
     <section th:if="${invoice.trangThai.name() == 'CHUA_THANH_TOAN'}" class="card page-card"><div class="card-body p-4">
-        <h2 class="h5 mb-3">Thanh toán hóa đơn</h2>
+        <h2 class="h5 mb-1">Thanh toán toàn bộ hóa đơn</h2>
+        <p class="text-muted mb-3">Số tiền thanh toán phải bằng đúng tổng tiền hóa đơn; không hỗ trợ thanh toán một phần.</p>
         <form th:action="@{/invoices/{id}/pay(id=${invoice.id})}" th:object="${paymentForm}" method="post" class="row g-3 align-items-end">
-            <div class="col-md-5"><label class="form-label" for="amount">Số tiền thanh toán</label><input id="amount" class="form-control" type="number" step="0.01" min="0.01" th:field="*{soTien}" th:attr="max=${invoice.tongTien}" required><div class="form-text">Cần thanh toán đúng toàn bộ tổng tiền.</div></div>
+            <div class="col-md-5"><label class="form-label" for="amount">Số tiền thanh toán (đ)</label><input id="amount" class="form-control" type="number" step="0.01" min="0.01" th:field="*{soTien}" th:attr="max=${invoice.tongTien}" required><div class="form-text">Tổng hóa đơn: <span th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></span></div></div>
             <div class="col-md-4"><label class="form-label" for="paymentMethod">Phương thức</label><select id="paymentMethod" class="form-select" th:field="*{phuongThucTt}" required><option value="">Chọn phương thức</option><option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method.name() == 'TIEN_MAT'} ? 'Tiền mặt' : (${method.name() == 'CHUYEN_KHOAN'} ? 'Chuyển khoản' : 'Thẻ')"></option></select></div>
             <div class="col-md-3 d-grid"><button class="btn btn-success" type="submit">Xác nhận thanh toán</button></div>
         </form>

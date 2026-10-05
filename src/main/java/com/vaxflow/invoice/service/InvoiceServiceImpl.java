@@ -48,12 +48,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         validateRecordIds(vaccinationRecordIds);
         HoSoTiemProvider recordProvider = hoSoTiemProvider.getIfAvailable();
         if (recordProvider == null) {
-            throw new IllegalStateException("Chưa có kết nối hồ sơ tiêm từ Person 2.");
+            throw new InvoiceBusinessException("Chưa có kết nối hồ sơ tiêm từ Person 2.");
         }
 
         List<HoSoTiemThongTin> records = recordProvider.findRecords(vaccinationRecordIds);
         if (records == null || records.size() != vaccinationRecordIds.size()) {
-            throw new IllegalArgumentException("Không thể lập hóa đơn cho các hồ sơ không hợp lệ.");
+            throw new InvoiceBusinessException("Không thể lập hóa đơn cho các hồ sơ không hợp lệ.");
         }
 
         validateRecords(vaccinationRecordIds, records);
@@ -92,24 +92,25 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Transactional
+    @Override
     public ThanhToan payInvoice(Long invoiceId, BigDecimal amount,
             PhuongThucThanhToan paymentMethod, Long cashierId) {
         if (invoiceId == null) {
-            throw new IllegalArgumentException("Mã hóa đơn không hợp lệ.");
+            throw new InvoiceBusinessException("Mã hóa đơn không hợp lệ.");
         }
         HoaDonKhachHang invoice = hoaDonRepository.findByIdForUpdate(invoiceId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn."));
+                .orElseThrow(() -> new InvoiceBusinessException("Không tìm thấy hóa đơn."));
         if (invoice.getTrangThai() == TrangThaiHoaDon.DA_THANH_TOAN) {
-            throw new IllegalStateException("Hóa đơn đã được thanh toán.");
+            throw new InvoiceBusinessException("Hóa đơn đã được thanh toán.");
         }
         if (amount == null || amount.signum() <= 0) {
-            throw new IllegalArgumentException("Số tiền thanh toán phải lớn hơn 0.");
+            throw new InvoiceBusinessException("Số tiền thanh toán phải lớn hơn 0.");
         }
         if (invoice.getTongTien() == null || amount.compareTo(invoice.getTongTien()) != 0) {
-            throw new IllegalArgumentException("Số tiền thanh toán phải bằng tổng tiền hóa đơn.");
+            throw new InvoiceBusinessException("Số tiền thanh toán phải bằng tổng tiền hóa đơn.");
         }
         if (paymentMethod == null) {
-            throw new IllegalArgumentException("Vui lòng chọn phương thức thanh toán.");
+            throw new InvoiceBusinessException("Vui lòng chọn phương thức thanh toán.");
         }
 
         ThanhToan payment = new ThanhToan();
@@ -127,34 +128,37 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<HoaDonKhachHang> findAllInvoices() {
         return hoaDonRepository.findAll();
     }
 
     @Transactional(readOnly = true)
+    @Override
     public HoaDonKhachHang findInvoice(Long id) {
         return hoaDonRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hóa đơn."));
+                .orElseThrow(() -> new InvoiceBusinessException("Không tìm thấy hóa đơn."));
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<HoaDonChiTiet> findInvoiceLines(Long id) {
         return chiTietRepository.findAllByIdHoaDonOrderByIdAsc(id);
     }
 
     private void validateRecordIds(List<Long> recordIds) {
         if (recordIds == null || recordIds.isEmpty()) {
-            throw new IllegalArgumentException("Vui lòng nhập ít nhất một mã hồ sơ tiêm.");
+            throw new InvoiceBusinessException("Vui lòng nhập ít nhất một mã hồ sơ tiêm.");
         }
         if (recordIds.stream().anyMatch(Objects::isNull)) {
-            throw new IllegalArgumentException("Mã hồ sơ tiêm không được để trống.");
+            throw new InvoiceBusinessException("Mã hồ sơ tiêm không được để trống.");
         }
         if (new HashSet<>(recordIds).size() != recordIds.size()) {
-            throw new IllegalArgumentException("Danh sách có mã hồ sơ tiêm bị lặp.");
+            throw new InvoiceBusinessException("Danh sách có mã hồ sơ tiêm bị lặp.");
         }
         for (Long recordId : recordIds) {
             if (chiTietRepository.existsByIdTiem(recordId)) {
-                throw new IllegalArgumentException("Hồ sơ tiêm đã được lập hóa đơn.");
+                throw new InvoiceBusinessException("Hồ sơ tiêm đã được lập hóa đơn.");
             }
         }
     }
@@ -169,18 +173,18 @@ public class InvoiceServiceImpl implements InvoiceService {
                     || record.getCustomerId() == null || record.getTreatmentPlanId() == null
                     || record.getVaccineId() == null || record.getQuantity() == null
                     || record.getQuantity() <= 0 || !record.isEligibleForInvoice()) {
-                throw new IllegalArgumentException("Không thể lập hóa đơn cho các hồ sơ không hợp lệ.");
+                throw new InvoiceBusinessException("Không thể lập hóa đơn cho các hồ sơ không hợp lệ.");
             }
             if (customerId == null) {
                 customerId = record.getCustomerId();
             } else if (!customerId.equals(record.getCustomerId())) {
-                throw new IllegalArgumentException("Các hồ sơ tiêm phải thuộc cùng một khách hàng.");
+                throw new InvoiceBusinessException("Các hồ sơ tiêm phải thuộc cùng một khách hàng.");
             }
             if (!Objects.equals(records.get(0).getTreatmentPlanId(), record.getTreatmentPlanId())) {
-                throw new IllegalArgumentException("Các hồ sơ tiêm phải thuộc cùng một liệu trình.");
+                throw new InvoiceBusinessException("Các hồ sơ tiêm phải thuộc cùng một liệu trình.");
             }
             if (chiTietRepository.existsByIdTiem(record.getVaccinationRecordId())) {
-                throw new IllegalArgumentException("Hồ sơ tiêm đã được lập hóa đơn.");
+                throw new InvoiceBusinessException("Hồ sơ tiêm đã được lập hóa đơn.");
             }
         }
     }
@@ -190,12 +194,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (price == null) {
             GiaVaccineProvider priceProvider = giaVaccineProvider.getIfAvailable();
             if (priceProvider == null) {
-                throw new IllegalStateException("Chưa có nguồn đơn giá vaccine từ Person 2 hoặc Person 5.");
+                throw new InvoiceBusinessException("Chưa có nguồn đơn giá vaccine từ Person 2 hoặc Person 5.");
             }
             price = priceProvider.findUnitPrice(record.getVaccineId());
         }
         if (price == null || price.signum() < 0) {
-            throw new IllegalArgumentException("Đơn giá vaccine không hợp lệ.");
+            throw new InvoiceBusinessException("Đơn giá vaccine không hợp lệ.");
         }
         return price;
     }

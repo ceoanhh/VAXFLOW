@@ -2,6 +2,7 @@ package com.vaxflow.invoice.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.vaxflow.invoice.service.InvoiceBusinessException;
 
 public class TaoHoaDonForm {
     private String vaccinationRecordIds;
@@ -16,7 +17,11 @@ public class TaoHoaDonForm {
         }
         for (String value : vaccinationRecordIds.split("[,\\s]+")) {
             if (!value.isBlank()) {
-                ids.add(Long.valueOf(value));
+                try {
+                    ids.add(Long.valueOf(value));
+                } catch (NumberFormatException exception) {
+                    throw new InvoiceBusinessException("Mã hồ sơ tiêm không hợp lệ: " + value);
+                }
             }
         }
         return ids;
