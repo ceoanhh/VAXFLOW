@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${pageTitle}">Ghi Nhận Mũi Tiêm - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+
+                <!-- Breadcrumb -->
+                <nav class="mb-3">
+                    <ol class="breadcrumb small">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/vaccinations}">Tiêm chủng</a></li>
+                        <li class="breadcrumb-item active" th:text="${pageTitle}">Ghi nhận</li>
+                    </ol>
+                </nav>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-4">
+                        <div class="rounded-circle bg-danger-subtle text-danger p-3">
+                            <i class="bi bi-capsule fs-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold text-dark mb-0" th:text="${pageTitle}">Ghi Nhận Mũi Tiêm</h4>
+                            <p class="text-muted small mb-0">Nhập đầy đủ thông tin thuốc, số lô, nhân viên thực hiện và theo dõi sau tiêm</p>
+                        </div>
+                    </div>
+
+                    <form th:action="${record.id != null} ? @{/vaccinations/{id}/edit(id=${record.id})} : @{/vaccinations/create}"
+                          th:object="${record}" method="post">
+
+                        <div class="row g-3">
+                            <!-- Khách hàng -->
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold small">Chọn Khách Hàng / Người Tiêm <span class="text-danger">*</span></label>
+                                <select name="khachHangId" class="form-select form-select-lg" required>
+                                    <option value="" disabled th:selected="${record.khachHang == null}">-- Chọn khách hàng trong hệ thống --</option>
+                                    <option th:each="c : ${customers}"
+                                            th:value="${c.id}"
+                                            th:text="${c.hoTen} + ' - SĐT: ' + ${c.soDienThoai} + (${c.ngaySinh != null} ? ' (Sinh: ' + ${c.ngaySinh} + ')' : '')"
+                                            th:selected="${record.khachHang != null && record.khachHang.id == c.id || selectedCustomerId == c.id}">
+                                        Nguyễn Gia Bảo - SĐT: 0912345678
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Tên Vắc Xin -->
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold small">Tên Vắc Xin <span class="text-danger">*</span></label>
+                                <input list="commonVaccineList" th:field="*{tenVacXin}" class="form-control"
+                                       placeholder="Chọn hoặc nhập tên vắc xin..." required>
+                                <datalist id="commonVaccineList">
+                                    <option th:each="vac : ${commonVaccines}" th:value="${vac}"></option>
+                                </datalist>
+                            </div>
+
+                            <!-- Mũi số -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small">Mũi Số <span class="text-danger">*</span></label>
+                                <select th:field="*{muiSo}" class="form-select" required>
+                                    <option value="1">Mũi 1</option>
+                                    <option value="2">Mũi 2</option>
+                                    <option value="3">Mũi 3</option>
+                                    <option value="4">Mũi 4</option>
+                                    <option value="5">Mũi Nhắc Lại</option>
+                                </select>
+                            </div>
+
+                            <!-- Ngày tiêm -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Ngày Tiêm <span class="text-danger">*</span></label>
+                                <input type="date" th:field="*{ngayTiem}" class="form-control" required>
+                            </div>
+
+                            <!-- Số lô -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Số Lô Vắc Xin (Lot No.)</label>
+                                <input type="text" th:field="*{soLo}" class="form-control" placeholder="Ví dụ: LOT-2026-09A">
+                            </div>
+
+                            <!-- Cơ sở tiêm -->
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold small">Cơ Sở / Phòng Tiêm Thực Hiện</label>
+                                <input type="text" th:field="*{coSoTiem}" class="form-control"
+                                       placeholder="Ví dụ: VaxFlow Cầu Giấy - Phòng tiêm 01">
+                            </div>
+
+                            <!-- Bác sĩ khám sàng lọc -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Bác Sĩ Khám Sàng Lọc</label>
+                                <input type="text" th:field="*{bacSiKham}" class="form-control"
+                                       placeholder="Ví dụ: BS. CKI Nguyễn Văn An">
+                            </div>
+
+                            <!-- Điều dưỡng tiêm -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Điều Dưỡng Thực Hiện Tiêm</label>
+                                <input type="text" th:field="*{nguoiTiem}" class="form-control"
+                                       placeholder="Ví dụ: ĐD. Lê Thị Mai">
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Trạng Thái Mũi Tiêm <span class="text-danger">*</span></label>
+                                <select th:field="*{trangThai}" class="form-select" required>
+                                    <option value="DA_TIEM">Đã Tiêm Thành Công</option>
+                                    <option value="HEN_TIEM">Lịch Hẹn Tiêm (Chưa tiêm)</option>
+                                    <option value="DA_HUY">Đã Hủy / Hoãn Tiêm</option>
+                                </select>
+                            </div>
+
+                            <!-- Ngày hẹn mũi tiếp -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Ngày Hẹn Mũi Tiếp Theo (Nếu có)</label>
+                                <input type="date" th:field="*{ngayHenMuiTiep}" class="form-control">
+                            </div>
+
+                            <!-- Theo dõi sau tiêm 30 phút -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Theo Dõi Sức Khỏe Sau Tiêm 30 Phút</label>
+                                <textarea th:field="*{phanUngSauTiem}" class="form-control" rows="2"
+                                          placeholder="Tình trạng sinh hiệu, vị trí vết tiêm, có phản ứng bất thường hay không..."></textarea>
+                            </div>
+
+                            <!-- Ghi chú thêm -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Ghi Chú Y Lệnh / Khuyến Cáo Bác Sĩ</label>
+                                <textarea th:field="*{ghiChu}" class="form-control" rows="2"
+                                          placeholder="Lưu ý chăm sóc tại nhà, thời gian tái khám..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a th:href="@{/vaccinations}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i> Hủy & Quay Lại
+                            </a>
+                            <button type="submit" class="btn btn-vf-emerald px-5 fw-semibold">
+                                <i class="bi bi-check-circle-fill me-2"></i> Lưu Bản Ghi Mũi Tiêm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Bảng Quản Trị Hệ Thống - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Welcome Banner -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white mb-4"
+             style="background: linear-gradient(135deg, #023e8a 0%, #0077b6 100%) !important;">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2">Hệ Thống Quản Lý Tiêm Chủng</span>
+                    <h2 class="fw-bold mb-1">
+                        Xin chào, <span th:text="${username}">Quản Trị Viên</span>!
+                    </h2>
+                    <p class="text-light mb-0 small opacity-75">
+                        Chào mừng bạn đến với bảng điều khiển trung tâm tiêm chủng VaxFlow. Quản lý hồ sơ người tiêm và theo dõi các mũi tiêm an toàn.
+                    </p>
+                </div>
+                <div class="d-flex gap-2 mt-3 mt-md-0">
+                    <a th:href="@{/customers/create}" class="btn btn-warning fw-bold text-dark px-3 shadow-sm">
+                        <i class="bi bi-person-plus-fill me-1"></i> + Khách Hàng Mới
+                    </a>
+                    <a th:href="@{/vaccinations/create}" class="btn btn-light fw-bold text-primary px-3 shadow-sm">
+                        <i class="bi bi-plus-circle-fill me-1"></i> + Ghi Nhận Mũi Tiêm
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Stat Metric Cards -->
+        <div class="row g-4 mb-4">
+            <!-- Card 1: Khách hàng -->
+            <div class="col-lg-3 col-sm-6">
+                <a th:href="@{/customers}" class="text-decoration-none">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 hover-lift">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold">Tổng Số Khách Hàng</span>
+                            <div class="rounded-circle bg-primary-subtle text-primary p-2">
+                                <i class="bi bi-people-fill fs-5"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-0" th:text="${tongKhachHang}">0</h3>
+                        <small class="text-primary fw-semibold"><i class="bi bi-arrow-right-short"></i> Xem danh sách khách hàng</small>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 2: Tổng mũi tiêm -->
+            <div class="col-lg-3 col-sm-6">
+                <a th:href="@{/vaccinations}" class="text-decoration-none">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 hover-lift">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted small fw-semibold">Tổng Lượt Mũi Tiêm</span>
+                            <div class="rounded-circle bg-danger-subtle text-danger p-2">
+                                <i class="bi bi-heart-pulse-fill fs-5"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-0" th:text="${tongMuiTiem}">0</h3>
+                        <small class="text-danger fw-semibold"><i class="bi bi-arrow-right-short"></i> Toàn bộ lịch sử tiêm</small>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 3: Đã tiêm thành công -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small fw-semibold">Đã Tiêm Thành Công</span>
+                        <div class="rounded-circle bg-success-subtle text-success p-2">
+                            <i class="bi bi-check-circle-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-success mb-0" th:text="${muiDaTiem}">0</h3>
+                    <small class="text-muted">Theo dõi 30p an toàn</small>
+                </div>
+            </div>
+
+            <!-- Card 4: Lịch hẹn sắp tới -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small fw-semibold">Lịch Hẹn Tiêm Sắp Tới</span>
+                        <div class="rounded-circle bg-warning-subtle text-warning-emphasis p-2">
+                            <i class="bi bi-calendar2-event-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-warning-emphasis mb-0" th:text="${muiHenTiem}">0</h3>
+                    <small class="text-muted">Đang chờ đến lịch</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 Side-by-Side Tables -->
+        <div class="row g-4">
+
+            <!-- Col 1: Khách hàng mới nhất -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 overflow-hidden">
+                    <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-people text-primary me-2"></i> Khách Hàng Tiếp Nhận Gần Đây
+                        </h6>
+                        <a th:href="@{/customers}" class="small text-decoration-none">Xem tất cả &rarr;</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Họ Tên</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Ngày Sinh</th>
+                                    <th class="text-end pe-3">Hồ Sơ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(recentCustomers)}">
+                                    <td colspan="4" class="text-center py-4 text-muted">Chưa có khách hàng</td>
+                                </tr>
+                                <tr th:each="c : ${recentCustomers}">
+                                    <td class="ps-3 fw-bold text-dark" th:text="${c.hoTen}">Nguyễn Gia Bảo</td>
+                                    <td th:text="${c.soDienThoai}">0912345678</td>
+                                    <td th:text="${c.ngaySinh != null ? c.ngaySinh : 'Chưa rõ'}">15/08/2024</td>
+                                    <td class="text-end pe-3">
+                                        <a th:href="@{/customers/{id}(id=${c.id})}" class="btn btn-sm btn-outline-info py-0 px-2">
+                                            Xem
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Col 2: Mũi tiêm gần nhất -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100 overflow-hidden">
+                    <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-heart-pulse text-danger me-2"></i> Mũi Tiêm Vừa Ghi Nhận
+                        </h6>
+                        <a th:href="@{/vaccinations}" class="small text-decoration-none">Xem tất cả &rarr;</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Người Tiêm</th>
+                                    <th>Vắc Xin</th>
+                                    <th>Ngày Tiêm</th>
+                                    <th class="text-end pe-3">Trạng Thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(recentVaccinations)}">
+                                    <td colspan="4" class="text-center py-4 text-muted">Chưa có mũi tiêm nào</td>
+                                </tr>
+                                <tr th:each="r : ${recentVaccinations}">
+                                    <td class="ps-3 fw-semibold">
+                                        <a th:href="@{/customers/{id}(id=${r.khachHang.id})}" class="text-decoration-none text-dark"
+                                           th:text="${r.khachHang.hoTen}">Bảo</a>
+                                    </td>
+                                    <td>
+                                        <span class="text-primary fw-semibold" th:text="${r.tenVacXin}">Hexaxim</span>
+                                        <small class="text-muted">(M<span th:text="${r.muiSo}">1</span>)</small>
+                                    </td>
+                                    <td th:text="${r.ngayTiem}">18/10/2024</td>
+                                    <td class="text-end pe-3">
+                                        <span th:if="${r.trangThai == 'DA_TIEM'}" class="badge bg-success-subtle text-success py-1">Đã tiêm</span>
+                                        <span th:if="${r.trangThai == 'HEN_TIEM'}" class="badge bg-warning-subtle text-warning-emphasis py-1">Hẹn tiêm</span>
+                                        <span th:if="${r.trangThai == 'DA_HUY'}" class="badge bg-danger-subtle text-danger py-1">Đã hủy</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

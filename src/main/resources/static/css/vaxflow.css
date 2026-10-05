@@ -1,0 +1,429 @@
+/* =========================================================
+   VAXFLOW - Professional Healthcare CSS Design System
+   Modern, Clean, Trustworthy Medical UI/UX
+   ========================================================= */
+
+:root {
+    --vf-primary: #0077b6;
+    --vf-primary-dark: #023e8a;
+    --vf-primary-light: #0096c7;
+    --vf-cyan: #0ea5e9;
+    --vf-teal: #0d9488;
+    --vf-emerald: #10b981;
+    --vf-amber: #f59e0b;
+    --vf-rose: #ef4444;
+    --vf-bg-soft: #f8fafc;
+    --vf-card-bg: #ffffff;
+    --vf-text-main: #1e293b;
+    --vf-text-muted: #64748b;
+    --vf-border: #e2e8f0;
+    --vf-border-focus: #38bdf8;
+    --vf-radius-sm: 8px;
+    --vf-radius-md: 12px;
+    --vf-radius-lg: 18px;
+    --vf-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --vf-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    --vf-shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.04);
+    --vf-shadow-glow: 0 0 20px rgba(0, 119, 182, 0.2);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--vf-text-main);
+    background-color: var(--vf-bg-soft);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* --- Top Info Bar --- */
+.vf-topbar {
+    background: linear-gradient(90deg, #023e8a 0%, #0077b6 100%);
+    color: #ffffff;
+    font-size: 0.825rem;
+    padding: 6px 0;
+}
+.vf-topbar a {
+    color: #e0f2fe;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.vf-topbar a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* --- Navbar --- */
+.vf-navbar {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--vf-border);
+    transition: all 0.3s ease;
+}
+.vf-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--vf-primary-dark) !important;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.vf-brand-badge {
+    background: linear-gradient(135deg, var(--vf-primary) 0%, var(--vf-teal) 100%);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3);
+}
+.vf-nav-link {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #334155 !important;
+    padding: 8px 14px !important;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.vf-nav-link:hover, .vf-nav-link.active {
+    color: var(--vf-primary) !important;
+    background-color: #f0f9ff;
+}
+
+/* --- Buttons --- */
+.btn-vf-primary {
+    background: linear-gradient(135deg, var(--vf-primary) 0%, #0096c7 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: var(--vf-radius-md);
+    box-shadow: 0 4px 14px rgba(0, 119, 182, 0.25);
+    transition: all 0.25s ease;
+}
+.btn-vf-primary:hover {
+    background: linear-gradient(135deg, #00669e 0%, #0077b6 100%);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 119, 182, 0.35);
+}
+.btn-vf-outline {
+    background: transparent;
+    border: 2px solid var(--vf-primary);
+    color: var(--vf-primary);
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: var(--vf-radius-md);
+    transition: all 0.25s ease;
+}
+.btn-vf-outline:hover {
+    background: var(--vf-primary);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 119, 182, 0.2);
+}
+.btn-vf-emerald {
+    background: linear-gradient(135deg, var(--vf-emerald) 0%, #059669 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: var(--vf-radius-md);
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    transition: all 0.25s ease;
+}
+.btn-vf-emerald:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* --- Hero Section --- */
+.vf-hero {
+    position: relative;
+    background: radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                #ffffff;
+    padding: 70px 0 80px;
+    border-bottom: 1px solid var(--vf-border);
+}
+.vf-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+}
+.vf-hero-title {
+    font-size: 2.85rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+}
+.vf-hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--vf-text-muted);
+    margin-bottom: 30px;
+    line-height: 1.7;
+}
+
+/* --- Trust Cards & Stat Counters --- */
+.vf-stat-card {
+    background: #ffffff;
+    border: 1px solid var(--vf-border);
+    border-radius: var(--vf-radius-lg);
+    padding: 24px;
+    text-align: center;
+    box-shadow: var(--vf-shadow-sm);
+    transition: all 0.3s ease;
+}
+.vf-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--vf-shadow-md);
+    border-color: var(--vf-primary-light);
+}
+.vf-stat-number {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--vf-primary);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+.vf-stat-label {
+    font-size: 0.9rem;
+    color: var(--vf-text-muted);
+    font-weight: 500;
+}
+
+/* --- Vaccine Cards --- */
+.vf-vaccine-card {
+    background: #ffffff;
+    border: 1px solid var(--vf-border);
+    border-radius: var(--vf-radius-lg);
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: var(--vf-shadow-sm);
+}
+.vf-vaccine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--vf-shadow-lg);
+    border-color: #38bdf8;
+}
+.vf-vaccine-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+.vf-vaccine-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+.vf-badge-origin {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 50px;
+}
+.vf-badge-in-stock {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 50px;
+}
+.vf-vaccine-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--vf-primary-dark);
+}
+
+/* --- Step Wizard for Booking --- */
+.vf-wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 35px;
+    position: relative;
+}
+.vf-wizard-nav::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+.vf-wizard-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    background: transparent;
+    cursor: pointer;
+    flex: 1;
+}
+.vf-wizard-step-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #cbd5e1;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+.vf-wizard-step.active .vf-wizard-step-circle {
+    background: var(--vf-primary);
+    border-color: var(--vf-primary);
+    color: #ffffff;
+    box-shadow: 0 0 0 6px rgba(0, 119, 182, 0.2);
+}
+.vf-wizard-step.completed .vf-wizard-step-circle {
+    background: var(--vf-emerald);
+    border-color: var(--vf-emerald);
+    color: #ffffff;
+}
+.vf-wizard-step-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+}
+.vf-wizard-step.active .vf-wizard-step-text {
+    color: var(--vf-primary-dark);
+}
+
+/* --- Digital Vaccination Green Pass Card --- */
+.vf-digital-pass {
+    background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(6, 95, 70, 0.3);
+}
+.vf-digital-pass::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+.vf-digital-pass::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: -60px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+}
+.vf-pass-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+}
+.vf-pass-qr {
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* --- Footer --- */
+.vf-footer {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 60px 0 25px;
+    font-size: 0.925rem;
+}
+.vf-footer h5 {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+.vf-footer a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.vf-footer a:hover {
+    color: #38bdf8;
+}
+.vf-footer-bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 25px;
+    margin-top: 40px;
+    font-size: 0.85rem;
+}
+
+/* --- Process Section --- */
+.vf-step-box {
+    background: #ffffff;
+    border: 1px solid var(--vf-border);
+    border-radius: var(--vf-radius-lg);
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--vf-shadow-sm);
+    height: 100%;
+}
+.vf-step-badge {
+    width: 44px;
+    height: 44px;
+    background: #e0f2fe;
+    color: var(--vf-primary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+}
+
+/* --- Custom Responsive adjustments --- */
+@media (max-width: 768px) {
+    .vf-hero-title {
+        font-size: 2.1rem;
+    }
+    .vf-wizard-nav::before {
+        display: none;
+    }
+}

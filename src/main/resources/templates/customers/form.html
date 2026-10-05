@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${pageTitle}">Thêm Mới Khách Hàng - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+
+                <!-- Breadcrumb -->
+                <nav class="mb-3">
+                    <ol class="breadcrumb small">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/customers}">Khách hàng</a></li>
+                        <li class="breadcrumb-item active" th:text="${pageTitle}">Thêm mới</li>
+                    </ol>
+                </nav>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-4">
+                        <div class="rounded-circle bg-primary-subtle text-primary p-3">
+                            <i class="bi bi-person-fill-gear fs-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold text-dark mb-0" th:text="${pageTitle}">Hồ Sơ Khách Hàng</h4>
+                            <p class="text-muted small mb-0">Nhập đầy đủ thông tin định danh và tiền sử bệnh lý của người tiêm</p>
+                        </div>
+                    </div>
+
+                    <form th:action="${customer.id != null} ? @{/customers/{id}/edit(id=${customer.id})} : @{/customers/create}"
+                          th:object="${customer}" method="post">
+
+                        <div class="row g-3">
+                            <!-- Col 1: Họ tên -->
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold small">Họ và Tên Khách Hàng <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{hoTen}" class="form-control form-control-lg"
+                                       placeholder="Ví dụ: Nguyễn Gia Bảo" required>
+                            </div>
+
+                            <!-- Col 2: Giới tính -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small">Giới Tính</label>
+                                <select th:field="*{gioiTinh}" class="form-select form-select-lg">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+
+                            <!-- Col 3: Ngày sinh -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Ngày Sinh</label>
+                                <input type="date" th:field="*{ngaySinh}" class="form-control">
+                            </div>
+
+                            <!-- Col 4: Số điện thoại -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Số Điện Thoại <span class="text-danger">*</span></label>
+                                <input type="tel" th:field="*{soDienThoai}" class="form-control"
+                                       placeholder="0912345678" required>
+                            </div>
+
+                            <!-- Col 5: Số CCCD -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Số CCCD / Mã Định Danh</label>
+                                <input type="text" th:field="*{cccd}" class="form-control"
+                                       placeholder="12 chữ số định danh hoặc mã bảo hiểm...">
+                            </div>
+
+                            <!-- Col 6: Địa chỉ -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Địa Chỉ Thường Trú</label>
+                                <input type="text" th:field="*{diaChi}" class="form-control"
+                                       placeholder="Số nhà, đường, quận/huyện, tỉnh/thành...">
+                            </div>
+
+                            <!-- SECTION: Người giám hộ nếu là trẻ em -->
+                            <div class="col-12 mt-4 pt-3 border-top">
+                                <h6 class="fw-bold text-secondary mb-3">
+                                    <i class="bi bi-people-fill me-1"></i> Thông Tin Người Giám Hộ (Dành cho trẻ nhỏ)
+                                </h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Họ Tên Phụ Huynh / Người Giám Hộ</label>
+                                <input type="text" th:field="*{nguoiGiamHo}" class="form-control"
+                                       placeholder="Ví dụ: Nguyễn Văn Tuấn (Bố)">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">SĐT Người Giám Hộ</label>
+                                <input type="tel" th:field="*{soDienThoaiGiamHo}" class="form-control"
+                                       placeholder="Số điện thoại liên hệ khẩn cấp...">
+                            </div>
+
+                            <!-- SECTION: Tiền sử y tế -->
+                            <div class="col-12 mt-4 pt-3 border-top">
+                                <h6 class="fw-bold text-danger mb-3">
+                                    <i class="bi bi-heart-pulse-fill me-1"></i> Tiền Sử Y Tế & Ghi Chú Đặc Biệt
+                                </h6>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Tiền Sử Dị Ứng / Phản Ứng Sau Tiêm Trước Đây / Bệnh Nền</label>
+                                <textarea th:field="*{tienSuBenh}" class="form-control" rows="2"
+                                          placeholder="Khai báo dị ứng thuốc, sốt co giật, hen phế quản, sinh non..."></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small">Ghi Chú Theo Dõi Bổ Sung</label>
+                                <textarea th:field="*{ghiChu}" class="form-control" rows="2"
+                                          placeholder="Các lưu ý khác của bác sĩ khám sàng lọc..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a th:href="@{/customers}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i> Hủy & Quay Lại
+                            </a>
+                            <button type="submit" class="btn btn-vf-primary px-5 fw-semibold">
+                                <i class="bi bi-check-circle-fill me-2"></i> Lưu Thông Tin Khách Hàng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

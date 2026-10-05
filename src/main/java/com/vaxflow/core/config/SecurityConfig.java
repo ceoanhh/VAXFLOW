@@ -19,12 +19,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers(
+                    "/customers/**",
+                    "/vaccinations/**"
+                )
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
                     "/login",
+                    "/error",
                     "/css/**",
                     "/js/**",
-                    "/images/**"
+                    "/images/**",
+                    "/favicon.ico"
                 ).permitAll()
 
                 .anyRequest().authenticated()

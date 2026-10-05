@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Quản Lý Tiêm Chủng - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Top Header & Action -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold text-dark mb-1">
+                    <i class="bi bi-heart-pulse-fill text-danger me-2"></i> Quản Lý Mũi Tiêm & Lịch Tiêm Chủng
+                </h3>
+                <p class="text-muted small mb-0">Theo dõi tiến độ tiêm chủng, lịch hẹn và giám sát phản ứng sau tiêm</p>
+            </div>
+            <div>
+                <a th:href="@{/vaccinations/create}" class="btn btn-vf-emerald fw-semibold px-3 shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Ghi Nhận Mũi Tiêm Mới
+                </a>
+            </div>
+        </div>
+
+        <!-- 4 Quick Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                    <span class="text-muted small fw-semibold">Tổng Số Mũi Tiêm</span>
+                    <h3 class="fw-bold text-primary mb-0" th:text="${totalRecords}">0</h3>
+                    <small class="text-muted">Đã ghi nhận trong hệ thống</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                    <span class="text-muted small fw-semibold">Đã Tiêm Thành Công</span>
+                    <h3 class="fw-bold text-success mb-0" th:text="${administeredCount}">0</h3>
+                    <small class="text-success"><i class="bi bi-check-circle me-1"></i> An toàn</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                    <span class="text-muted small fw-semibold">Lịch Hẹn Tiêm Sắp Tới</span>
+                    <h3 class="fw-bold text-warning-emphasis mb-0" th:text="${scheduledCount}">0</h3>
+                    <small class="text-warning"><i class="bi bi-clock me-1"></i> Đang chờ đến lịch</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                    <span class="text-muted small fw-semibold">Tiêm Trong Ngày Hôm Nay</span>
+                    <h3 class="fw-bold text-info mb-0" th:text="${todayCount}">0</h3>
+                    <small class="text-muted">Ca tiêm thực hiện hôm nay</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+            <form th:action="@{/vaccinations}" method="get" class="row g-2 align-items-center">
+                <div class="col-md-9 col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="keyword" class="form-control bg-light border-start-0"
+                               placeholder="Tìm theo tên khách hàng, SĐT, tên vắc xin hoặc số lô..." th:value="${keyword}">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                        <i class="bi bi-funnel me-1"></i> Tìm Kiếm
+                    </button>
+                    <a th:href="@{/vaccinations}" class="btn btn-outline-secondary" title="Đặt lại bộ lọc">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Data -->
+        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th class="ps-4">#</th>
+                            <th>Khách Hàng / Người Tiêm</th>
+                            <th>Tên Vắc Xin</th>
+                            <th>Mũi Số</th>
+                            <th>Ngày Tiêm</th>
+                            <th>Số Lô (Lot)</th>
+                            <th>Bác Sĩ & Điều Dưỡng</th>
+                            <th>Trạng Thái</th>
+                            <th class="text-end pe-4">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(records)}">
+                            <td colspan="9" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                                Chưa có mũi tiêm nào được ghi nhận hoặc không tìm thấy kết quả phù hợp!
+                            </td>
+                        </tr>
+
+                        <tr th:each="r, iter : ${records}">
+                            <td class="ps-4 text-muted fw-semibold" th:text="${iter.count}">1</td>
+                            <td>
+                                <a th:href="@{/customers/{id}(id=${r.khachHang.id})}" class="fw-bold text-decoration-none text-primary">
+                                    <span th:text="${r.khachHang.hoTen}">Nguyễn Gia Bảo</span>
+                                </a>
+                                <div class="small text-muted">
+                                    <i class="bi bi-telephone me-1"></i> <span th:text="${r.khachHang.soDienThoai}">0912345678</span>
+                                </div>
+                            </td>
+                            <td>
+                                <strong class="text-dark" th:text="${r.tenVacXin}">Hexaxim 6 in 1</strong>
+                                <div class="small text-muted" th:text="${r.coSoTiem}">VaxFlow Trung Tâm</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">Mũi <span th:text="${r.muiSo}">1</span></span>
+                            </td>
+                            <td>
+                                <span class="fw-semibold" th:text="${r.ngayTiem}">18/10/2024</span>
+                            </td>
+                            <td>
+                                <code th:text="${r.soLo != null && !r.soLo.isEmpty() ? r.soLo : '---'}">HEX-8172</code>
+                            </td>
+                            <td class="small">
+                                <div><i class="bi bi-person-check me-1 text-primary"></i> <span th:text="${r.bacSiKham != null ? r.bacSiKham : '---'}">BS. An</span></div>
+                                <div class="text-muted"><i class="bi bi-bandaid me-1 text-success"></i> <span th:text="${r.nguoiTiem != null ? r.nguoiTiem : '---'}">ĐD. Mai</span></div>
+                            </td>
+                            <td>
+                                <span th:if="${r.trangThai == 'DA_TIEM'}" class="badge bg-success-subtle text-success">
+                                    <i class="bi bi-check2-circle me-1"></i> Đã tiêm
+                                </span>
+                                <span th:if="${r.trangThai == 'HEN_TIEM'}" class="badge bg-warning-subtle text-warning-emphasis">
+                                    <i class="bi bi-clock me-1"></i> Hẹn tiêm
+                                </span>
+                                <span th:if="${r.trangThai == 'DA_HUY'}" class="badge bg-danger-subtle text-danger">
+                                    <i class="bi bi-x-circle me-1"></i> Đã hủy
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-inline-flex gap-1">
+                                    <a th:href="@{/vaccinations/{id}/edit(id=${r.id})}" class="btn btn-sm btn-outline-primary" title="Sửa mũi tiêm">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form th:action="@{/vaccinations/{id}/delete(id=${r.id})}" method="post" class="d-inline"
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa bản ghi mũi tiêm này?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa mũi tiêm">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Danh Mục Vắc Xin - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Top Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold text-dark mb-1">
+                    <i class="bi bi-capsule fs-3 text-info me-2"></i> Danh Mục Vắc Xin & Chỉ Định Y Khoa
+                </h3>
+                <p class="text-muted small mb-0">Bảng tra cứu vắc xin, phác đồ liều lượng và giá dịch vụ trong toàn hệ thống</p>
+            </div>
+            <div>
+                <a th:href="@{/vaccinations/create}" class="btn btn-vf-primary fw-semibold px-3 shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Ghi Nhận Tiêm Ngay
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+            <form th:action="@{/vaccines}" method="get" class="row g-2 align-items-center">
+                <div class="col-md-9 col-sm-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="keyword" class="form-control bg-light border-start-0"
+                               placeholder="Tìm theo tên vắc xin, phòng bệnh, xuất xứ..." th:value="${keyword}">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                        <i class="bi bi-funnel me-1"></i> Tìm Kiếm
+                    </button>
+                    <a th:href="@{/vaccines}" class="btn btn-outline-secondary" title="Đặt lại bộ lọc">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table Data -->
+        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th class="ps-4">Mã</th>
+                            <th>Tên Vắc Xin</th>
+                            <th>Xuất Xứ / NSX</th>
+                            <th>Phòng Ngừa Bệnh</th>
+                            <th>Độ Tuổi Chỉ Định</th>
+                            <th>Phác Đồ Tiêm</th>
+                            <th>Giá Niêm Yết</th>
+                            <th>Trạng Thái</th>
+                            <th class="text-end pe-4">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="v : ${vaccines}">
+                            <td class="ps-4">
+                                <span class="badge bg-light text-dark border font-monospace" th:text="${v.maVacXin}">VAC-01</span>
+                            </td>
+                            <td>
+                                <strong class="text-primary" th:text="${v.tenVacXin}">Hexaxim 6 trong 1</strong>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark" th:text="${v.xuatXu}">Pháp</div>
+                                <small class="text-muted" th:text="${v.nhaSanXuat}">Sanofi Pasteur</small>
+                            </td>
+                            <td class="small text-secondary" style="max-width: 220px;" th:text="${v.phongBenh}">
+                                Bạch hầu, ho gà, uốn ván...
+                            </td>
+                            <td class="small" th:text="${v.doiTuong}">
+                                Trẻ từ 2 tháng đến 24 tháng
+                            </td>
+                            <td class="small text-info-emphasis" th:text="${v.phacDoTiem}">
+                                3+1 mũi
+                            </td>
+                            <td>
+                                <span class="fw-bold text-dark" th:text="${#numbers.formatDecimal(v.giaNiemYet, 0, 'COMMA', 0, 'POINT')} + ' đ'">1.050.000 đ</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Sẵn sàng
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a th:href="@{/vaccinations/create}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-syringe me-1"></i> Tiêm mũi này
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
