@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{invoice/layout :: head('Chi tiết hóa đơn')}"></head>
+<body>
+<nav th:replace="~{invoice/layout :: navbar}"></nav>
+<main class="container py-5">
+    <div class="mb-4"><a class="text-decoration-none" th:href="@{/invoices}">← Danh sách hóa đơn</a><h1 class="h3 mt-3 mb-1">Chi tiết hóa đơn</h1><p class="text-muted mb-0">Thông tin hóa đơn và các mũi tiêm được ghi nhận.</p></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <section class="card page-card mb-4"><div class="card-body p-4">
+        <div class="row g-4">
+            <div class="col-md-4"><div class="small text-muted">Mã hóa đơn</div><div class="fw-semibold" th:text="${invoice.maHoaDon}"></div></div>
+            <div class="col-md-4"><div class="small text-muted">Ngày lập</div><div th:text="${#temporals.format(invoice.ngayLap, 'dd/MM/yyyy HH:mm')}"></div></div>
+            <div class="col-md-4"><div class="small text-muted">Trạng thái</div><span class="badge rounded-pill" th:classappend="${invoice.trangThai.name() == 'DA_THANH_TOAN'} ? ' text-bg-success' : ' text-bg-warning'" th:text="${invoice.trangThai.name() == 'DA_THANH_TOAN'} ? 'Đã thanh toán' : 'Chưa thanh toán'"></span></div>
+            <div class="col-12"><div class="small text-muted">Ghi chú</div><div th:text="${invoice.ghiChu ?: '—'}"></div></div>
+            <div class="col-12 border-top pt-3 d-flex justify-content-between align-items-center"><span class="fw-semibold">Tổng tiền</span><strong class="fs-4 text-primary" th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></strong></div>
+        </div>
+    </div></section>
+    <section class="card page-card mb-4"><div class="card-body p-0"><div class="p-4 pb-2"><h2 class="h5">Chi tiết các mũi tiêm</h2></div>
+        <div class="table-responsive"><table class="table align-middle mb-0">
+            <thead class="table-light"><tr><th>STT</th><th>Hồ sơ / mũi tiêm (ID)</th><th class="text-end">Số lượng</th><th class="text-end">Đơn giá</th><th class="text-end">Thành tiền</th></tr></thead>
+            <tbody><tr th:if="${#lists.isEmpty(lines)}"><td colspan="5" class="text-center text-muted py-4">Không có dòng chi tiết.</td></tr>
+            <tr th:each="line, state : ${lines}"><td th:text="${state.count}"></td><td th:text="${line.idTiem}"></td><td class="text-end" th:text="${line.soLuong}"></td><td class="text-end" th:text="${#numbers.formatDecimal(line.donGia, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td><td class="text-end" th:text="${#numbers.formatDecimal(line.thanhTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td></tr>
+            </tbody>
+        </table></div>
+    </div></section>
+    <section th:if="${invoice.trangThai.name() == 'CHUA_THANH_TOAN'}" class="card page-card"><div class="card-body p-4">
+        <h2 class="h5 mb-3">Thanh toán hóa đơn</h2>
+        <form th:action="@{/invoices/{id}/pay(id=${invoice.id})}" th:object="${paymentForm}" method="post" class="row g-3 align-items-end">
+            <div class="col-md-5"><label class="form-label" for="amount">Số tiền thanh toán</label><input id="amount" class="form-control" type="number" step="0.01" min="0.01" th:field="*{soTien}" th:attr="max=${invoice.tongTien}" required><div class="form-text">Cần thanh toán đúng toàn bộ tổng tiền.</div></div>
+            <div class="col-md-4"><label class="form-label" for="paymentMethod">Phương thức</label><select id="paymentMethod" class="form-select" th:field="*{phuongThucTt}" required><option value="">Chọn phương thức</option><option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method.name() == 'TIEN_MAT'} ? 'Tiền mặt' : (${method.name() == 'CHUYEN_KHOAN'} ? 'Chuyển khoản' : 'Thẻ')"></option></select></div>
+            <div class="col-md-3 d-grid"><button class="btn btn-success" type="submit">Xác nhận thanh toán</button></div>
+        </form>
+    </div></section>
+    <div th:if="${invoice.trangThai.name() == 'DA_THANH_TOAN'}" class="alert alert-success"><strong>Đã thanh toán.</strong> Hóa đơn này không thể thanh toán lại.</div>
+</main>
+</body>
+</html>

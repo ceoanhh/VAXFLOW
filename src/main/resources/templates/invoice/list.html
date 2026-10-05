@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{invoice/layout :: head('Danh sách hóa đơn')}"></head>
+<body>
+<nav th:replace="~{invoice/layout :: navbar}"></nav>
+<main class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div><h1 class="h3 mb-1">Hóa đơn khách hàng</h1><p class="text-muted mb-0">Theo dõi hóa đơn và trạng thái thanh toán.</p></div>
+        <a class="btn btn-primary" th:href="@{/invoices/create}">Tạo hóa đơn</a>
+    </div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div class="card page-card"><div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light"><tr><th>Mã hóa đơn</th><th>Ngày lập</th><th class="text-end">Tổng tiền</th><th>Trạng thái</th><th></th></tr></thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(invoices)}"><td colspan="5" class="text-center text-muted py-5">Chưa có hóa đơn.</td></tr>
+            <tr th:each="invoice : ${invoices}">
+                <td class="fw-semibold" th:text="${invoice.maHoaDon}"></td>
+                <td th:text="${#temporals.format(invoice.ngayLap, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                <td><span class="badge rounded-pill" th:classappend="${invoice.trangThai.name() == 'DA_THANH_TOAN'} ? ' text-bg-success' : ' text-bg-warning'" th:text="${invoice.trangThai.name() == 'DA_THANH_TOAN'} ? 'Đã thanh toán' : 'Chưa thanh toán'"></span></td>
+                <td class="text-end"><a class="btn btn-sm btn-outline-primary" th:href="@{/invoices/{id}(id=${invoice.id})}">Xem chi tiết</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div></div>
+</main>
+</body>
+</html>
