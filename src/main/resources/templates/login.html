@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Đăng Nhập Cán Bộ Y Tế & Quản Trị - VaxFlow</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <section class="py-5" style="min-height: 80vh;">
+            <div class="container py-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+
+                        <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+                            <div class="text-center mb-4">
+                                <div class="vf-brand-badge bg-primary text-white mx-auto mb-3" style="width: 54px; height: 54px; font-size: 1.6rem;">
+                                    <i class="bi bi-shield-lock-fill"></i>
+                                </div>
+                                <h3 class="fw-bold text-dark mb-1">Cổng Quản Trị Tiêm Chủng</h3>
+                                <p class="text-muted small">Hệ thống phân quyền VaxFlow nội bộ</p>
+                            </div>
+
+                            <!-- Error alert -->
+                            <div class="alert alert-danger small py-2 d-flex align-items-center gap-2" th:if="${errorMessage != null}">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span th:text="${errorMessage}">Tên đăng nhập hoặc mật khẩu không chính xác!</span>
+                            </div>
+
+                            <!-- Logout message -->
+                            <div class="alert alert-info small py-2 d-flex align-items-center gap-2" th:if="${logoutMessage != null}">
+                                <i class="bi bi-info-circle-fill"></i>
+                                <span th:text="${logoutMessage}">Bạn đã đăng xuất thành công!</span>
+                            </div>
+
+                            <form th:action="@{/login}" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small text-secondary">Tên Đăng Nhập</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted"><i class="bi bi-person-badge"></i></span>
+                                        <input type="text" name="username" class="form-control" placeholder="Nhập tài khoản (vd: admin)" required autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold small text-secondary">Mật Khẩu</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted"><i class="bi bi-key"></i></span>
+                                        <input type="password" name="password" class="form-control" placeholder="Mật khẩu..." required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-vf-primary w-100 py-2 fw-bold">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Đăng Nhập Hệ Thống
+                                </button>
+                            </form>
+
+                            <div class="mt-4 pt-3 border-top text-center">
+                                <span class="badge bg-light text-secondary border small p-2">
+                                    <i class="bi bi-info-circle me-1"></i> Mặc định môi trường dev: <code>admin / admin123</code>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

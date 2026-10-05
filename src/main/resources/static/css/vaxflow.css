@@ -1,0 +1,72 @@
+/* =========================================================
+   VAXFLOW - Admin Core Infrastructure CSS
+   Layout Chung Cho Toan Bo Team (Person 1 - Bright)
+   ========================================================= */
+
+:root {
+    --vf-primary: #0077b6;
+    --vf-primary-dark: #023e8a;
+    --vf-primary-light: #0096c7;
+    --vf-teal: #0d9488;
+    --vf-emerald: #10b981;
+    --vf-amber: #f59e0b;
+    --vf-rose: #ef4444;
+    --vf-bg-soft: #f8fafc;
+    --vf-card-bg: #ffffff;
+    --vf-text-main: #1e293b;
+    --vf-text-muted: #64748b;
+    --vf-border: #e2e8f0;
+    --vf-radius-md: 12px;
+    --vf-radius-lg: 16px;
+    --vf-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --vf-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: var(--vf-text-main);
+    background-color: var(--vf-bg-soft);
+    line-height: 1.6;
+}
+
+.vf-brand {
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--vf-primary-dark) !important;
+    letter-spacing: -0.5px;
+}
+
+.vf-brand-badge {
+    background: linear-gradient(135deg, var(--vf-primary) 0%, var(--vf-teal) 100%);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.btn-vf-primary {
+    background: linear-gradient(135deg, var(--vf-primary) 0%, #0096c7 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: var(--vf-radius-md);
+    transition: all 0.2s ease;
+}
+.btn-vf-primary:hover {
+    background: linear-gradient(135deg, #00669e 0%, #0077b6 100%);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--vf-shadow-md) !important;
+}

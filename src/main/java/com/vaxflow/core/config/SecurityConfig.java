@@ -21,10 +21,13 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",
                     "/login",
+                    "/error",
                     "/css/**",
                     "/js/**",
-                    "/images/**"
+                    "/images/**",
+                    "/favicon.ico"
                 ).permitAll()
 
                 .anyRequest().authenticated()

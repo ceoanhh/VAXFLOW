@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Bảng Quản Trị Hệ Thống - VaxFlow Dashboard</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Welcome Banner -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white mb-4"
+             style="background: linear-gradient(135deg, #023e8a 0%, #0077b6 100%) !important;">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2">Phân Hệ Core & Dashboard (Person 1 - Bright)</span>
+                    <h2 class="fw-bold mb-1">
+                        Xin chào, <span th:text="${username}">Quản Trị Viên</span>!
+                    </h2>
+                    <p class="text-light mb-0 small opacity-75">
+                        Bảng điều khiển trung tâm hệ thống tiêm chủng VaxFlow. Tích hợp dữ liệu tổng hợp từ các phân hệ của 5 thành viên trong nhóm.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Metric Cards (Theo dung tai lieu phan cong chuc nang) -->
+        <div class="row g-4 mb-4">
+            <!-- Metric 1: Tong khach hang (Person 2 - Bao) -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small fw-semibold">Tổng Khách Hàng</span>
+                        <div class="rounded-circle bg-primary-subtle text-primary p-2">
+                            <i class="bi bi-people-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1" th:text="${tongKhachHang}">0</h3>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: CustomerService (P2 - Bảo)</small>
+                </div>
+            </div>
+
+            <!-- Metric 2: Tong nhan vien (Person 4 - Lan Anh) -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small fw-semibold">Tổng Nhân Viên</span>
+                        <div class="rounded-circle bg-info-subtle text-info p-2">
+                            <i class="bi bi-hospital fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1" th:text="${tongNhanVien}">0</h3>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: EmployeeService (P4 - Lan Anh)</small>
+                </div>
+            </div>
+
+            <!-- Metric 3: Doanh thu thang (Person 3 - Khanh) -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small fw-semibold">Doanh Thu Tháng</span>
+                        <div class="rounded-circle bg-success-subtle text-success p-2">
+                            <i class="bi bi-cash-stack fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-success mb-1" th:text="${#numbers.formatDecimal(doanhThuThang, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</h3>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: InvoiceService (P3 - Khánh)</small>
+                </div>
+            </div>
+
+            <!-- Metric 4: Canh bao ton kho (Person 5 - Truong) -->
+            <div class="col-lg-3 col-sm-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small fw-semibold">Cảnh Báo Tồn Kho</span>
+                        <div class="rounded-circle bg-warning-subtle text-warning-emphasis p-2">
+                            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-danger mb-1" th:text="${canhBaoTonKho}">0</h3>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: InventoryService (P5 - Trường)</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Integration Status Grid -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold text-dark mb-3">
+                <i class="bi bi-diagram-3-fill text-primary me-2"></i> Tiến Độ Tích Hợp Các Phân Hệ Trong Dự Án (5 Thành Viên)
+            </h5>
+            <p class="text-muted small mb-4">
+                Khung hạ tầng, bảo mật đăng nhập và giao diện layout chung đã hoàn tất. Các module của từng thành viên sẽ được ghép nối vào hệ thống khi merge nhánh git.
+            </p>
+
+            <div class="row g-3">
+                <!-- Person 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-3 border rounded-3 bg-light h-100 border-primary">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold text-primary mb-0">Person 1 (Bright) - Bạn</h6>
+                            <span class="badge bg-success">Hoàn thành</span>
+                        </div>
+                        <p class="text-secondary small mb-2">Core Infrastructure, Spring Security 6, BaseEntity, Admin, Layout chung, Dashboard & DataSeeder.</p>
+                        <span class="badge bg-primary-subtle text-primary small">feature/core-infrastructure</span>
+                    </div>
+                </div>
+
+                <!-- Person 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold text-dark mb-0">Person 2 (Bảo)</h6>
+                            <span class="badge bg-secondary">Chờ tích hợp</span>
+                        </div>
+                        <p class="text-secondary small mb-2">Customer & Vaccination Records (Hồ sơ khách hàng, sổ tiêm chủng, lịch sử mũi tiêm).</p>
+                        <span class="badge bg-light text-muted border small">CustomerService, CustomerController</span>
+                    </div>
+                </div>
+
+                <!-- Person 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold text-dark mb-0">Person 3 (Khánh)</h6>
+                            <span class="badge bg-secondary">Chờ tích hợp</span>
+                        </div>
+                        <p class="text-secondary small mb-2">Invoices & Payments (Hóa đơn thu phí, thanh toán, implement Reportable báo cáo doanh thu).</p>
+                        <span class="badge bg-light text-muted border small">InvoiceService, InvoiceController</span>
+                    </div>
+                </div>
+
+                <!-- Person 4 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold text-dark mb-0">Person 4 (Lan Anh)</h6>
+                            <span class="badge bg-secondary">Chờ tích hợp</span>
+                        </div>
+                        <p class="text-secondary small mb-2">Departments & Employees (Phòng ban, hồ sơ bác sĩ, điều dưỡng, phân ca làm việc).</p>
+                        <span class="badge bg-light text-muted border small">EmployeeService, EmployeeController</span>
+                    </div>
+                </div>
+
+                <!-- Person 5 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold text-dark mb-0">Person 5 (Trường)</h6>
+                            <span class="badge bg-secondary">Chờ tích hợp</span>
+                        </div>
+                        <p class="text-secondary small mb-2">Vaccines & Inventory (Danh mục vắc xin, số lô, hạn dùng, cảnh báo tồn kho tối thiểu).</p>
+                        <span class="badge bg-light text-muted border small">InventoryService, VaccineController</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

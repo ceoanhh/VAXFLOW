@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">VAXFLOW - Quản Lý Tiêm Chủng</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/vaxflow.css}" href="/css/vaxflow.css">
+
+    <style>
+        .admin-sidebar {
+            width: 260px;
+            min-height: calc(100vh - 65px);
+            background: #ffffff;
+            border-right: 1px solid var(--vf-border);
+        }
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+        .admin-nav-item:hover, .admin-nav-item.active {
+            color: var(--vf-primary);
+            background-color: #f0f9ff;
+        }
+        .admin-content {
+            flex: 1;
+            padding: 30px;
+            background-color: var(--vf-bg-soft);
+            min-height: calc(100vh - 65px);
+        }
+        @media (max-width: 992px) {
+            .admin-sidebar {
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--vf-border);
+            }
+            .admin-layout-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <th:block layout:fragment="page-styles"></th:block>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top py-2 px-3 shadow-sm">
+        <div class="container-fluid">
+            <!-- Brand -->
+            <a class="navbar-brand vf-brand d-flex align-items-center gap-2" th:href="@{/dashboard}">
+                <div class="vf-brand-badge">
+                    <i class="bi bi-shield-plus"></i>
+                </div>
+                <div>
+                    <span class="fw-bold fs-5 text-primary">VAXFLOW</span>
+                    <span class="badge bg-primary-subtle text-primary ms-1 small">Admin Portal</span>
+                </div>
+            </a>
+
+            <!-- User Session & Logout -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2" sec:authorize="isAuthenticated()">
+                    <div class="rounded-circle bg-light border p-2 text-primary d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="bi bi-person-fill fs-5"></i>
+                    </div>
+                    <div class="d-none d-md-block text-start">
+                        <div class="fw-bold small text-dark" sec:authentication="name">Admin</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Quản trị viên y tế</div>
+                    </div>
+                </div>
+
+                <form th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
+                    <button type="submit" class="btn btn-outline-danger btn-sm px-3 fw-semibold">
+                        <i class="bi bi-box-arrow-right me-1"></i> Đăng Xuất
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- WRAPPER: SIDEBAR + CONTENT -->
+    <div class="d-flex admin-layout-wrapper">
+
+        <!-- SIDEBAR (Khung dieu huong chung cho 5 thanh vien) -->
+        <aside class="admin-sidebar p-3" sec:authorize="isAuthenticated()">
+            <div class="text-uppercase small fw-bold text-muted px-3 mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                Phân Hệ Quản Trị
+            </div>
+
+            <nav class="d-flex flex-column">
+                <!-- Person 1: Dashboard -->
+                <a th:href="@{/dashboard}" class="admin-nav-item">
+                    <i class="bi bi-grid-1x2-fill fs-5 text-primary"></i>
+                    <span>Tổng Quan (Dashboard)</span>
+                </a>
+
+                <!-- Person 2: Khach hang & Tiem chung -->
+                <a th:href="@{/customers}" class="admin-nav-item">
+                    <i class="bi bi-people-fill fs-5 text-success"></i>
+                    <span>Khách Hàng (Person 2)</span>
+                </a>
+
+                <!-- Person 3: Hoa don & Thanh toan -->
+                <a th:href="@{/invoices}" class="admin-nav-item text-secondary">
+                    <i class="bi bi-receipt fs-5 text-warning"></i>
+                    <span>Hóa Đơn (Person 3)</span>
+                </a>
+
+                <!-- Person 4: Nhan vien & Phong ban -->
+                <a th:href="@{/employees}" class="admin-nav-item text-secondary">
+                    <i class="bi bi-hospital fs-5 text-info"></i>
+                    <span>Nhân Viên (Person 4)</span>
+                </a>
+
+                <!-- Person 5: Vac xin & Kho -->
+                <a th:href="@{/vaccines}" class="admin-nav-item text-secondary">
+                    <i class="bi bi-capsule fs-5 text-danger"></i>
+                    <span>Kho Vắc Xin (Person 5)</span>
+                </a>
+            </nav>
+
+            <div class="mt-4 pt-3 border-top px-3">
+                <div class="small text-muted mb-2 font-monospace" style="font-size: 0.8rem;">
+                    <i class="bi bi-info-circle me-1"></i> Phụ trách: Person 1 (Bright)
+                </div>
+                <div class="badge bg-success-subtle text-success p-2 w-100 text-start">
+                    <i class="bi bi-shield-check me-1"></i> Bảo mật Spring Security 6
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW CONTENT -->
+        <main class="admin-content">
+
+            <!-- Flash messages -->
+            <div class="container-fluid px-0 mb-3" th:if="${successMessage != null}">
+                <div class="alert alert-success alert-dismissible fade show p-3 shadow-sm rounded-3 d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <span th:text="${successMessage}">Thao tác thành công!</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+
+            <div class="container-fluid px-0 mb-3" th:if="${errorMessage != null}">
+                <div class="alert alert-danger alert-dismissible fade show p-3 shadow-sm rounded-3 d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                    <span th:text="${errorMessage}">Đã xảy ra lỗi!</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+
+            <!-- Injected View of Child Templates -->
+            <div layout:fragment="content"></div>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5.3.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <th:block layout:fragment="page-scripts"></th:block>
+</body>
+</html>
