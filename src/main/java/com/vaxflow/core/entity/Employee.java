@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "nhan_su")
-public class NhanSu extends BaseEntity {
+@Table(name = "employees")
+public class Employee extends BaseEntity {
 
     @Column(name = "ma_nhan_su", nullable = false, unique = true, length = 50)
     private String maNhanSu;
@@ -29,7 +29,7 @@ public class NhanSu extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gioi_tinh", nullable = false)
-    private GioiTinh gioiTinh;
+    private Gender gioiTinh;
 
     @Column(name = "dia_chi", length = 255)
     private String diaChi;
@@ -42,7 +42,7 @@ public class NhanSu extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "chuc_vu", nullable = false)
-    private ChucVu chucVu;
+    private Position chucVu;
 
     @Column(name = "ngay_vao_lam", nullable = false)
     private LocalDate ngayVaoLam;
@@ -52,7 +52,7 @@ public class NhanSu extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_phong_ban", nullable = false)
-    private PhongBan phongBan;
+    private Department phongBan;
 
     public String getMaNhanSu() {
         return maNhanSu;
@@ -86,11 +86,11 @@ public class NhanSu extends BaseEntity {
         this.ngaySinh = ngaySinh;
     }
 
-    public GioiTinh getGioiTinh() {
+    public Gender getGioiTinh() {
         return gioiTinh;
     }
 
-    public void setGioiTinh(GioiTinh gioiTinh) {
+    public void setGioiTinh(Gender gioiTinh) {
         this.gioiTinh = gioiTinh;
     }
 
@@ -118,11 +118,11 @@ public class NhanSu extends BaseEntity {
         this.email = email;
     }
 
-    public ChucVu getChucVu() {
+    public Position getChucVu() {
         return chucVu;
     }
 
-    public void setChucVu(ChucVu chucVu) {
+    public void setChucVu(Position chucVu) {
         this.chucVu = chucVu;
     }
 
@@ -142,11 +142,11 @@ public class NhanSu extends BaseEntity {
         this.luongCung = luongCung;
     }
 
-    public PhongBan getPhongBan() {
+    public Department getPhongBan() {
         return phongBan;
     }
 
-    public void setPhongBan(PhongBan phongBan) {
+    public void setPhongBan(Department phongBan) {
         this.phongBan = phongBan;
     }
 }

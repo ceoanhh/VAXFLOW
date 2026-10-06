@@ -15,8 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "cham_cong")
-public class ChamCong {
+@Table(name = "attendances")
+public class Attendance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class ChamCong {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_nhan_su", nullable = false)
-    private NhanSu nhanSu;
+    private Employee nhanSu;
 
     @Column(name = "ngay", nullable = false)
     private LocalDate ngay;
@@ -37,7 +37,7 @@ public class ChamCong {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "trang_thai", nullable = false)
-    private TrangThaiChamCong trangThai;
+    private AttendanceStatus trangThai;
 
     public Long getId() {
         return id;
@@ -47,11 +47,11 @@ public class ChamCong {
         this.id = id;
     }
 
-    public NhanSu getNhanSu() {
+    public Employee getNhanSu() {
         return nhanSu;
     }
 
-    public void setNhanSu(NhanSu nhanSu) {
+    public void setNhanSu(Employee nhanSu) {
         this.nhanSu = nhanSu;
     }
 
@@ -79,11 +79,11 @@ public class ChamCong {
         this.gioRa = gioRa;
     }
 
-    public TrangThaiChamCong getTrangThai() {
+    public AttendanceStatus getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(TrangThaiChamCong trangThai) {
+    public void setTrangThai(AttendanceStatus trangThai) {
         this.trangThai = trangThai;
     }
 }

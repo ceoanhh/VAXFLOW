@@ -12,8 +12,8 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "bang_luong")
-public class BangLuong {
+@Table(name = "payrolls")
+public class Payroll {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class BangLuong {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_nhan_su", nullable = false)
-    private NhanSu nhanSu;
+    private Employee nhanSu;
 
     @Column(name = "thang", nullable = false)
     private Integer thang;
@@ -49,11 +49,11 @@ public class BangLuong {
         this.id = id;
     }
 
-    public NhanSu getNhanSu() {
+    public Employee getNhanSu() {
         return nhanSu;
     }
 
-    public void setNhanSu(NhanSu nhanSu) {
+    public void setNhanSu(Employee nhanSu) {
         this.nhanSu = nhanSu;
     }
 

@@ -5,8 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "phong_ban")
-public class PhongBan extends BaseEntity {
+@Table(name = "departments")
+public class Department extends BaseEntity {
 
     @Column(name = "ten", nullable = false, unique = true, length = 150)
     private String ten;

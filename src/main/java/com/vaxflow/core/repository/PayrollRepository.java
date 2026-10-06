@@ -1,9 +1,9 @@
 package com.vaxflow.core.repository;
 
-import com.vaxflow.core.entity.BangLuong;
+import com.vaxflow.core.entity.Payroll;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BangLuongRepository extends JpaRepository<BangLuong, Long> {
+public interface PayrollRepository extends JpaRepository<Payroll, Long> {
 }

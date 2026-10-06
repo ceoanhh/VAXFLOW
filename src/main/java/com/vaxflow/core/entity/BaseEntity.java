@@ -33,27 +33,27 @@ public abstract class BaseEntity {
         this.thoiGianCapNhat = LocalDateTime.now();
     }
 
-    public Long getId() { 
-        return id; 
+    public Long getId() {
+        return id;
     }
-    
-    public void setId(Long id) { 
-        this.id = id; 
+
+    public void setId(Long id) {
+        this.id = id;
     }
-    
-    public LocalDateTime getThoiGianTao() { 
-        return thoiGianTao; 
+
+    public LocalDateTime getThoiGianTao() {
+        return thoiGianTao;
     }
-    
-    public void setThoiGianTao(LocalDateTime thoiGianTao) { 
-        this.thoiGianTao = thoiGianTao; 
+
+    public void setThoiGianTao(LocalDateTime thoiGianTao) {
+        this.thoiGianTao = thoiGianTao;
     }
-    
-    public LocalDateTime getThoiGianCapNhat() { 
-        return thoiGianCapNhat; 
+
+    public LocalDateTime getThoiGianCapNhat() {
+        return thoiGianCapNhat;
     }
-    
-    public void setThoiGianCapNhat(LocalDateTime thoiGianCapNhat) { 
-        this.thoiGianCapNhat = thoiGianCapNhat; 
+
+    public void setThoiGianCapNhat(LocalDateTime thoiGianCapNhat) {
+        this.thoiGianCapNhat = thoiGianCapNhat;
     }
 }

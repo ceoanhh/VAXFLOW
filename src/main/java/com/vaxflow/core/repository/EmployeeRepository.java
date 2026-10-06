@@ -1,12 +1,12 @@
 package com.vaxflow.core.repository;
 
-import com.vaxflow.core.entity.NhanSu;
+import com.vaxflow.core.entity.Employee;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NhanSuRepository extends JpaRepository<NhanSu, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    Optional<NhanSu> findByMaNhanSu(String maNhanSu);
+    Optional<Employee> findByMaNhanSu(String maNhanSu);
 }
