@@ -15,17 +15,34 @@ import java.math.BigDecimal;
 @Controller
 public class DashboardController {
 
+    private final com.vaxflow.core.service.CustomerService customerService;
+    private final com.vaxflow.employee.service.EmployeeService employeeService;
+    private final com.vaxflow.invoice.service.InvoiceService invoiceService;
+    private final com.vaxflow.vaccine.service.VaccineService vaccineService;
+
+    public DashboardController(com.vaxflow.core.service.CustomerService customerService,
+                               com.vaxflow.employee.service.EmployeeService employeeService,
+                               com.vaxflow.invoice.service.InvoiceService invoiceService,
+                               com.vaxflow.vaccine.service.VaccineService vaccineService) {
+        this.customerService = customerService;
+        this.employeeService = employeeService;
+        this.invoiceService = invoiceService;
+        this.vaccineService = vaccineService;
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
-        // Lay thong tin quan tri vien dang dang nhap
         String username = (authentication != null) ? authentication.getName() : "Admin";
         model.addAttribute("username", username);
 
-        // Du lieu thong ke tong quan ban dau (se duoc tich hop voi Service cua Person 2, 3, 4, 5 khi merge)
-        long tongKhachHang = 0;                     // TODO: Tich hop CustomerService (Person 2 - Bao)
-        long tongNhanVien = 0;                      // TODO: Tich hop EmployeeService (Person 4 - Lan Anh)
-        BigDecimal doanhThuThang = BigDecimal.ZERO; // TODO: Tich hop InvoiceService (Person 3 - Khanh)
-        long canhBaoTonKho = 0;                     // TODO: Tich hop InventoryService (Person 5 - Truong)
+        // Du lieu thong ke tong quan tich hop tu ca 4 phan he
+        long tongKhachHang = customerService.count();
+        long tongNhanVien = employeeService.getAll().size();
+        BigDecimal doanhThuThang = invoiceService.findAllInvoices().stream()
+                .filter(inv -> inv.getTrangThai() != null && "DA_THANH_TOAN".equals(inv.getTrangThai().name()))
+                .map(com.vaxflow.invoice.entity.HoaDonKhachHang::getTongTien)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        long canhBaoTonKho = vaccineService.countLowStock();
 
         model.addAttribute("tongKhachHang", tongKhachHang);
         model.addAttribute("tongNhanVien", tongNhanVien);

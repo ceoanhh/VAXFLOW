@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${pageTitle} + ' | VAXFLOW'">VAXFLOW</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f7fa; color: #243247; }
+        .navbar-brand { font-weight: 700; letter-spacing: .04em; }
+        .page-card { border: 0; border-radius: 14px; box-shadow: 0 5px 22px rgba(30, 50, 75, .06); }
+        .text-muted { color: #718096 !important; }
+    </style>
+</head>
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+    <div class="container py-2">
+        <a class="navbar-brand fw-bold text-primary d-flex align-items-center gap-2" th:href="@{/dashboard}">
+            <span class="badge bg-primary text-white">VAXFLOW</span>
+            <span class="small text-muted">Admin Portal</span>
+        </a>
+        <div class="navbar-nav ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link fw-semibold text-secondary" th:href="@{/dashboard}"><i class="bi bi-grid-fill me-1"></i> Dashboard</a>
+            <a class="nav-link fw-semibold text-secondary" th:href="@{/customers}"><i class="bi bi-people-fill me-1"></i> Khách Hàng</a>
+            <a class="nav-link fw-semibold text-primary" th:href="@{/invoices}"><i class="bi bi-receipt me-1"></i> Hóa Đơn</a>
+            <a class="nav-link fw-semibold text-secondary" th:href="@{/employees}"><i class="bi bi-hospital me-1"></i> Nhân Viên</a>
+            <a class="nav-link fw-semibold text-secondary" th:href="@{/vaccines}"><i class="bi bi-capsule me-1"></i> Kho Vắc Xin</a>
+            <a class="btn btn-sm btn-outline-primary" th:href="@{/invoices/create}">+ Tạo Hóa Đơn</a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
