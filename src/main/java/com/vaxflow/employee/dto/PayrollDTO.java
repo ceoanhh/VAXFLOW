@@ -1,44 +1,16 @@
-package com.vaxflow.core.entity;
+package com.vaxflow.employee.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "payrolls")
-public class Payroll {
+public class PayrollDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nhan_su", nullable = false)
-    private Employee nhanSu;
-
-    @Column(name = "thang", nullable = false)
+    private Long idNhanSu;
     private Integer thang;
-
-    @Column(name = "nam", nullable = false)
     private Integer nam;
-
-    @Column(name = "luong_cung", nullable = false, precision = 15, scale = 0)
     private BigDecimal luongCung;
-
-    @Column(name = "thuong", nullable = false, precision = 15, scale = 0)
     private BigDecimal thuong;
-
-    @Column(name = "khau_tru", nullable = false, precision = 15, scale = 0)
     private BigDecimal khauTru;
-
-    @Column(name = "thuc_nhan", nullable = false, precision = 15, scale = 0)
     private BigDecimal thucNhan;
 
     public Long getId() {
@@ -49,12 +21,12 @@ public class Payroll {
         this.id = id;
     }
 
-    public Employee getNhanSu() {
-        return nhanSu;
+    public Long getIdNhanSu() {
+        return idNhanSu;
     }
 
-    public void setNhanSu(Employee nhanSu) {
-        this.nhanSu = nhanSu;
+    public void setIdNhanSu(Long idNhanSu) {
+        this.idNhanSu = idNhanSu;
     }
 
     public Integer getThang() {

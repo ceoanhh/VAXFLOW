@@ -1,4 +1,6 @@
-package com.vaxflow.core.entity;
+package com.vaxflow.employee.entity;
+
+import com.vaxflow.core.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

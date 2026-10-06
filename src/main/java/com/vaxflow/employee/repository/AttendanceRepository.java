@@ -1,6 +1,6 @@
-package com.vaxflow.core.repository;
+package com.vaxflow.employee.repository;
 
-import com.vaxflow.core.entity.Attendance;
+import com.vaxflow.employee.entity.Attendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.vaxflow.core.entity;
+package com.vaxflow.employee.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.vaxflow.core.entity.BaseEntity;
 
 @Entity
 @Table(name = "employees")

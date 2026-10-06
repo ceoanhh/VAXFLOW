@@ -1,6 +1,6 @@
-package com.vaxflow.core.repository;
+package com.vaxflow.employee.repository;
 
-import com.vaxflow.core.entity.Employee;
+import com.vaxflow.employee.entity.Employee;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByMaNhanSu(String maNhanSu);
+
+    boolean existsByMaNhanSu(String maNhanSu);
 }
