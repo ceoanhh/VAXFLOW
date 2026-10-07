@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Controller phu trach phan he Khach hang & Ho so tiem chung (Person 2 - Bao)
+ * Controller phu trach phan he Khach hang & Ho so tiem chung y te
  * Route prefix: /customers
  */
 @Controller

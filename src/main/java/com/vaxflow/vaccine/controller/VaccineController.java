@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Controller phu trach phan he Vac xin & Kho (Person 5 - Truong)
+ * Controller phu trach phan he Vac xin & Kho duoc GSP
  * Route prefix: /vaccines
  */
 @Controller

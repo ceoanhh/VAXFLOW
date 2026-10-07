@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.math.BigDecimal;
 
 /**
- * Controller phu trach trang Dashboard tong quan (Person 1 - Bright)
+ * Controller phu trach trang Dashboard tong quan he thong
  * Route prefix: /dashboard
  * Chuc nang: Tong khach hang, tong nhan vien, doanh thu thang, canh bao ton kho thap
  */

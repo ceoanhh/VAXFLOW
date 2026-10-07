@@ -2,7 +2,7 @@ package com.vaxflow.invoice.integration;
 
 import java.math.BigDecimal;
 
-/** Person 2 or Person 5 supplies the current vaccine price when it is absent from the record. */
+/** Cung cấp đơn giá vắc xin hiện hành từ phân hệ kho dược. */
 public interface GiaVaccineProvider {
     BigDecimal findUnitPrice(Long vaccineId);
 }

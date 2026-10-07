@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Bảng Quản Trị Hệ Thống - VaxFlow Dashboard</title>
+    <title>Bảng Quản Trị Trung Tâm - VaxFlow Dashboard</title>
 </head>
 <body>
     <div layout:fragment="content">
@@ -13,20 +13,22 @@
              style="background: linear-gradient(135deg, #023e8a 0%, #0077b6 100%) !important;">
             <div class="d-flex flex-wrap justify-content-between align-items-center">
                 <div>
-                    <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2">Phân Hệ Core & Dashboard (Person 1 - Bright)</span>
+                    <span class="badge bg-white text-primary px-3 py-1 fw-bold text-uppercase mb-2 shadow-sm">
+                        <i class="bi bi-shield-check me-1"></i> Hệ Thống Quản Lý Tiêm Chủng Quốc Gia VaxFlow
+                    </span>
                     <h2 class="fw-bold mb-1">
                         Xin chào, <span th:text="${username}">Quản Trị Viên</span>!
                     </h2>
                     <p class="text-light mb-0 small opacity-75">
-                        Bảng điều khiển trung tâm hệ thống tiêm chủng VaxFlow. Tích hợp dữ liệu tổng hợp từ các phân hệ của 5 thành viên trong nhóm.
+                        Bảng điều khiển trung tâm vận hành tiêm chủng thông minh. Giám sát thời gian thực số lượng khách hàng, đội ngũ nhân sự y tế, doanh thu và tồn kho chuỗi lạnh GSP.
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- 4 Metric Cards (Theo dung tai lieu phan cong chuc nang) -->
+        <!-- 4 Metric Cards -->
         <div class="row g-4 mb-4">
-            <!-- Metric 1: Tong khach hang (Person 2 - Bao) -->
+            <!-- Metric 1: Tong khach hang -->
             <div class="col-lg-3 col-sm-6">
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -36,39 +38,39 @@
                         </div>
                     </div>
                     <h3 class="fw-bold text-dark mb-1" th:text="${tongKhachHang}">0</h3>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: CustomerService (P2 - Bảo)</small>
+                    <small class="text-muted"><i class="bi bi-check2-circle text-success me-1"></i> Hồ sơ tiêm chủng đang quản lý</small>
                 </div>
             </div>
 
-            <!-- Metric 2: Tong nhan vien (Person 4 - Lan Anh) -->
+            <!-- Metric 2: Tong nhan vien -->
             <div class="col-lg-3 col-sm-6">
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small fw-semibold">Tổng Nhân Viên</span>
+                        <span class="text-muted small fw-semibold">Nhân Sự Y Tế</span>
                         <div class="rounded-circle bg-info-subtle text-info p-2">
                             <i class="bi bi-hospital fs-5"></i>
                         </div>
                     </div>
                     <h3 class="fw-bold text-dark mb-1" th:text="${tongNhanVien}">0</h3>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: EmployeeService (P4 - Lan Anh)</small>
+                    <small class="text-muted"><i class="bi bi-check2-circle text-info me-1"></i> Bác sĩ, điều dưỡng & nhân sự</small>
                 </div>
             </div>
 
-            <!-- Metric 3: Doanh thu thang (Person 3 - Khanh) -->
+            <!-- Metric 3: Doanh thu thang -->
             <div class="col-lg-3 col-sm-6">
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted small fw-semibold">Doanh Thu Tháng</span>
+                        <span class="text-muted small fw-semibold">Doanh Thu Thực Thu</span>
                         <div class="rounded-circle bg-success-subtle text-success p-2">
                             <i class="bi bi-cash-stack fs-5"></i>
                         </div>
                     </div>
                     <h3 class="fw-bold text-success mb-1" th:text="${#numbers.formatDecimal(doanhThuThang, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</h3>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: InvoiceService (P3 - Khánh)</small>
+                    <small class="text-muted"><i class="bi bi-check2-circle text-success me-1"></i> Đã hoàn tất thanh toán</small>
                 </div>
             </div>
 
-            <!-- Metric 4: Canh bao ton kho (Person 5 - Truong) -->
+            <!-- Metric 4: Canh bao ton kho -->
             <div class="col-lg-3 col-sm-6">
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 hover-lift">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -78,78 +80,133 @@
                         </div>
                     </div>
                     <h3 class="fw-bold text-danger mb-1" th:text="${canhBaoTonKho}">0</h3>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i> Tích hợp: InventoryService (P5 - Trường)</small>
+                    <small class="text-muted"><i class="bi bi-exclamation-circle text-danger me-1"></i> Lô vắc xin còn ít (&le; 10 liều)</small>
                 </div>
             </div>
         </div>
 
-        <!-- Team Integration Status Grid -->
-        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-            <h5 class="fw-bold text-dark mb-3">
-                <i class="bi bi-diagram-3-fill text-primary me-2"></i> Tiến Độ Tích Hợp Các Phân Hệ Trong Dự Án (5 Thành Viên)
-            </h5>
-            <p class="text-muted small mb-4">
-                Khung hạ tầng, bảo mật đăng nhập và giao diện layout chung đã hoàn tất. Các module của từng thành viên sẽ được ghép nối vào hệ thống khi merge nhánh git.
-            </p>
-
-            <div class="row g-3">
-                <!-- Person 1 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="p-3 border rounded-3 bg-light h-100 border-primary">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-bold text-primary mb-0">Person 1 (Bright) - Bạn</h6>
-                            <span class="badge bg-success">Hoàn thành</span>
+        <!-- Operations & Quick Actions Grid -->
+        <div class="row g-4">
+            <!-- Left: Quick Actions & Safe Workflow -->
+            <div class="col-lg-8">
+                <!-- Quick Actions -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                    <h5 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-lightning-charge-fill text-warning me-2"></i>Thao Tác Nghiệp Vụ Nhanh
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6 col-md-3">
+                            <a th:href="@{/customers/new}" class="card border p-3 text-center text-decoration-none text-dark h-100 hover-lift bg-light">
+                                <i class="bi bi-person-plus-fill fs-3 text-success mb-2 d-block"></i>
+                                <span class="fw-bold small d-block">Tiếp Đón Khách</span>
+                                <small class="text-muted" style="font-size: 0.75rem;">Mở hồ sơ tiêm mới</small>
+                            </a>
                         </div>
-                        <p class="text-secondary small mb-2">Core Infrastructure, Spring Security 6, BaseEntity, Admin, Layout chung, Dashboard & DataSeeder.</p>
-                        <span class="badge bg-primary-subtle text-primary small">feature/core-infrastructure</span>
+                        <div class="col-sm-6 col-md-3">
+                            <a th:href="@{/invoices/create}" class="card border p-3 text-center text-decoration-none text-dark h-100 hover-lift bg-light">
+                                <i class="bi bi-receipt fs-3 text-warning mb-2 d-block"></i>
+                                <span class="fw-bold small d-block">Lập Hóa Đơn</span>
+                                <small class="text-muted" style="font-size: 0.75rem;">Thanh toán tiêm chủng</small>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a th:href="@{/employees/new}" class="card border p-3 text-center text-decoration-none text-dark h-100 hover-lift bg-light">
+                                <i class="bi bi-person-badge-fill fs-3 text-info mb-2 d-block"></i>
+                                <span class="fw-bold small d-block">Thêm Nhân Sự</span>
+                                <small class="text-muted" style="font-size: 0.75rem;">Bác sĩ & điều dưỡng</small>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a th:href="@{/vaccines/batch/new}" class="card border p-3 text-center text-decoration-none text-dark h-100 hover-lift bg-light">
+                                <i class="bi bi-box-seam-fill fs-3 text-danger mb-2 d-block"></i>
+                                <span class="fw-bold small d-block">Nhập Lô Vắc Xin</span>
+                                <small class="text-muted" style="font-size: 0.75rem;">Quản lý kho lạnh GSP</small>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Person 2 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="p-3 border rounded-3 bg-light h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-bold text-dark mb-0">Person 2 (Bảo)</h6>
-                            <span class="badge bg-secondary">Chờ tích hợp</span>
+                <!-- Quy trình tiêm chủng an toàn 4 bước -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                    <h5 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-shield-check text-primary me-2"></i>Quy Trình Tiêm Chủng Chuẩn Y Tế
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="p-3 border rounded-3 bg-light h-100 text-center">
+                                <div class="badge bg-primary rounded-circle mb-2" style="width: 28px; height: 28px; line-height: 20px;">1</div>
+                                <h6 class="fw-bold text-dark mb-1 small">Tiếp Đón & Đăng Ký</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Khảo sát thông tin cá nhân và tiền sử bệnh lý.</p>
+                            </div>
                         </div>
-                        <p class="text-secondary small mb-2">Customer & Vaccination Records (Hồ sơ khách hàng, sổ tiêm chủng, lịch sử mũi tiêm).</p>
-                        <span class="badge bg-light text-muted border small">CustomerService, CustomerController</span>
+                        <div class="col-md-3">
+                            <div class="p-3 border rounded-3 bg-light h-100 text-center">
+                                <div class="badge bg-info rounded-circle mb-2" style="width: 28px; height: 28px; line-height: 20px;">2</div>
+                                <h6 class="fw-bold text-dark mb-1 small">Khám Sàng Lọc</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Bác sĩ chỉ định loại vắc xin phù hợp thể trạng.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 border rounded-3 bg-light h-100 text-center">
+                                <div class="badge bg-warning text-dark rounded-circle mb-2" style="width: 28px; height: 28px; line-height: 20px;">3</div>
+                                <h6 class="fw-bold text-dark mb-1 small">Tiêm & Theo Dõi</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Thực hiện tiêm an toàn và theo dõi 30 phút sau tiêm.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 border rounded-3 bg-light h-100 text-center">
+                                <div class="badge bg-success rounded-circle mb-2" style="width: 28px; height: 28px; line-height: 20px;">4</div>
+                                <h6 class="fw-bold text-dark mb-1 small">Thanh Toán & Hẹn Lịch</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Xuất biên lai tài chính và nhắc lịch tiêm mũi tiếp theo.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Person 3 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="p-3 border rounded-3 bg-light h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-bold text-dark mb-0">Person 3 (Khánh)</h6>
-                            <span class="badge bg-secondary">Chờ tích hợp</span>
-                        </div>
-                        <p class="text-secondary small mb-2">Invoices & Payments (Hóa đơn thu phí, thanh toán, implement Reportable báo cáo doanh thu).</p>
-                        <span class="badge bg-light text-muted border small">InvoiceService, InvoiceController</span>
-                    </div>
-                </div>
+            <!-- Right: Center Operational Status -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <h5 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-activity text-success me-2"></i>Trạng Thái Vận Hành
+                    </h5>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-people text-primary me-2"></i>
+                                <span class="small fw-semibold">Phân hệ Khách hàng</span>
+                            </div>
+                            <span class="badge bg-success-subtle text-success">Sẵn sàng</span>
+                        </li>
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-thermometer-half text-danger me-2"></i>
+                                <span class="small fw-semibold">Kho chuỗi lạnh GSP</span>
+                            </div>
+                            <span class="badge bg-success-subtle text-success">+2°C ~ +8°C</span>
+                        </li>
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-receipt text-warning me-2"></i>
+                                <span class="small fw-semibold">Cổng thanh toán & Hóa đơn</span>
+                            </div>
+                            <span class="badge bg-success-subtle text-success">Hoạt động</span>
+                        </li>
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-hospital text-info me-2"></i>
+                                <span class="small fw-semibold">Đội ngũ y tế trực ca</span>
+                            </div>
+                            <span class="badge bg-success-subtle text-success">Đầy đủ ca trực</span>
+                        </li>
+                    </ul>
 
-                <!-- Person 4 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="p-3 border rounded-3 bg-light h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-bold text-dark mb-0">Person 4 (Lan Anh)</h6>
-                            <span class="badge bg-secondary">Chờ tích hợp</span>
+                    <div class="p-3 bg-light rounded-3 mt-auto">
+                        <div class="small fw-bold text-dark mb-1">
+                            <i class="bi bi-telephone-inbound-fill text-danger me-1"></i> Đường Dây Nóng Khẩn Cấp
                         </div>
-                        <p class="text-secondary small mb-2">Departments & Employees (Phòng ban, hồ sơ bác sĩ, điều dưỡng, phân ca làm việc).</p>
-                        <span class="badge bg-light text-muted border small">EmployeeService, EmployeeController</span>
-                    </div>
-                </div>
-
-                <!-- Person 5 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="p-3 border rounded-3 bg-light h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-bold text-dark mb-0">Person 5 (Trường)</h6>
-                            <span class="badge bg-secondary">Chờ tích hợp</span>
-                        </div>
-                        <p class="text-secondary small mb-2">Vaccines & Inventory (Danh mục vắc xin, số lô, hạn dùng, cảnh báo tồn kho tối thiểu).</p>
-                        <span class="badge bg-light text-muted border small">InventoryService, VaccineController</span>
+                        <div class="fs-5 fw-bold text-danger font-monospace">1900 6868</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Hỗ trợ tư vấn y tế & xử lý phản ứng sau tiêm 24/7</div>
                     </div>
                 </div>
             </div>

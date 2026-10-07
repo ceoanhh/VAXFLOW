@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller phu trach xac thuc / dang nhap (Person 1 - Bright)
+ * Controller phu trach xac thuc va dang nhap he thong
  * Route prefix: /login, /
  */
 @Controller

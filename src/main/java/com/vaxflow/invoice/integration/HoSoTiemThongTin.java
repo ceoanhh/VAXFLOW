@@ -2,7 +2,7 @@ package com.vaxflow.invoice.integration;
 
 import java.math.BigDecimal;
 
-/** Minimal adapter model; Person 2 must map its real hồ sơ fields into this contract. */
+/** DTO mô hình dữ liệu hồ sơ tiêm chủng phục vụ lập hóa đơn và thanh toán. */
 public class HoSoTiemThongTin {
     private Long vaccinationRecordId;
     private Long customerId;

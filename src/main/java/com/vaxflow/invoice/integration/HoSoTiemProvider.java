@@ -2,7 +2,7 @@ package com.vaxflow.invoice.integration;
 
 import java.util.List;
 
-/** Person 2 supplies an adapter that reads and validates its actual vaccination records. */
+/** Interface cung cấp và xác thực dữ liệu hồ sơ tiêm chủng cho phân hệ thanh toán. */
 public interface HoSoTiemProvider {
     List<HoSoTiemThongTin> findRecords(List<Long> vaccinationRecordIds);
 }

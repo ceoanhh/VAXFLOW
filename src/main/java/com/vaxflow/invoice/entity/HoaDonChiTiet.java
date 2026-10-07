@@ -15,7 +15,7 @@ public class HoaDonChiTiet extends BaseEntity {
     @Column(name = "id_hoa_don", nullable = false)
     private Long idHoaDon;
 
-    // Giữ nguyên tên cột id_tiem theo tài liệu; adapter Person 2 xác nhận ID record tương ứng.
+    // ID ban ghi tiem chung tuong ung
     @Column(name = "id_tiem", nullable = false, unique = true)
     private Long idTiem;
 

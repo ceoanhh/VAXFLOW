@@ -48,7 +48,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         validateRecordIds(vaccinationRecordIds);
         HoSoTiemProvider recordProvider = hoSoTiemProvider.getIfAvailable();
         if (recordProvider == null) {
-            throw new InvoiceBusinessException("Chưa có kết nối hồ sơ tiêm từ Person 2.");
+            throw new InvoiceBusinessException("Không tìm thấy kết nối dịch vụ hồ sơ tiêm chủng.");
         }
 
         List<HoSoTiemThongTin> records = recordProvider.findRecords(vaccinationRecordIds);
@@ -194,7 +194,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (price == null) {
             GiaVaccineProvider priceProvider = giaVaccineProvider.getIfAvailable();
             if (priceProvider == null) {
-                throw new InvoiceBusinessException("Chưa có nguồn đơn giá vaccine từ Person 2 hoặc Person 5.");
+                throw new InvoiceBusinessException("Không tìm thấy thông tin đơn giá vắc xin trong hệ thống.");
             }
             price = priceProvider.findUnitPrice(record.getVaccineId());
         }

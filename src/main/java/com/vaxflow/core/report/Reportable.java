@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Interface dung chung cho phan bao cao theo da hinh (Polymorphism).
- * Cac module Invoice (Person 3), Employee (Person 4), Vaccine (Person 5) se implement interface nay.
+ * Interface dung chung cho he thong bao cao da hinh (Polymorphism).
+ * Cac module Hoa don, Nhan su, Vac xin implement interface nay.
  */
 public interface Reportable {
 

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 /**
- * Controller phu trach phan he Nhan su & Phong ban (Person 4 - Lan Anh)
+ * Controller phu trach phan he Nhan su & Phong ban y te
  * Route prefix: /employees
  */
 @Controller

@@ -50,21 +50,21 @@ public class DataSeeder implements CommandLineRunner {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Person 2
+    // Phan he Khach hang & Tiem chung
     private final KhachHangRepository khachHangRepository;
     private final LichSuTiemRepository lichSuTiemRepository;
     private final HoSoRepository hoSoRepository;
 
-    // Person 3
+    // Phan he Hoa don & Thanh toan
     private final HoaDonKhachHangRepository hoaDonKhachHangRepository;
     private final HoaDonChiTietRepository hoaDonChiTietRepository;
     private final ThanhToanRepository thanhToanRepository;
 
-    // Person 4
+    // Phan he Nhan su & Phong ban
     private final DepartmentRepository departmentRepository;
     private final EmployeeRepository employeeRepository;
 
-    // Person 5
+    // Phan he Vac xin & Kho duoc GSP
     private final VacXinRepository vacXinRepository;
     private final LoVacXinRepository loVacXinRepository;
 
@@ -108,7 +108,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     /**
-     * Person 1 (Bright): Tai khoan quan tri vien
+     * Khoi tao tai khoan quan tri vien he thong
      */
     private void seedAdmin() {
         String defaultUsername = "admin";
@@ -119,12 +119,12 @@ public class DataSeeder implements CommandLineRunner {
             admin.setHoTen("Quản trị viên hệ thống");
             admin.setTrangThai(true);
             adminRepository.save(admin);
-            log.info("=== [Person 1] Da tao tai khoan Admin: admin / admin123 ===");
+            log.info(">>> [He Thong] Da tao tai khoan Admin: admin / admin123");
         }
     }
 
     /**
-     * Person 4 (Lan Anh): Phong ban va Nhan su
+     * Khoi tao danh muc phong ban va nhan su y te mau
      */
     private void seedDepartmentsAndEmployees() {
         if (departmentRepository.count() == 0) {
@@ -209,13 +209,13 @@ public class DataSeeder implements CommandLineRunner {
                 e4.setPhongBan(d3);
                 employeeRepository.save(e4);
 
-                log.info("=== [Person 4] Da tao 4 phong ban va 4 nhan su mau ===");
+                log.info(">>> [Nhan Su] Da khoi tao 4 phong ban va 4 nhan su y te mau");
             }
         }
     }
 
     /**
-     * Person 5 (Trường): Vac xin va Lo vac xin kho
+     * Khoi tao danh muc vac xin va cac lo hang kho duoc GSP
      */
     private void seedVaccinesAndBatches() {
         if (vacXinRepository.count() == 0) {
@@ -277,13 +277,13 @@ public class DataSeeder implements CommandLineRunner {
                 l3.setSoLuongConLai(8); // Tồn kho thấp <= 10 để test cảnh báo
                 loVacXinRepository.save(l3);
 
-                log.info("=== [Person 5] Da tao 3 loai vac xin va 3 lo hang kho GSP ===");
+                log.info(">>> [Kho Duoc] Da khoi tao 3 loai vac xin va 3 lo hang kho GSP");
             }
         }
     }
 
     /**
-     * Person 2 (Bảo): Khach hang va Ho so tiem chung
+     * Khoi tao ho so khach hang va lich su tiem chung
      */
     private void seedCustomersAndVaccinationRecords() {
         if (khachHangRepository.count() == 0) {
@@ -356,13 +356,13 @@ public class DataSeeder implements CommandLineRunner {
                 hs2.setLichSuTiem(lst2);
                 hoSoRepository.save(hs2);
 
-                log.info("=== [Person 2] Da tao 3 khach hang, 2 lich su tiem va 2 ho so ===");
+                log.info(">>> [Tiem Chung] Da khoi tao 3 khach hang, 2 lich su tiem va 2 ho so");
             }
         }
     }
 
     /**
-     * Person 3 (Khánh): Hoa don va Thanh toan
+     * Khoi tao hoa don thu phi va giao dich thanh toan mau
      */
     private void seedInvoicesAndPayments() {
         if (hoaDonKhachHangRepository.count() == 0) {
@@ -410,7 +410,7 @@ public class DataSeeder implements CommandLineRunner {
             ct2.setThanhTien(new BigDecimal("1290000"));
             hoaDonChiTietRepository.save(ct2);
 
-            log.info("=== [Person 3] Da tao 2 hoa don va 1 giao dich thanh toan mau ===");
+            log.info(">>> [Tai Chinh] Da khoi tao 2 hoa don va 1 giao dich thanh toan mau");
         }
     }
 }
