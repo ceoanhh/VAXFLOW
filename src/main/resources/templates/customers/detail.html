@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${'Hồ Sơ Khách Hàng - ' + customer.tenKhachHang}">Chi Tiết Khách Hàng</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/customers}">Khách Hàng</a></li>
+                        <li class="breadcrumb-item active" th:text="${customer.tenKhachHang}">Chi Tiết</li>
+                    </ol>
+                </nav>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-person-vcard text-success me-2"></i>Hồ Sơ Tiêm Chủng Khách Hàng
+                </h3>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/customers}" class="btn btn-outline-secondary btn-sm">Quay lại</a>
+                <a th:href="@{'/customers/edit/' + ${customer.id}}" class="btn btn-primary btn-sm">Chỉnh sửa</a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                    <div class="rounded-circle bg-success-subtle text-success fw-bold mx-auto d-flex align-items-center justify-content-center mb-3"
+                         style="width: 80px; height: 80px; font-size: 2rem;"
+                         th:text="${#strings.substring(customer.tenKhachHang, 0, 1)}">A</div>
+                    <h4 class="fw-bold mb-1 text-dark" th:text="${customer.tenKhachHang}">Nguyễn Văn B</h4>
+                    <span class="badge bg-light text-dark font-monospace border px-2 py-1 mb-3"
+                          th:text="${customer.maKhachHang}">KH-001</span>
+
+                    <div class="p-3 bg-light rounded-3 text-start small mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Ngày sinh:</span>
+                            <span class="fw-semibold text-dark" th:text="${customer.ngaySinh}">2020-05-10</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Điện thoại:</span>
+                            <span class="fw-semibold text-dark" th:text="${customer.sdt}">0988776655</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Địa chỉ:</span>
+                            <span class="fw-semibold text-dark" th:text="${customer.diaChi}">Hà Nội</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-shield-check me-2"></i>Lịch Sử Mũi Tiêm Đã Thực Hiện
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light small">
+                                <tr>
+                                    <th>Mã Tiêm</th>
+                                    <th>Mã Vaccine</th>
+                                    <th>Mã Lô</th>
+                                    <th>Mũi Số</th>
+                                    <th>Ngày Tiêm</th>
+                                    <th>Trạng Thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${customer.lichSuTiemSet == null or customer.lichSuTiemSet.isEmpty()}">
+                                    <td colspan="6" class="text-center py-4 text-muted">Chưa có lịch sử tiêm chủng nào.</td>
+                                </tr>
+                                <tr th:each="rec : ${customer.lichSuTiemSet}">
+                                    <td><span class="badge bg-light text-dark border font-monospace" th:text="${rec.maTiem}">T-001</span></td>
+                                    <td>Vaccine #<span th:text="${rec.idVaccine}">1</span></td>
+                                    <td>Lô #<span th:text="${rec.idLoVaccine}">1</span></td>
+                                    <td class="fw-bold text-primary" th:text="${'Mũi ' + rec.soMuiTiem}">Mũi 1</td>
+                                    <td th:text="${rec.ngayTiem}">2026-05-10</td>
+                                    <td><span class="badge bg-success-subtle text-success" th:text="${rec.trangThai != null ? rec.trangThai : 'Đã hoàn thành'}">Đã tiêm</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

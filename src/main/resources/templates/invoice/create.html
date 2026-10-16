@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{invoice/layout :: head('Tạo hóa đơn')}"></head>
+<body>
+<nav th:replace="~{invoice/layout :: navbar}"></nav>
+<main class="container py-5" style="max-width: 760px">
+    <div class="mb-4"><a class="text-decoration-none" th:href="@{/invoices}">← Danh sách hóa đơn</a><h1 class="h3 mt-3 mb-1">Tạo hóa đơn</h1><p class="text-muted">Nhập mã hồ sơ tiêm đã lưu, phân tách bằng dấu phẩy hoặc khoảng trắng.</p></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div class="card page-card"><div class="card-body p-4">
+        <form th:action="@{/invoices/create}" th:object="${form}" method="post">
+            <label for="recordIds" class="form-label fw-semibold">Mã hồ sơ tiêm</label>
+            <textarea id="recordIds" class="form-control" rows="4" th:field="*{vaccinationRecordIds}" placeholder="Ví dụ: 12, 13, 14" required></textarea>
+            <div class="form-text mb-4">Các hồ sơ phải cùng một khách hàng, hợp lệ và chưa được lập hóa đơn.</div>
+            <div class="d-flex justify-content-end gap-2"><a class="btn btn-light" th:href="@{/invoices}">Hủy</a><button class="btn btn-primary" type="submit">Tạo hóa đơn</button></div>
+        </form>
+    </div></div>
+</main>
+</body>
+</html>

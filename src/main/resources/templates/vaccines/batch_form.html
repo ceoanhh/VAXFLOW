@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Nhập Lô Vắc Xin Mới - VaxFlow</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/vaccines}">Kho Vắc Xin</a></li>
+                        <li class="breadcrumb-item active">Nhập Lô Hàng</li>
+                    </ol>
+                </nav>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-box-seam text-danger me-2"></i>Nhập Lô Vắc Xin Vào Kho (Quản Lý Hạn Sử Dụng)
+                </h3>
+            </div>
+            <div>
+                <a th:href="@{/vaccines}" class="btn btn-outline-secondary btn-sm">Quay lại</a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/vaccines/batch/save}" th:object="${batch}" method="post">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="vaccineSelect" class="form-label fw-semibold">Loại Vắc Xin Nhập Kho <span class="text-danger">*</span></label>
+                            <select id="vaccineSelect" name="vaccineId" class="form-select" required>
+                                <option value="" disabled selected>-- Chọn loại vắc xin --</option>
+                                <option th:each="vx : ${vaccines}"
+                                        th:value="${vx.id}"
+                                        th:text="${vx.maVacXin + ' - ' + vx.tenVacXin}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="maLo" class="form-label fw-semibold">Số Hiệu Lô Sản Xuất (Batch Code) <span class="text-danger">*</span></label>
+                            <input type="text" id="maLo" th:field="*{maLo}" class="form-control font-monospace"
+                                   placeholder="Ví dụ: LO-2026-X01" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="soLuongNhap" class="form-label fw-semibold">Số Lượng Nhập (Liều) <span class="text-danger">*</span></label>
+                            <input type="number" id="soLuongNhap" th:field="*{soLuongNhap}" class="form-control"
+                                   min="1" placeholder="100" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="hanSuDung" class="form-label fw-semibold">Hạn Sử Dụng (Expiry Date) <span class="text-danger">*</span></label>
+                            <input type="date" id="hanSuDung" th:field="*{hanSuDung}" class="form-control" required>
+                        </div>
+
+                        <div class="col-12 mt-4 pt-3 border-top d-flex gap-2 justify-content-end">
+                            <a th:href="@{/vaccines}" class="btn btn-outline-secondary px-4">Hủy Bỏ</a>
+                            <button type="submit" class="btn btn-danger px-4 fw-semibold shadow-sm">
+                                <i class="bi bi-box-arrow-in-down me-1"></i> Xác Nhận Nhập Kho
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

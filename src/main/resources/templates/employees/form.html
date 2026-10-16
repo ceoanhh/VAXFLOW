@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${isEdit ? 'Chỉnh Sửa Nhân Viên - VaxFlow' : 'Thêm Nhân Viên Mới - VaxFlow'}">Quản Lý Nhân Sự</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Top Header & Breadcrumb -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}" class="text-decoration-none">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/employees}" class="text-decoration-none">Nhân Sự</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"
+                            th:text="${isEdit ? 'Chỉnh Sửa Hồ Sơ' : 'Thêm Mới'}">Thêm Mới</li>
+                    </ol>
+                </nav>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i th:class="${isEdit ? 'bi bi-pencil-square text-primary me-2' : 'bi bi-person-plus-fill text-primary me-2'}"></i>
+                    <span th:text="${isEdit ? 'Chỉnh Sửa Hồ Sơ Nhân Viên' : 'Tiếp Nhận Nhân Viên Mới'}">Hồ Sơ Nhân Sự</span>
+                </h3>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a th:href="@{/employees}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 p-md-5">
+                <form th:action="@{/employees/save}" th:object="${employee}" method="post">
+                    <!-- Hidden ID -->
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="row g-4">
+                        <!-- THÔNG TIN CƠ BẢN -->
+                        <div class="col-12">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-person-lines-fill me-2"></i>1. Thông Tin Định Danh & Cá Nhân
+                            </h5>
+                        </div>
+
+                        <!-- Mã nhân sự -->
+                        <div class="col-md-4">
+                            <label for="maNhanSu" class="form-label fw-semibold">Mã Nhân Sự <span class="text-danger">*</span></label>
+                            <input type="text" id="maNhanSu" th:field="*{maNhanSu}" class="form-control font-monospace"
+                                   placeholder="Ví dụ: NV-005" required>
+                            <div class="form-text small">Mã định danh duy nhất trong toàn hệ thống.</div>
+                        </div>
+
+                        <!-- Họ và tên -->
+                        <div class="col-md-5">
+                            <label for="hoVaTen" class="form-label fw-semibold">Họ Và Tên <span class="text-danger">*</span></label>
+                            <input type="text" id="hoVaTen" th:field="*{hoVaTen}" class="form-control"
+                                   placeholder="Nguyễn Văn A" required>
+                        </div>
+
+                        <!-- CCCD -->
+                        <div class="col-md-3">
+                            <label for="cccd" class="form-label fw-semibold">Số CCCD / CMND <span class="text-danger">*</span></label>
+                            <input type="text" id="cccd" th:field="*{cccd}" class="form-control font-monospace"
+                                   placeholder="12 chữ số" required maxlength="20">
+                        </div>
+
+                        <!-- Ngày sinh -->
+                        <div class="col-md-4">
+                            <label for="ngaySinh" class="form-label fw-semibold">Ngày Sinh <span class="text-danger">*</span></label>
+                            <input type="date" id="ngaySinh" th:field="*{ngaySinh}" class="form-control" required>
+                        </div>
+
+                        <!-- Giới tính -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Giới Tính <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-4 pt-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="genderMale"
+                                           th:field="*{gioiTinh}" value="MALE" checked>
+                                    <label class="form-check-label" for="genderMale">
+                                        <i class="bi bi-gender-male text-primary me-1"></i> Nam
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="genderFemale"
+                                           th:field="*{gioiTinh}" value="FEMALE">
+                                    <label class="form-check-label" for="genderFemale">
+                                        <i class="bi bi-gender-female text-danger me-1"></i> Nữ
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SĐT -->
+                        <div class="col-md-4">
+                            <label for="sdt" class="form-label fw-semibold">Số Điện Thoại <span class="text-danger">*</span></label>
+                            <input type="text" id="sdt" th:field="*{sdt}" class="form-control"
+                                   placeholder="0901234567" required maxlength="20">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label for="email" class="form-label fw-semibold">Email Công Việc</label>
+                            <input type="email" id="email" th:field="*{email}" class="form-control"
+                                   placeholder="ten.nhanvien@vaxflow.vn">
+                        </div>
+
+                        <!-- Địa chỉ -->
+                        <div class="col-md-6">
+                            <label for="diaChi" class="form-label fw-semibold">Địa Chỉ Thường Trú</label>
+                            <input type="text" id="diaChi" th:field="*{diaChi}" class="form-control"
+                                   placeholder="Số nhà, đường, phường/xã, quận/huyện...">
+                        </div>
+
+                        <!-- CÔNG TÁC & PHÒNG BAN -->
+                        <div class="col-12 mt-4">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-hospital me-2"></i>2. Vị Trí Công Tác & Chế Độ Đãi Ngộ
+                            </h5>
+                        </div>
+
+                        <!-- Chức vụ -->
+                        <div class="col-md-4">
+                            <label for="chucVu" class="form-label fw-semibold">Chức Vụ Chuyên Môn <span class="text-danger">*</span></label>
+                            <select id="chucVu" th:field="*{chucVu}" class="form-select" required>
+                                <option value="" disabled>-- Chọn chức vụ --</option>
+                                <option value="DOCTOR">Bác Sĩ (DOCTOR)</option>
+                                <option value="NURSE">Điều Dưỡng (NURSE)</option>
+                                <option value="STAFF">Nhân Viên Y Tế / Dược Sĩ (STAFF)</option>
+                                <option value="MANAGER">Quản Lý / Trưởng Bộ Phận (MANAGER)</option>
+                            </select>
+                        </div>
+
+                        <!-- Phòng ban -->
+                        <div class="col-md-4">
+                            <label for="phongBanSelect" class="form-label fw-semibold">Phòng Ban Trực Thuộc <span class="text-danger">*</span></label>
+                            <select id="phongBanSelect" name="departmentId" class="form-select" required>
+                                <option value="" disabled>-- Chọn phòng ban --</option>
+                                <option th:each="dept : ${departments}"
+                                        th:value="${dept.id}"
+                                        th:text="${dept.ten}"
+                                        th:selected="${employee.idPhongBan != null and employee.idPhongBan == dept.id}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Ngày vào làm -->
+                        <div class="col-md-4">
+                            <label for="ngayVaoLam" class="form-label fw-semibold">Ngày Vào Làm <span class="text-danger">*</span></label>
+                            <input type="date" id="ngayVaoLam" th:field="*{ngayVaoLam}" class="form-control" required>
+                        </div>
+
+                        <!-- Lương cứng -->
+                        <div class="col-md-6">
+                            <label for="luongCung" class="form-label fw-semibold">Mức Lương Cứng (VNĐ) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" id="luongCung" th:field="*{luongCung}" class="form-control font-monospace"
+                                       placeholder="15000000" min="0" step="100000" required>
+                                <span class="input-group-text bg-light">VNĐ / tháng</span>
+                            </div>
+                        </div>
+
+                        <!-- Nút lưu & Hủy -->
+                        <div class="col-12 mt-4 pt-3 border-top d-flex gap-2 justify-content-end">
+                            <a th:href="@{/employees}" class="btn btn-outline-secondary px-4 fw-semibold">
+                                <i class="bi bi-x-circle me-1"></i> Hủy Bỏ
+                            </a>
+                            <button type="submit" class="btn btn-vf-primary px-4 fw-semibold shadow-sm">
+                                <i class="bi bi-check2-circle me-1"></i>
+                                <span th:text="${isEdit ? 'Cập Nhật Hồ Sơ' : 'Lưu Nhân Viên Mới'}">Lưu Thông Tin</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
