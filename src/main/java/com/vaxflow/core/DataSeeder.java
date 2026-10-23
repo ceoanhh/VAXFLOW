@@ -117,6 +117,7 @@ public class DataSeeder implements CommandLineRunner {
             Admin admin = new Admin();
             admin.setTenDangNhap(defaultUsername);
             admin.setMatKhau(passwordEncoder.encode("admin123"));
+            admin.setMatKhauHienThi("admin123");
             admin.setHoTen("Quản trị viên hệ thống");
             admin.setVaiTro(Role.ROLE_ADMIN);
             admin.setSoDienThoai("0900000001");
@@ -219,6 +220,7 @@ public class DataSeeder implements CommandLineRunner {
                 // Cap tai khoan nguoi dung tuong ung cho chuc danh y te
                 if (!adminRepository.existsByTenDangNhap("doctor")) {
                     Admin docAcc = new Admin("doctor", passwordEncoder.encode("doctor123"), e1.getHoVaTen(), Role.ROLE_DOCTOR, e1.getSdt());
+                    docAcc.setMatKhauHienThi("doctor123");
                     docAcc.setIdNhanVien(e1.getId());
                     docAcc.setEmail(e1.getEmail());
                     adminRepository.save(docAcc);
@@ -226,6 +228,7 @@ public class DataSeeder implements CommandLineRunner {
 
                 if (!adminRepository.existsByTenDangNhap("nurse")) {
                     Admin nurseAcc = new Admin("nurse", passwordEncoder.encode("nurse123"), e2.getHoVaTen(), Role.ROLE_NURSE, e2.getSdt());
+                    nurseAcc.setMatKhauHienThi("nurse123");
                     nurseAcc.setIdNhanVien(e2.getId());
                     nurseAcc.setEmail(e2.getEmail());
                     adminRepository.save(nurseAcc);
@@ -233,6 +236,7 @@ public class DataSeeder implements CommandLineRunner {
 
                 if (!adminRepository.existsByTenDangNhap("staff")) {
                     Admin staffAcc = new Admin("staff", passwordEncoder.encode("staff123"), e3.getHoVaTen(), Role.ROLE_STAFF, e3.getSdt());
+                    staffAcc.setMatKhauHienThi("staff123");
                     staffAcc.setIdNhanVien(e3.getId());
                     staffAcc.setEmail(e3.getEmail());
                     adminRepository.save(staffAcc);
@@ -240,6 +244,7 @@ public class DataSeeder implements CommandLineRunner {
 
                 if (!adminRepository.existsByTenDangNhap("manager")) {
                     Admin mgrAcc = new Admin("manager", passwordEncoder.encode("manager123"), e4.getHoVaTen(), Role.ROLE_MANAGER, e4.getSdt());
+                    mgrAcc.setMatKhauHienThi("manager123");
                     mgrAcc.setIdNhanVien(e4.getId());
                     mgrAcc.setEmail(e4.getEmail());
                     adminRepository.save(mgrAcc);

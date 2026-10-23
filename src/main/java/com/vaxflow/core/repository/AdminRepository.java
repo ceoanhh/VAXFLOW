@@ -17,7 +17,13 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     boolean existsBySoDienThoai(String soDienThoai);
 
-    // boolean existsByEmail(String Email); sau do vao AdminService them dieu kien
+    Optional<Admin> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByEmailAndIdNot(String email, Long id);
+
+    Optional<Admin> findByResetToken(String resetToken);
 
     boolean existsBySoDienThoaiAndIdNot(String soDienThoai, Long id);
 

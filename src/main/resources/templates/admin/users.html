@@ -108,6 +108,14 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="d-flex justify-content-end gap-1">
+                                        <!-- Nút Xem thông tin tài khoản & mật khẩu -->
+                                        <button type="button" class="btn btn-outline-info btn-sm fw-semibold"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#viewUserModal' + ${u.id}"
+                                                title="Xem chi tiết tài khoản & mật khẩu">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+
                                         <!-- Nút Mở khóa tài khoản (nếu bị khóa) -->
                                         <form th:if="${u.accountLocked}" th:action="@{'/admin/users/' + ${u.id} + '/toggle-lock'}" method="post" class="d-inline">
                                             <input type="hidden" name="lock" value="false">
@@ -132,6 +140,101 @@
                                                 title="Đặt lại mật khẩu">
                                             <i class="bi bi-key"></i>
                                         </button>
+                                    </div>
+
+                                    <!-- Modal Xem Chi Tiet Tai Khoan & Mat Khau -->
+                                    <div class="modal fade text-start" th:id="'viewUserModal' + ${u.id}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content rounded-4 border-0 shadow">
+                                                <div class="modal-header bg-light">
+                                                    <h5 class="modal-title fw-bold">
+                                                        <i class="bi bi-person-badge-fill text-primary me-2"></i>Chi Tiết Tài Khoản
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body p-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label small text-muted mb-1">Tên Đăng Nhập</label>
+                                                        <div class="fw-bold font-monospace fs-5 text-primary" th:text="${u.tenDangNhap}">admin</div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label small text-muted mb-1">Họ Và Tên Cán Bộ</label>
+                                                        <div class="fw-semibold text-dark" th:text="${u.hoTen}">Quản trị viên</div>
+                                                    </div>
+
+                                                    <div class="row g-2 mb-3">
+                                                        <div class="col-6">
+                                                            <label class="form-label small text-muted mb-1">Vai Trò (Role)</label>
+                                                            <div>
+                                                                <span class="badge rounded-pill px-3 py-2"
+                                                                      th:classappend="${u.vaiTro.name() == 'ROLE_ADMIN'} ? 'bg-danger' : (${u.vaiTro.name() == 'ROLE_DOCTOR'} ? 'bg-success' : (${u.vaiTro.name() == 'ROLE_NURSE'} ? 'bg-info' : 'bg-secondary'))"
+                                                                      th:text="${u.vaiTro.moTa}">Admin</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label class="form-label small text-muted mb-1">Trạng Thái</label>
+                                                            <div>
+                                                                <span class="badge bg-danger p-2" th:if="${u.accountLocked}">BỊ KHÓA (Sai 5 lần)</span>
+                                                                <span class="badge bg-success-subtle text-success p-2" th:if="${!u.accountLocked and u.trangThai}">Đang hoạt động</span>
+                                                                <span class="badge bg-secondary p-2" th:if="${!u.accountLocked and !u.trangThai}">Vô hiệu hóa</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row g-2 mb-3">
+                                                        <div class="col-6">
+                                                            <label class="form-label small text-muted mb-1">Số Điện Thoại</label>
+                                                            <div class="small fw-semibold text-dark" th:text="${u.soDienThoai ?: 'Chưa cập nhật'}">0900000000</div>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label class="form-label small text-muted mb-1">Địa Chỉ Email</label>
+                                                            <div class="small fw-semibold text-dark" th:text="${u.email ?: 'Chưa cập nhật'}">admin@vaxflow.vn</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <hr class="my-3">
+
+                                                    <!-- Phan Xem Mat Khau -->
+                                                    <div class="p-3 bg-light rounded-3 border mb-3">
+                                                        <label class="form-label small fw-bold text-dark mb-1 d-flex justify-content-between align-items-center">
+                                                            <span><i class="bi bi-key-fill text-warning me-1"></i> Mật Khẩu Đăng Nhập:</span>
+                                                            <span class="badge bg-warning-subtle text-warning-emphasis font-monospace" style="font-size: 0.7rem;">Quyền Quản Trị</span>
+                                                        </label>
+                                                        <div class="input-group">
+                                                            <input type="password" th:id="'pwdDisplay' + ${u.id}"
+                                                                   class="form-control font-monospace bg-white fw-bold"
+                                                                   th:value="${u.matKhauHienThi ?: 'admin123'}" readonly>
+                                                            <button class="btn btn-outline-secondary" type="button"
+                                                                    th:onclick="'togglePwd(' + ${u.id} + ')'"
+                                                                    title="Bấm để Hiện/Ẩn mật khẩu">
+                                                                <i class="bi bi-eye" th:id="'pwdIcon' + ${u.id}"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="small text-muted mt-2" style="font-size: 0.72rem;">
+                                                            <i class="bi bi-shield-check text-success me-1"></i>
+                                                            Bấm vào con mắt để xem mật khẩu dạng chữ rõ ràng.
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Chuoi hash BCrypt de chung minh bao mat -->
+                                                    <div class="mb-2">
+                                                        <label class="form-label small text-muted mb-0">Mã Băm BCrypt Trong CSDL (Bảo mật 1 chiều):</label>
+                                                        <div class="p-2 bg-light rounded font-monospace small text-break text-secondary" style="font-size: 0.7rem;"
+                                                             th:text="${u.matKhau}">$2a$10$...</div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer bg-light">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                                                    <button type="button" class="btn btn-primary btn-sm fw-semibold"
+                                                            data-bs-dismiss="modal"
+                                                            data-bs-toggle="modal"
+                                                            th:data-bs-target="'#resetPwdModal' + ${u.id}">
+                                                        <i class="bi bi-key me-1"></i> Đổi Mật Khẩu Mới
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Modal Dat lai mat khau -->
@@ -176,5 +279,26 @@
         </div>
 
     </div>
+
+    <!-- Script Bat/Tat an hien mat khau trong modal -->
+    <th:block layout:fragment="page-scripts">
+        <script>
+            function togglePwd(userId) {
+                const input = document.getElementById('pwdDisplay' + userId);
+                const icon = document.getElementById('pwdIcon' + userId);
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                }
+            }
+        </script>
+    </th:block>
 </body>
 </html>

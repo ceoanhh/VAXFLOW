@@ -53,6 +53,17 @@ public class Admin extends BaseEntity {
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
+    // Mat khau hien thi de Admin co the xem chi tiet trong muc phan quyen
+    @Column(name = "mat_khau_hien_thi")
+    private String matKhauHienThi;
+
+    // Khoi phuc mat khau qua Email
+    @Column(name = "reset_token", length = 50)
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
     public Admin() {
     }
 
@@ -177,5 +188,29 @@ public class Admin extends BaseEntity {
 
     public void setLastLoginAt(LocalDateTime lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public String getMatKhauHienThi() {
+        return matKhauHienThi;
+    }
+
+    public void setMatKhauHienThi(String matKhauHienThi) {
+        this.matKhauHienThi = matKhauHienThi;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 }
