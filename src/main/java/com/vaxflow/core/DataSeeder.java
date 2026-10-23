@@ -1,6 +1,7 @@
 package com.vaxflow.core;
 
 import com.vaxflow.core.entity.Admin;
+import com.vaxflow.core.entity.Role;
 import com.vaxflow.core.entity.HoSo;
 import com.vaxflow.core.entity.KhachHang;
 import com.vaxflow.core.entity.LichSuTiem;
@@ -117,9 +118,15 @@ public class DataSeeder implements CommandLineRunner {
             admin.setTenDangNhap(defaultUsername);
             admin.setMatKhau(passwordEncoder.encode("admin123"));
             admin.setHoTen("Quản trị viên hệ thống");
+            admin.setVaiTro(Role.ROLE_ADMIN);
+            admin.setSoDienThoai("0900000001");
+            admin.setEmail("admin@vaxflow.vn");
             admin.setTrangThai(true);
+            admin.setAccountLocked(false);
+            admin.setFailedAttempts(0);
+            admin.setNgayDoiMatKhau(LocalDateTime.now());
             adminRepository.save(admin);
-            log.info(">>> [He Thong] Da tao tai khoan Admin: admin / admin123");
+            log.info(">>> [He Thong] Da tao tai khoan Admin: admin / admin123 (ROLE_ADMIN)");
         }
     }
 
@@ -209,10 +216,40 @@ public class DataSeeder implements CommandLineRunner {
                 e4.setPhongBan(d3);
                 employeeRepository.save(e4);
 
-                log.info(">>> [Nhan Su] Da khoi tao 4 phong ban va 4 nhan su y te mau");
+                // Cap tai khoan nguoi dung tuong ung cho chuc danh y te
+                if (!adminRepository.existsByTenDangNhap("doctor")) {
+                    Admin docAcc = new Admin("doctor", passwordEncoder.encode("doctor123"), e1.getHoVaTen(), Role.ROLE_DOCTOR, e1.getSdt());
+                    docAcc.setIdNhanVien(e1.getId());
+                    docAcc.setEmail(e1.getEmail());
+                    adminRepository.save(docAcc);
+                }
+
+                if (!adminRepository.existsByTenDangNhap("nurse")) {
+                    Admin nurseAcc = new Admin("nurse", passwordEncoder.encode("nurse123"), e2.getHoVaTen(), Role.ROLE_NURSE, e2.getSdt());
+                    nurseAcc.setIdNhanVien(e2.getId());
+                    nurseAcc.setEmail(e2.getEmail());
+                    adminRepository.save(nurseAcc);
+                }
+
+                if (!adminRepository.existsByTenDangNhap("staff")) {
+                    Admin staffAcc = new Admin("staff", passwordEncoder.encode("staff123"), e3.getHoVaTen(), Role.ROLE_STAFF, e3.getSdt());
+                    staffAcc.setIdNhanVien(e3.getId());
+                    staffAcc.setEmail(e3.getEmail());
+                    adminRepository.save(staffAcc);
+                }
+
+                if (!adminRepository.existsByTenDangNhap("manager")) {
+                    Admin mgrAcc = new Admin("manager", passwordEncoder.encode("manager123"), e4.getHoVaTen(), Role.ROLE_MANAGER, e4.getSdt());
+                    mgrAcc.setIdNhanVien(e4.getId());
+                    mgrAcc.setEmail(e4.getEmail());
+                    adminRepository.save(mgrAcc);
+                }
+
+                log.info(">>> [Nhan Su] Da khoi tao 4 phong ban, 4 nhan su y te va 4 tai khoan dang nhap theo Role");
             }
         }
     }
+
 
     /**
      * Khoi tao danh muc vac xin va cac lo hang kho duoc GSP

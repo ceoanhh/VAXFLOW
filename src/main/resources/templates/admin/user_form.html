@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Cấp Tài Khoản Mới - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1 rounded-2">Phân Hệ Quản Trị</span>
+                    <span class="text-muted small">| Cấp Quyền & Tài Khoản Cán Bộ</span>
+                </div>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-person-plus-fill text-primary me-2"></i>Cấp Tài Khoản Người Dùng Mới
+                </h3>
+            </div>
+            <div>
+                <a th:href="@{/admin/users}" class="btn btn-outline-secondary btn-sm shadow-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <form th:action="@{/admin/users/new}" method="post">
+
+                        <!-- Chon nhan su lien ket (neu co) -->
+                        <div class="mb-4 p-3 bg-light rounded-3 border">
+                            <label class="form-label fw-bold text-dark mb-1">
+                                <i class="bi bi-hospital text-info me-1"></i> Liên Kết Hồ Sơ Nhân Sự Y Tế (Tùy chọn)
+                            </label>
+                            <p class="text-muted small mb-2">Chọn nhân viên để hệ thống tự động đồng bộ họ tên, số điện thoại và email.</p>
+                            <select id="employeeSelect" name="idNhanVien" class="form-select">
+                                <option value="">-- Không liên kết (Tài khoản quản trị độc lập) --</option>
+                                <option th:each="emp : ${employees}"
+                                        th:value="${emp.id}"
+                                        th:data-name="${emp.hoVaTen}"
+                                        th:data-phone="${emp.sdt}"
+                                        th:data-email="${emp.email}"
+                                        th:data-role="${emp.chucVu.name()}"
+                                        th:text="${emp.maNhanSu + ' - ' + emp.hoVaTen + ' (' + emp.chucVu.name() + ')'}">
+                                    NV-001 - BS. Nguyễn Văn An
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-secondary">Tên Đăng Nhập (Username) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="tenDangNhap" class="form-control" placeholder="vd: bsan, dieuduongmai..." required>
+                                </div>
+                                <div class="form-text small text-muted">Duy nhất, không dấu và không trùng lặp.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-secondary">Mật Khẩu Khởi Tạo <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-key"></i></span>
+                                    <input type="password" name="matKhau" class="form-control" placeholder="Tối thiểu 6 ký tự..." required minlength="6">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-secondary">Họ Và Tên Cán Bộ <span class="text-danger">*</span></label>
+                                <input type="text" id="hoTenInput" name="hoTen" class="form-control" placeholder="vd: BS. Nguyễn Văn An" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-secondary">Vai Trò Phân Quyền (Role) <span class="text-danger">*</span></label>
+                                <select id="vaiTroSelect" name="vaiTro" class="form-select" required>
+                                    <option th:each="r : ${roles}" th:value="${r}" th:text="${r.moTa + ' (' + r.name() + ')'}"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-secondary">Số Điện Thoại (Duy nhất)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-telephone"></i></span>
+                                    <input type="text" id="phoneInput" name="soDienThoai" class="form-control" placeholder="vd: 0901234567">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-secondary">Địa Chỉ Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" id="emailInput" name="email" class="form-control" placeholder="vd: an.nguyen@vaxflow.vn">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a th:href="@{/admin/users}" class="btn btn-light px-4">Hủy Bỏ</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">
+                                <i class="bi bi-check2-circle me-1"></i> Cấp Tài Khoản
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script tu dong dien thong tin khi chon nhan vien -->
+    <th:block layout:fragment="page-scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const empSelect = document.getElementById('employeeSelect');
+                const hoTenInput = document.getElementById('hoTenInput');
+                const phoneInput = document.getElementById('phoneInput');
+                const emailInput = document.getElementById('emailInput');
+                const vaiTroSelect = document.getElementById('vaiTroSelect');
+
+                if (empSelect) {
+                    empSelect.addEventListener('change', function () {
+                        const selectedOption = this.options[this.selectedIndex];
+                        if (this.value) {
+                            hoTenInput.value = selectedOption.getAttribute('data-name') || '';
+                            phoneInput.value = selectedOption.getAttribute('data-phone') || '';
+                            emailInput.value = selectedOption.getAttribute('data-email') || '';
+
+                            const role = selectedOption.getAttribute('data-role');
+                            if (role === 'DOCTOR') vaiTroSelect.value = 'ROLE_DOCTOR';
+                            else if (role === 'NURSE') vaiTroSelect.value = 'ROLE_NURSE';
+                            else if (role === 'MANAGER') vaiTroSelect.value = 'ROLE_MANAGER';
+                            else if (role === 'STAFF') vaiTroSelect.value = 'ROLE_STAFF';
+                        }
+                    });
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html>

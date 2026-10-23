@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Quản Lý Tài Khoản Người Dùng - VaxFlow Admin</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-danger-subtle text-danger fw-semibold px-2 py-1 rounded-2">Phân Hệ Quản Trị</span>
+                    <span class="text-muted small">| Tài Khoản & Phân Quyền Hệ Thống</span>
+                </div>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-shield-lock-fill text-primary me-2"></i>Danh Sách Tài Khoản Người Dùng
+                </h3>
+            </div>
+            <div class="d-flex gap-2 mt-3 mt-md-0">
+                <a th:href="@{/admin/audit-logs}" class="btn btn-outline-secondary btn-sm shadow-sm fw-semibold">
+                    <i class="bi bi-journal-text me-1"></i> Nhật Ký Hoạt Động
+                </a>
+                <a th:href="@{/admin/users/new}" class="btn btn-primary btn-sm shadow-sm fw-semibold">
+                    <i class="bi bi-person-plus-fill me-1"></i> Cấp Tài Khoản Mới
+                </a>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">
+                    Tài Khoản Hoạt Động (<span th:text="${users.size()}">0</span>)
+                </h5>
+                <span class="badge bg-light text-secondary border small p-2">
+                    <i class="bi bi-shield-check me-1 text-success"></i> Tự động khóa sau 5 lần nhập sai
+                </span>
+            </div>
+            <div class="card-body px-0 pb-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-muted small text-uppercase">
+                            <tr>
+                                <th class="ps-4" style="width: 50px;">STT</th>
+                                <th>Tên Đăng Nhập</th>
+                                <th>Họ Và Tên</th>
+                                <th>Vai Trò (Role)</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Trạng Thái Bảo Mật</th>
+                                <th>Lần Đăng Nhập Cuối</th>
+                                <th class="text-end pe-4" style="width: 200px;">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${users.isEmpty()}">
+                                <td colspan="8" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                                    Chưa có tài khoản nào được tạo.
+                                </td>
+                            </tr>
+                            <tr th:each="u, stat : ${users}">
+                                <td class="ps-4 text-muted fw-semibold" th:text="${stat.count}">1</td>
+                                <td>
+                                    <span class="fw-bold font-monospace text-primary" th:text="${u.tenDangNhap}">admin</span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark" th:text="${u.hoTen}">Quản trị viên</div>
+                                    <small class="text-muted" th:text="${u.email ?: 'Chưa có email'}">email@vaxflow.vn</small>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2"
+                                          th:classappend="${u.vaiTro.name() == 'ROLE_ADMIN'} ? 'bg-danger' : (${u.vaiTro.name() == 'ROLE_DOCTOR'} ? 'bg-success' : (${u.vaiTro.name() == 'ROLE_NURSE'} ? 'bg-info' : 'bg-secondary'))"
+                                          th:text="${u.vaiTro.moTa}">
+                                        Quản trị viên
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:text="${u.soDienThoai ?: '—'}">0900000000</span>
+                                </td>
+                                <td>
+                                    <div th:if="${u.accountLocked}">
+                                        <span class="badge bg-danger p-2 mb-1">
+                                            <i class="bi bi-lock-fill me-1"></i> ĐÃ BỊ KHÓA
+                                        </span>
+                                        <div class="small text-danger fw-semibold" style="font-size: 0.75rem;">
+                                            Sai 5 lần liên tiếp
+                                        </div>
+                                    </div>
+                                    <div th:unless="${u.accountLocked}">
+                                        <span class="badge bg-success-subtle text-success p-2" th:if="${u.trangThai}">
+                                            <i class="bi bi-check-circle-fill me-1"></i> Bình thường
+                                        </span>
+                                        <span class="badge bg-secondary p-2" th:unless="${u.trangThai}">
+                                            Vô hiệu hóa
+                                        </span>
+                                        <div th:if="${u.failedAttempts > 0}" class="small text-warning-emphasis mt-1" style="font-size: 0.75rem;">
+                                            <i class="bi bi-exclamation-triangle"></i> Đã sai: <strong th:text="${u.failedAttempts}">0</strong>/5 lần
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <small class="text-muted" th:text="${u.lastLoginAt != null ? #temporals.format(u.lastLoginAt, 'dd/MM/yyyy HH:mm') : 'Chưa đăng nhập'}">
+                                        N/A
+                                    </small>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="d-flex justify-content-end gap-1">
+                                        <!-- Nút Mở khóa tài khoản (nếu bị khóa) -->
+                                        <form th:if="${u.accountLocked}" th:action="@{'/admin/users/' + ${u.id} + '/toggle-lock'}" method="post" class="d-inline">
+                                            <input type="hidden" name="lock" value="false">
+                                            <button type="submit" class="btn btn-warning btn-sm fw-bold shadow-sm" title="Mở khóa tài khoản và reset lần sai">
+                                                <i class="bi bi-unlock-fill me-1"></i> Mở Khóa
+                                            </button>
+                                        </form>
+
+                                        <!-- Nút Khóa tài khoản chủ động (nếu chưa khóa và không phải tài khoản hiện tại) -->
+                                        <form th:if="${!u.accountLocked and u.tenDangNhap != #authentication.name}" th:action="@{'/admin/users/' + ${u.id} + '/toggle-lock'}" method="post" class="d-inline"
+                                              onsubmit="return confirm('Bạn có chắc muốn khóa tài khoản này?');">
+                                            <input type="hidden" name="lock" value="true">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Khóa tài khoản">
+                                                <i class="bi bi-lock"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Nút Đặt lại mật khẩu (Modal Trigger) -->
+                                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#resetPwdModal' + ${u.id}"
+                                                title="Đặt lại mật khẩu">
+                                            <i class="bi bi-key"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Modal Dat lai mat khau -->
+                                    <div class="modal fade text-start" th:id="'resetPwdModal' + ${u.id}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content rounded-4 border-0 shadow">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title fw-bold">
+                                                        <i class="bi bi-key-fill text-warning me-2"></i>Đặt Lại Mật Khẩu
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form th:action="@{'/admin/users/' + ${u.id} + '/reset-password'}" method="post">
+                                                    <div class="modal-body p-4">
+                                                        <p class="text-muted small">
+                                                            Đặt lại mật khẩu mới cho tài khoản: <strong class="text-dark" th:text="${u.tenDangNhap}">admin</strong>
+                                                        </p>
+                                                        <div class="mb-3">
+                                                            <label class="form-label small fw-semibold">Mật khẩu mới</label>
+                                                            <input type="password" name="newPassword" class="form-control" placeholder="Tối thiểu 6 ký tự..." required minlength="6">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                                                        <button type="submit" class="btn btn-primary fw-bold">Xác Nhận Đặt Lại</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between text-muted small">
+                <span>Hệ Thống Phân Quyền VaxFlow RBAC</span>
+                <span>An toàn thông tin & Kiểm soát truy cập y tế</span>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -81,19 +81,34 @@
                 </div>
             </a>
 
-            <!-- User Session & Logout -->
+            <!-- Search Quick Button (Ctrl+K Command Palette) & User Session -->
             <div class="d-flex align-items-center gap-3">
+
+                <!-- Nut tim kiem toan cuc (Ctrl+K) -->
+                <button type="button" class="btn btn-light border btn-sm d-none d-sm-flex align-items-center gap-2 text-muted px-3"
+                        data-bs-toggle="modal" data-bs-target="#globalSearchModal" title="Tìm nhanh chức năng hệ thống (Phím tắt: Ctrl + K)">
+                    <i class="bi bi-search"></i>
+                    <span class="small">Tìm nhanh...</span>
+                    <span class="badge bg-secondary-subtle text-secondary font-monospace" style="font-size: 0.7rem;">Ctrl+K</span>
+                </button>
+
+                <!-- User Session -> Nhan vao de vao trang Profile & Doi mat khau -->
                 <div class="d-flex align-items-center gap-2" sec:authorize="isAuthenticated()">
-                    <div class="rounded-circle bg-light border p-2 text-primary d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                        <i class="bi bi-person-fill fs-5"></i>
-                    </div>
-                    <div class="d-none d-md-block text-start">
-                        <div class="fw-bold small text-dark" sec:authentication="name">Admin</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">Quản trị viên y tế</div>
-                    </div>
+                    <a th:href="@{/profile}" class="d-flex align-items-center gap-2 text-decoration-none text-dark" title="Xem hồ sơ & Đổi mật khẩu">
+                        <div class="rounded-circle bg-light border p-2 text-primary d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                            <i class="bi bi-person-fill fs-5"></i>
+                        </div>
+                        <div class="d-none d-md-block text-start">
+                            <div class="fw-bold small text-dark" sec:authentication="name">Admin</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">
+                                <i class="bi bi-gear-fill me-1 text-primary"></i>Hồ sơ & Đổi MK
+                            </div>
+                        </div>
+                    </a>
                 </div>
 
-                <form th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
+                <!-- Nut Dang Xuat -->
+                <form id="globalLogoutForm" th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
                     <button type="submit" class="btn btn-outline-danger btn-sm px-3 fw-semibold">
                         <i class="bi bi-box-arrow-right me-1"></i> Đăng Xuất
                     </button>
@@ -105,7 +120,7 @@
     <!-- WRAPPER: SIDEBAR + CONTENT -->
     <div class="d-flex admin-layout-wrapper">
 
-        <!-- SIDEBAR (Khung dieu huong chung cho 5 thanh vien) -->
+        <!-- SIDEBAR (Phan quyen RBAC cho cac menu) -->
         <aside class="admin-sidebar p-3" sec:authorize="isAuthenticated()">
             <div class="text-uppercase small fw-bold text-muted px-3 mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
                 Phân Hệ Quản Trị
@@ -118,37 +133,56 @@
                     <span>Tổng Quan (Dashboard)</span>
                 </a>
 
-                <!-- Khach hang & Tiem chung -->
-                <a th:href="@{/customers}" class="admin-nav-item">
+                <!-- Khach hang & Tiem chung: Bac si, dieu duong, nhan vien, quan ly, admin -->
+                <a th:href="@{/customers}" class="admin-nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_DOCTOR', 'ROLE_NURSE', 'ROLE_STAFF')">
                     <i class="bi bi-people-fill fs-5 text-success"></i>
                     <span>Hồ Sơ Khách Hàng</span>
                 </a>
 
-                <!-- Hoa don & Thanh toan -->
-                <a th:href="@{/invoices}" class="admin-nav-item">
+                <!-- Hoa don & Thanh toan: Thu ngan, quan ly, admin -->
+                <a th:href="@{/invoices}" class="admin-nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_STAFF')">
                     <i class="bi bi-receipt fs-5 text-warning"></i>
                     <span>Hóa Đơn & Thu Phí</span>
                 </a>
 
-                <!-- Nhan vien & Phong ban -->
-                <a th:href="@{/employees}" class="admin-nav-item">
+                <!-- Nhan vien & Phong ban: Quan ly, admin -->
+                <a th:href="@{/employees}" class="admin-nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
                     <i class="bi bi-hospital fs-5 text-info"></i>
                     <span>Quản Lý Nhân Sự</span>
                 </a>
 
-                <!-- Vac xin & Kho -->
-                <a th:href="@{/vaccines}" class="admin-nav-item">
+                <!-- Vac xin & Kho: Duoc si, bac si, quan ly, admin -->
+                <a th:href="@{/vaccines}" class="admin-nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_STAFF', 'ROLE_DOCTOR')">
                     <i class="bi bi-capsule fs-5 text-danger"></i>
                     <span>Kho Dược & Vắc Xin</span>
+                </a>
+
+                <!-- Quan tri tai khoan: Chi danh cho ADMIN -->
+                <div class="text-uppercase small fw-bold text-muted px-3 mt-3 mb-2" sec:authorize="hasAuthority('ROLE_ADMIN')" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                    Bảo Mật & Quản Trị
+                </div>
+
+                <a th:href="@{/admin/users}" class="admin-nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <i class="bi bi-shield-lock-fill fs-5 text-dark"></i>
+                    <span>Tài Khoản & Phân Quyền</span>
+                </a>
+
+                <a th:href="@{/admin/audit-logs}" class="admin-nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <i class="bi bi-journal-text fs-5 text-secondary"></i>
+                    <span>Nhật Ký Hoạt Động</span>
                 </a>
             </nav>
 
             <div class="mt-4 pt-3 border-top px-3">
+                <a th:href="@{/profile}" class="btn btn-outline-primary btn-sm w-100 text-start d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-key-fill text-warning"></i>
+                    <span>Đổi Mật Khẩu Cá Nhân</span>
+                </a>
                 <div class="small text-muted mb-2" style="font-size: 0.8rem;">
                     <i class="bi bi-hospital me-1"></i> Hệ Thống VaxFlow Enterprise
                 </div>
                 <div class="badge bg-success-subtle text-success p-2 w-100 text-start">
-                    <i class="bi bi-shield-check me-1"></i> Chuẩn Bảo Mật Y Tế
+                    <i class="bi bi-shield-check me-1"></i> Tự đăng xuất sau 15' idle
                 </div>
             </div>
         </aside>
@@ -179,8 +213,173 @@
         </main>
     </div>
 
+    <!-- MODAL TÌM KIẾM TOÀN CỤC (GLOBAL COMMAND PALETTE - Phím tắt Ctrl + K) -->
+    <div class="modal fade" id="globalSearchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0 ps-0 text-muted"><i class="bi bi-search fs-5"></i></span>
+                        <input type="text" id="globalSearchInput" class="form-control border-0 fs-6 shadow-none" placeholder="Gõ tìm chức năng... (vd: khach hang, hoa don, nhan vien, kho, doi mat khau)">
+                    </div>
+                    <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2 px-3 pb-3">
+                    <div class="text-uppercase small fw-bold text-muted px-2 py-1" style="font-size: 0.75rem;">Điều hướng nhanh</div>
+                    <div class="list-group list-group-flush" id="globalSearchList">
+                        <a th:href="@{/dashboard}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-grid-1x2-fill text-primary fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Tổng Quan (Dashboard)</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Bảng điều khiển trung tâm vận hành</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/customers}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-people-fill text-success fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Hồ Sơ Khách Hàng</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Danh sách bệnh nhân & lịch sử tiêm</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/customers/new}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-person-plus-fill text-success fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Tiếp Đón Khách Hàng Mới</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Mở hồ sơ đăng ký tiêm chủng mới</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/invoices}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-receipt text-warning fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Hóa Đơn & Thu Phí</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Quản lý biên lai và thu ngân</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/invoices/create}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-receipt-cutoff text-warning fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Lập Hóa Đơn Mới</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Tạo hóa đơn từ hồ sơ tiêm</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/vaccines}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-capsule text-danger fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Kho Dược & Vắc Xin</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Quản lý vắc xin & lô hàng bảo quản GSP</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/employees}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-hospital text-info fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Quản Lý Nhân Sự</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Bác sĩ, điều dưỡng, phòng ban</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/profile}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2">
+                            <i class="bi bi-key-fill text-warning fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Hồ Sơ Cá Nhân & Đổi Mật Khẩu</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Cập nhật SĐT & đổi mật khẩu định kỳ</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/admin/users}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                            <i class="bi bi-shield-lock-fill text-dark fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Tài Khoản & Phân Quyền</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Cấp tài khoản theo vai trò & mở khóa</div>
+                            </div>
+                        </a>
+                        <a th:href="@{/admin/audit-logs}" class="list-group-item list-group-item-action border-0 rounded-3 d-flex align-items-center gap-3 py-2" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                            <i class="bi bi-journal-text text-secondary fs-5"></i>
+                            <div>
+                                <div class="fw-semibold small text-dark">Nhật Ký Hoạt Động (Audit Logs)</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Theo dõi lịch sử truy cập & bảo mật</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5.3.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SCRIPT 1: TỰ ĐỘNG ĐĂNG XUẤT SAU 15 PHÚT IDLE (Không thao tác chuột/phím) -->
+    <script sec:authorize="isAuthenticated()">
+        (function () {
+            let idleSeconds = 0;
+            const maxIdleSeconds = 15 * 60; // 15 phút = 900 giây
+
+            function resetIdleTimer() {
+                idleSeconds = 0;
+            }
+
+            // Ghi nhan moi thao tac tu nguoi dung de reset thoi gian nhan roi
+            window.addEventListener('mousemove', resetIdleTimer, { passive: true });
+            window.addEventListener('keydown', resetIdleTimer, { passive: true });
+            window.addEventListener('click', resetIdleTimer, { passive: true });
+            window.addEventListener('scroll', resetIdleTimer, { passive: true });
+            window.addEventListener('touchstart', resetIdleTimer, { passive: true });
+
+            setInterval(function () {
+                idleSeconds++;
+                if (idleSeconds >= maxIdleSeconds) {
+                    // Tu dong gui request dang xuat ve he thong
+                    const logoutForm = document.getElementById('globalLogoutForm');
+                    if (logoutForm) {
+                        logoutForm.submit();
+                    } else {
+                        window.location.href = '/logout';
+                    }
+                }
+            }, 1000);
+        })();
+    </script>
+
+    <!-- SCRIPT 2: PHÍM TẮT CTRL + K (CMD + K) & LỌC TÌM KIẾM NHANH TOÀN CỤC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Bat su kien phim tat Ctrl + K hoac Cmd + K tren Mac
+            document.addEventListener('keydown', function (e) {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                    e.preventDefault();
+                    const searchModalEl = document.getElementById('globalSearchModal');
+                    if (searchModalEl) {
+                        const modal = bootstrap.Modal.getOrCreateInstance(searchModalEl);
+                        modal.show();
+                    }
+                }
+            });
+
+            // Tu dong focus vao o input khi mo modal
+            const searchModalEl = document.getElementById('globalSearchModal');
+            const searchInput = document.getElementById('globalSearchInput');
+            if (searchModalEl && searchInput) {
+                searchModalEl.addEventListener('shown.bs.modal', function () {
+                    searchInput.focus();
+                });
+
+                // Loc danh sach chuc nang khi go chu
+                searchInput.addEventListener('input', function () {
+                    const filter = this.value.toLowerCase().trim();
+                    const items = document.querySelectorAll('#globalSearchList .list-group-item');
+                    items.forEach(function (item) {
+                        const text = item.textContent.toLowerCase();
+                        if (text.includes(filter)) {
+                            item.classList.remove('d-none');
+                            item.classList.add('d-flex');
+                        } else {
+                            item.classList.remove('d-flex');
+                            item.classList.add('d-none');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
     <th:block layout:fragment="page-scripts"></th:block>
 </body>
 </html>
