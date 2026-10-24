@@ -26,14 +26,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         Admin admin = adminRepository.findByTenDangNhap(tenDangNhap)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
-                                "Không tìm thấy tài khoản đăng nhập"
+                                "Không tìm thấy tài khoản: " + tenDangNhap
                         )
                 );
 
         return User.withUsername(admin.getTenDangNhap())
                 .password(admin.getMatKhau())
-                .roles("ADMIN")
+                .authorities(admin.getVaiTro().name())
                 .disabled(!admin.isTrangThai())
+                .accountLocked(admin.isAccountLocked())
                 .build();
     }
 }
