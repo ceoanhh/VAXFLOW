@@ -1,13 +1,13 @@
 package com.vaxflow.core;
 
 import com.vaxflow.core.entity.Admin;
-import com.vaxflow.core.entity.HoSo;
-import com.vaxflow.core.entity.KhachHang;
-import com.vaxflow.core.entity.LichSuTiem;
+import com.vaxflow.customer.entity.HoSo;
+import com.vaxflow.customer.entity.KhachHang;
+import com.vaxflow.customer.entity.LichSuTiem;
 import com.vaxflow.core.repository.AdminRepository;
-import com.vaxflow.core.repository.HoSoRepository;
-import com.vaxflow.core.repository.KhachHangRepository;
-import com.vaxflow.core.repository.LichSuTiemRepository;
+import com.vaxflow.customer.repository.HoSoRepository;
+import com.vaxflow.customer.repository.KhachHangRepository;
+import com.vaxflow.customer.repository.LichSuTiemRepository;
 import com.vaxflow.employee.entity.Department;
 import com.vaxflow.employee.entity.Employee;
 import com.vaxflow.employee.entity.Gender;
@@ -287,6 +287,7 @@ public class DataSeeder implements CommandLineRunner {
      */
     private void seedCustomersAndVaccinationRecords() {
         if (khachHangRepository.count() == 0) {
+            // 1. Tạo Khách hàng
             KhachHang k1 = new KhachHang();
             k1.setMaKhachHang("KH-001");
             k1.setTenKhachHang("Bé Trần Gia Bảo");
@@ -312,6 +313,21 @@ public class DataSeeder implements CommandLineRunner {
             khachHangRepository.save(k3);
 
             if (lichSuTiemRepository.count() == 0) {
+                // 2. Lấy dữ liệu Employee sẵn có (hoặc dùng getReferenceById nếu đã chắc chắn tồn tại ID)
+                // LƯU Ý: Giả định DB đã có Employee với các ID tương ứng hoặc bạn lấy từ employeeRepository
+                Employee bacSiKhamVaTiem = employeeRepository.findByMaNhanSu("NV-001").orElse(null);
+                Employee dieuDuong = employeeRepository.findByMaNhanSu("NV-002").orElse(null);
+                Employee tiepDon = employeeRepository.findByMaNhanSu("NV-003").orElse(null);
+                KhachHang khachHang1 = khachHangRepository.findByMaKhachHang("KH-001").orElse(null);
+                KhachHang khachHang2 = khachHangRepository.findByMaKhachHang("KH-002").orElse(null);
+                KhachHang khachHang3 = khachHangRepository.findByMaKhachHang("KH-003").orElse(null);
+
+                // Hoặc nếu dùng getReferenceById (Proxy - không query DB ngay):
+                // Employee bacSiKhamVaTiem = employeeRepository.getReferenceById(1L);
+                // Employee dieuDuong = employeeRepository.getReferenceById(2L);
+                // Employee tiepDon = employeeRepository.getReferenceById(4L);
+
+                // --- Lịch sử tiêm 1 ---
                 LichSuTiem lst1 = new LichSuTiem();
                 lst1.setMaTiem("TIEM-2026-001");
                 lst1.setIdVaccine(1L);
@@ -319,21 +335,21 @@ public class DataSeeder implements CommandLineRunner {
                 lst1.setSoMuiTiem(1);
                 lst1.setNgayTiem(LocalDate.now().minusDays(2));
                 lst1.setTrangThai("HOAN_THANH");
-                lst1.getKhachHangSet().add(k1);
-                k1.getLichSuTiemSet().add(lst1);
-                lichSuTiemRepository.save(lst1);
-                khachHangRepository.save(k1);
+                lst1.setKhachHang(k1);
 
+                // --- Hồ sơ 1 ---
                 HoSo hs1 = new HoSo();
                 hs1.setMaHoSo("HS-2026-001");
-                hs1.setIdBacSiKham(1L);
-                hs1.setIdBacSiTiem(1L);
-                hs1.setIdDieuDuong(2L);
-                hs1.setIdTiepDon(4L);
+                hs1.setKhachHang(k1);
+                hs1.setBacSiKham(bacSiKhamVaTiem);
+                hs1.setBacSiTiem(bacSiKhamVaTiem);
+                hs1.setDieuDuong(dieuDuong);
+                hs1.setTiepDon(tiepDon);
                 hs1.setGhiChuTheoDoi("Trẻ khỏe mạnh, không sốt, phản ứng bình thường sau tiêm.");
-                hs1.setLichSuTiem(lst1);
+                hs1.addLichSuTiem(lst1);
                 hoSoRepository.save(hs1);
 
+                // --- Lịch sử tiêm 2 ---
                 LichSuTiem lst2 = new LichSuTiem();
                 lst2.setMaTiem("TIEM-2026-002");
                 lst2.setIdVaccine(2L);
@@ -341,20 +357,41 @@ public class DataSeeder implements CommandLineRunner {
                 lst2.setSoMuiTiem(1);
                 lst2.setNgayTiem(LocalDate.now().minusDays(1));
                 lst2.setTrangThai("HOAN_THANH");
-                lst2.getKhachHangSet().add(k2);
-                k2.getLichSuTiemSet().add(lst2);
-                lichSuTiemRepository.save(lst2);
-                khachHangRepository.save(k2);
+                lst2.setKhachHang(k2);
 
+                // --- Hồ sơ 2 ---
                 HoSo hs2 = new HoSo();
                 hs2.setMaHoSo("HS-2026-002");
-                hs2.setIdBacSiKham(1L);
-                hs2.setIdBacSiTiem(1L);
-                hs2.setIdDieuDuong(2L);
-                hs2.setIdTiepDon(4L);
+                hs2.setKhachHang(k2);
+                hs2.setBacSiKham(bacSiKhamVaTiem);
+                hs2.setBacSiTiem(bacSiKhamVaTiem);
+                hs2.setDieuDuong(dieuDuong);
+                hs2.setTiepDon(tiepDon);
                 hs2.setGhiChuTheoDoi("Khám sàng lọc đủ điều kiện tiêm chủng.");
-                hs2.setLichSuTiem(lst2);
+                hs2.addLichSuTiem(lst2);
                 hoSoRepository.save(hs2);
+
+                // --- Lịch sử tiêm 3 ---
+                LichSuTiem lst3 = new LichSuTiem();
+                lst3.setMaTiem("TIEM-2026-003");
+                lst3.setIdVaccine(2L);
+                lst3.setIdLoVaccine(3L);
+                lst3.setSoMuiTiem(1);
+                lst3.setNgayTiem(LocalDate.now().minusDays(1));
+                lst3.setTrangThai("HOAN_THANH");
+                lst3.setKhachHang(k3);
+
+                // --- Hồ sơ 3 ---
+                HoSo hs3 = new HoSo();
+                hs3.setMaHoSo("HS-2026-003");
+                hs3.setKhachHang(k3);
+                hs3.setBacSiKham(bacSiKhamVaTiem);
+                hs3.setBacSiTiem(bacSiKhamVaTiem);
+                hs3.setDieuDuong(dieuDuong);
+                hs3.setTiepDon(tiepDon);
+                hs3.setGhiChuTheoDoi("Khám sàng lọc đủ điều kiện tiêm chủng.");
+                hs3.addLichSuTiem(lst3);
+                hoSoRepository.save(hs3);
 
                 log.info(">>> [Tiem Chung] Da khoi tao 3 khach hang, 2 lich su tiem va 2 ho so");
             }

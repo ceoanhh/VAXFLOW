@@ -1,6 +1,6 @@
-package com.vaxflow.core.repository;
+package com.vaxflow.customer.repository;
 
-import com.vaxflow.core.entity.HoSo;
+import com.vaxflow.customer.entity.HoSo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

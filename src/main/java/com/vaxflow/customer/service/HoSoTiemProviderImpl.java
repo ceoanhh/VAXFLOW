@@ -1,9 +1,8 @@
-package com.vaxflow.core.service;
+package com.vaxflow.customer.service;
 
-import com.vaxflow.core.entity.HoSo;
-import com.vaxflow.core.entity.KhachHang;
-import com.vaxflow.core.entity.LichSuTiem;
-import com.vaxflow.core.repository.LichSuTiemRepository;
+import com.vaxflow.customer.entity.HoSo;
+import com.vaxflow.customer.entity.KhachHang;
+import com.vaxflow.customer.repository.LichSuTiemRepository;
 import com.vaxflow.invoice.integration.HoSoTiemProvider;
 import com.vaxflow.invoice.integration.HoSoTiemThongTin;
 import org.springframework.stereotype.Component;
@@ -35,15 +34,15 @@ public class HoSoTiemProviderImpl implements HoSoTiemProvider {
                 info.setQuantity(1);
                 info.setEligibleForInvoice(true);
 
-                if (record.getKhachHangSet() != null && !record.getKhachHangSet().isEmpty()) {
-                    KhachHang kh = record.getKhachHangSet().iterator().next();
+                KhachHang kh = record.getKhachHang();
+                if (kh != null) {
                     info.setCustomerId(kh.getId());
                 } else {
                     info.setCustomerId(1L);
                 }
 
-                if (record.getHoSoList() != null && !record.getHoSoList().isEmpty()) {
-                    HoSo hs = record.getHoSoList().get(0);
+                HoSo hs = record.getHoSo();
+                if (hs != null) {
                     info.setTreatmentPlanId(hs.getId());
                 } else {
                     info.setTreatmentPlanId(1L);
