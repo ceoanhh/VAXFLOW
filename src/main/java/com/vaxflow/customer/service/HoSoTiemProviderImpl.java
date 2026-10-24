@@ -1,9 +1,8 @@
-package com.vaxflow.core.service;
+package com.vaxflow.customer.service;
 
-import com.vaxflow.core.entity.HoSo;
-import com.vaxflow.core.entity.KhachHang;
-import com.vaxflow.core.entity.LichSuTiem;
-import com.vaxflow.core.repository.LichSuTiemRepository;
+import com.vaxflow.customer.entity.HoSo;
+import com.vaxflow.customer.entity.KhachHang;
+import com.vaxflow.customer.repository.LichSuTiemRepository;
 import com.vaxflow.invoice.integration.HoSoTiemProvider;
 import com.vaxflow.invoice.integration.HoSoTiemThongTin;
 import org.springframework.stereotype.Component;

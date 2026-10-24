@@ -1,6 +1,6 @@
-package com.vaxflow.core.repository;
+package com.vaxflow.customer.repository;
 
-import com.vaxflow.core.entity.LichSuTiem;
+import com.vaxflow.customer.entity.LichSuTiem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

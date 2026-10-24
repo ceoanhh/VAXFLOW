@@ -1,7 +1,7 @@
-package com.vaxflow.core.controller;
+package com.vaxflow.customer.controller;
 
-import com.vaxflow.core.entity.KhachHang;
-import com.vaxflow.core.service.CustomerService;
+import com.vaxflow.customer.entity.KhachHang;
+import com.vaxflow.customer.service.CustomerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

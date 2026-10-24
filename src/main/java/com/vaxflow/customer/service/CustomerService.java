@@ -1,9 +1,9 @@
-package com.vaxflow.core.service;
+package com.vaxflow.customer.service;
 
-import com.vaxflow.core.entity.KhachHang;
-import com.vaxflow.core.entity.LichSuTiem;
-import com.vaxflow.core.repository.KhachHangRepository;
-import com.vaxflow.core.repository.LichSuTiemRepository;
+import com.vaxflow.customer.entity.KhachHang;
+import com.vaxflow.customer.entity.LichSuTiem;
+import com.vaxflow.customer.repository.KhachHangRepository;
+import com.vaxflow.customer.repository.LichSuTiemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
