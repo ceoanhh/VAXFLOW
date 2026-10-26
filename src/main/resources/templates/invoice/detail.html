@@ -1,39 +1,158 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{invoice/layout :: head('Chi tiết hóa đơn')}"></head>
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Chi Tiết Hóa Đơn - VaxFlow</title>
+</head>
 <body>
-<nav th:replace="~{invoice/layout :: navbar}"></nav>
-<main class="container py-5">
-    <div class="mb-4"><a class="text-decoration-none" th:href="@{/invoices}">← Danh sách hóa đơn</a><h1 class="h3 mt-3 mb-1">Chi tiết hóa đơn</h1><p class="text-muted mb-0">Thông tin hóa đơn và các mũi tiêm được ghi nhận.</p></div>
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-    <section class="card page-card mb-4"><div class="card-body p-4">
-        <div class="row g-4">
-            <div class="col-md-4"><div class="small text-muted">Mã hóa đơn</div><div class="fw-semibold" th:text="${invoice.maHoaDon}"></div></div>
-            <div class="col-md-4"><div class="small text-muted">Ngày lập</div><div th:text="${#temporals.format(invoice.ngayLap, 'dd/MM/yyyy HH:mm')}"></div></div>
-            <div class="col-md-4"><div class="small text-muted">Trạng thái</div><span class="badge rounded-pill" th:classappend="${invoice.trangThai.name() == 'DA_THANH_TOAN'} ? ' text-bg-success' : ' text-bg-warning'" th:text="${invoice.trangThai.name() == 'DA_THANH_TOAN'} ? 'Đã thanh toán' : 'Chưa thanh toán'"></span></div>
-            <div class="col-12"><div class="small text-muted">Ghi chú</div><div th:text="${invoice.ghiChu ?: '—'}"></div></div>
-            <div class="col-12 border-top pt-3 d-flex justify-content-between align-items-center"><span class="fw-semibold">Tổng tiền</span><strong class="fs-4 text-primary" th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></strong></div>
+    <div layout:fragment="content">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-warning-subtle text-warning-emphasis fw-semibold px-2 py-1 rounded-2">Chi Tiết Tài Chính</span>
+                    <span class="text-muted small">| Thông Tin Hóa Đơn Và Mũi Tiêm</span>
+                </div>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-receipt text-warning me-2"></i>Chi Tiết Hóa Đơn: <span class="text-primary font-monospace" th:text="${invoice.maHoaDon}">HD-001</span>
+                </h3>
+            </div>
+            <div>
+                <a th:href="@{/invoices}" class="btn btn-outline-secondary btn-sm shadow-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Danh Sách Hóa Đơn
+                </a>
+            </div>
         </div>
-    </div></section>
-    <section class="card page-card mb-4"><div class="card-body p-0"><div class="p-4 pb-2"><h2 class="h5">Chi tiết các mũi tiêm</h2></div>
-        <div class="table-responsive"><table class="table align-middle mb-0">
-            <thead class="table-light"><tr><th>STT</th><th>Hồ sơ / mũi tiêm (ID)</th><th class="text-end">Số lượng</th><th class="text-end">Đơn giá</th><th class="text-end">Thành tiền</th></tr></thead>
-            <tbody><tr th:if="${#lists.isEmpty(lines)}"><td colspan="5" class="text-center text-muted py-4">Không có dòng chi tiết.</td></tr>
-            <tr th:each="line, state : ${lines}"><td th:text="${state.count}"></td><td th:text="${line.idTiem}"></td><td class="text-end" th:text="${line.soLuong}"></td><td class="text-end" th:text="${#numbers.formatDecimal(line.donGia, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td><td class="text-end" th:text="${#numbers.formatDecimal(line.thanhTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td></tr>
-            </tbody>
-        </table></div>
-    </div></section>
-    <section th:if="${invoice.trangThai.name() == 'CHUA_THANH_TOAN'}" class="card page-card"><div class="card-body p-4">
-        <h2 class="h5 mb-1">Thanh toán toàn bộ hóa đơn</h2>
-        <p class="text-muted mb-3">Số tiền thanh toán phải bằng đúng tổng tiền hóa đơn; không hỗ trợ thanh toán một phần.</p>
-        <form th:action="@{/invoices/{id}/pay(id=${invoice.id})}" th:object="${paymentForm}" method="post" class="row g-3 align-items-end">
-            <div class="col-md-5"><label class="form-label" for="amount">Số tiền thanh toán (đ)</label><input id="amount" class="form-control" type="number" step="0.01" min="0.01" th:field="*{soTien}" th:attr="max=${invoice.tongTien}" required><div class="form-text">Tổng hóa đơn: <span th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'"></span></div></div>
-            <div class="col-md-4"><label class="form-label" for="paymentMethod">Phương thức</label><select id="paymentMethod" class="form-select" th:field="*{phuongThucTt}" required><option value="">Chọn phương thức</option><option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method.name() == 'TIEN_MAT'} ? 'Tiền mặt' : (${method.name() == 'CHUYEN_KHOAN'} ? 'Chuyển khoản' : 'Thẻ')"></option></select></div>
-            <div class="col-md-3 d-grid"><button class="btn btn-success" type="submit">Xác nhận thanh toán</button></div>
-        </form>
-    </div></section>
-    <div th:if="${invoice.trangThai.name() == 'DA_THANH_TOAN'}" class="alert alert-success"><strong>Đã thanh toán.</strong> Hóa đơn này không thể thanh toán lại.</div>
-</main>
+
+        <!-- Thong tin tong quan hoa don -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="small text-muted mb-1">Mã hóa đơn</div>
+                    <div class="fw-bold font-monospace fs-5 text-primary" th:text="${invoice.maHoaDon}">HD-001</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="small text-muted mb-1">Ngày lập</div>
+                    <div class="fw-semibold text-dark" th:text="${#temporals.format(invoice.ngayLap, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="small text-muted mb-1">Trạng thái</div>
+                    <span class="badge rounded-pill px-3 py-2 fs-6"
+                          th:classappend="${invoice.trangThai != null and invoice.trangThai.name() == 'DA_THANH_TOAN'} ? 'bg-success' : 'bg-warning text-dark'"
+                          th:text="${invoice.trangThai != null and invoice.trangThai.name() == 'DA_THANH_TOAN'} ? 'Đã thanh toán' : 'Chưa thanh toán'">
+                        Chưa thanh toán
+                    </span>
+                </div>
+                <div class="col-md-3 text-md-end">
+                    <div class="small text-muted mb-1">Tổng tiền</div>
+                    <div class="fs-4 fw-bold text-primary" th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'">0.00 đ</div>
+                </div>
+                <div class="col-12" th:if="${invoice.ghiChu != null and !invoice.ghiChu.isEmpty()}">
+                    <div class="small text-muted mb-1">Ghi chú</div>
+                    <div class="p-2 bg-light rounded-3 small text-secondary" th:text="${invoice.ghiChu}">Ghi chú</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bang chi tiet cac mui tiem -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-capsule text-danger me-2"></i>Chi Tiết Các Mũi Tiêm
+                </h5>
+            </div>
+            <div class="card-body px-0 pb-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-muted small text-uppercase">
+                            <tr>
+                                <th class="ps-4" style="width: 60px;">STT</th>
+                                <th>Hồ Sơ / Mũi Tiêm (ID)</th>
+                                <th class="text-end" style="width: 140px;">Số Lượng</th>
+                                <th class="text-end" style="width: 180px;">Đơn Giá</th>
+                                <th class="text-end pe-4" style="width: 200px;">Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(lines)}">
+                                <td colspan="5" class="text-center py-4 text-muted">Không có dòng chi tiết.</td>
+                            </tr>
+                            <tr th:each="line, stat : ${lines}">
+                                <td class="ps-4 text-muted fw-semibold" th:text="${stat.count}">1</td>
+                                <td>
+                                    <span class="badge bg-light text-dark font-monospace border px-2 py-1" th:text="${line.idTiem}">1</span>
+                                </td>
+                                <td class="text-end fw-semibold" th:text="${line.soLuong}">1</td>
+                                <td class="text-end text-muted" th:text="${#numbers.formatDecimal(line.donGia, 1, 'COMMA', 2, 'POINT')} + ' đ'">0.00 đ</td>
+                                <td class="text-end pe-4 fw-bold text-dark" th:text="${#numbers.formatDecimal(line.thanhTien, 1, 'COMMA', 2, 'POINT')} + ' đ'">0.00 đ</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <th colspan="4" class="text-end fw-bold py-3">Tổng Tiền:</th>
+                                <th class="text-end pe-4 fs-5 fw-bold text-primary py-3"
+                                    th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'">0.00 đ</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form thu ngan thanh toan (neu chua thanh toan) -->
+        <div th:if="${invoice.trangThai != null and invoice.trangThai.name() == 'CHUA_THANH_TOAN'}" class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <h5 class="fw-bold text-dark mb-1">
+                <i class="bi bi-credit-card-2-front-fill text-success me-2"></i>Thanh Toán Toàn Bộ Hóa Đơn
+            </h5>
+            <p class="text-muted small mb-4">
+                Số tiền thanh toán phải bằng đúng tổng tiền hóa đơn; không hỗ trợ thanh toán một phần.
+            </p>
+
+            <form th:action="@{/invoices/{id}/pay(id=${invoice.id})}" th:object="${paymentForm}" method="post" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label small fw-semibold text-secondary" for="amount">Số Tiền Thanh Toán (đ)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted"><i class="bi bi-cash-stack"></i></span>
+                        <input id="amount" class="form-control" type="number" step="0.01" min="0.01" th:field="*{soTien}" th:attr="max=${invoice.tongTien}" required>
+                    </div>
+                    <div class="form-text small text-muted">Tổng hóa đơn: <strong th:text="${#numbers.formatDecimal(invoice.tongTien, 1, 'COMMA', 2, 'POINT')} + ' đ'">0.00 đ</strong></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold text-secondary" for="paymentMethod">Phương Thức</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted"><i class="bi bi-wallet2"></i></span>
+                        <select id="paymentMethod" class="form-select" th:field="*{phuongThucTt}" required>
+                            <option value="">Chọn phương thức</option>
+                            <option th:each="method : ${paymentMethods}"
+                                    th:value="${method}"
+                                    th:text="${method.name() == 'TIEN_MAT'} ? 'Tiền mặt' : (${method.name() == 'CHUYEN_KHOAN'} ? 'Chuyển khoản' : 'Thẻ')">
+                                Tiền mặt
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <button class="btn btn-success fw-bold w-100 py-2 shadow-sm" type="submit">
+                        <i class="bi bi-check-circle-fill me-1"></i> Xác Nhận Thanh Toán
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${invoice.trangThai != null and invoice.trangThai.name() == 'DA_THANH_TOAN'}" class="alert alert-success border-0 shadow-sm rounded-4 p-3 d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-success text-white p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-check2-all fs-4"></i>
+            </div>
+            <div>
+                <strong class="d-block text-dark">Đã thanh toán.</strong>
+                <span class="text-muted small">Hóa đơn này không thể thanh toán lại.</span>
+            </div>
+        </div>
+
+    </div>
 </body>
 </html>

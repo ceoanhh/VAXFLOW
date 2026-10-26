@@ -1,19 +1,77 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{invoice/layout :: head('Tạo hóa đơn')}"></head>
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Tạo Hóa Đơn - VaxFlow</title>
+</head>
 <body>
-<nav th:replace="~{invoice/layout :: navbar}"></nav>
-<main class="container py-5" style="max-width: 760px">
-    <div class="mb-4"><a class="text-decoration-none" th:href="@{/invoices}">← Danh sách hóa đơn</a><h1 class="h3 mt-3 mb-1">Tạo hóa đơn</h1><p class="text-muted">Nhập mã hồ sơ tiêm đã lưu, phân tách bằng dấu phẩy hoặc khoảng trắng.</p></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-    <div class="card page-card"><div class="card-body p-4">
-        <form th:action="@{/invoices/create}" th:object="${form}" method="post">
-            <label for="recordIds" class="form-label fw-semibold">Mã hồ sơ tiêm</label>
-            <textarea id="recordIds" class="form-control" rows="4" th:field="*{vaccinationRecordIds}" placeholder="Ví dụ: 12, 13, 14" required></textarea>
-            <div class="form-text mb-4">Các hồ sơ phải cùng một khách hàng, hợp lệ và chưa được lập hóa đơn.</div>
-            <div class="d-flex justify-content-end gap-2"><a class="btn btn-light" th:href="@{/invoices}">Hủy</a><button class="btn btn-primary" type="submit">Tạo hóa đơn</button></div>
-        </form>
-    </div></div>
-</main>
+    <div layout:fragment="content">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-warning-subtle text-warning-emphasis fw-semibold px-2 py-1 rounded-2">Thu Ngân & Kế Toán</span>
+                    <span class="text-muted small">| Quy Trình Lập Hóa Đơn</span>
+                </div>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-receipt-cutoff text-warning me-2"></i>Tạo Hóa Đơn Khách Hàng
+                </h3>
+            </div>
+            <div>
+                <a th:href="@{/invoices}" class="btn btn-outline-secondary btn-sm shadow-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark mb-1">Thông Tin Hồ Sơ Tiêm Chủng</h5>
+                        <p class="text-muted small mb-0">Nhập mã hồ sơ tiêm đã lưu, phân tách bằng dấu phẩy hoặc khoảng trắng.</p>
+                    </div>
+
+                    <form th:action="@{/invoices/create}" th:object="${form}" method="post">
+                        <div class="mb-4">
+                            <label for="recordIds" class="form-label fw-semibold small text-secondary">
+                                Mã Hồ Sơ Tiêm <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="bi bi-file-earmark-medical"></i></span>
+                                <textarea id="recordIds" class="form-control" rows="4" th:field="*{vaccinationRecordIds}"
+                                          placeholder="Ví dụ: 12, 13, 14" required></textarea>
+                            </div>
+                            <div class="form-text small text-muted mt-2">
+                                <i class="bi bi-info-circle me-1 text-primary"></i>
+                                Các hồ sơ phải cùng một khách hàng, hợp lệ và chưa được lập hóa đơn.
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-light rounded-3 mb-4 border">
+                            <div class="d-flex align-items-center gap-2 text-primary fw-semibold small mb-1">
+                                <i class="bi bi-shield-check"></i> Quy trình tính viện phí tiêm chủng:
+                            </div>
+                            <ol class="small text-muted mb-0 ps-3">
+                                <li>Kiểm tra tính hợp lệ của mũi tiêm trong cơ sở dữ liệu.</li>
+                                <li>Áp dụng giá vắc xin niêm yết theo lô thuốc đã tiêm.</li>
+                                <li>Tạo biên lai hóa đơn với trạng thái <code>Chưa thanh toán</code>.</li>
+                            </ol>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a th:href="@{/invoices}" class="btn btn-light px-4">Hủy</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4 shadow-sm">
+                                <i class="bi bi-check2-circle me-1"></i> Tạo Hóa Đơn
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </body>
 </html>
