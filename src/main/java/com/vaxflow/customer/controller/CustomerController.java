@@ -174,6 +174,19 @@ public class CustomerController {
         return "redirect:/customers/detail/" + customerId;
     }
 
+    @PostMapping("/{customerId}/ho-so/delete/{hoSoId}")
+    public String deleteHoSo(@PathVariable("customerId") Long customerId,
+                             @PathVariable("hoSoId") Long hoSoId,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            customerService.deleteHoSoById(hoSoId);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa hồ sơ tiêm!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa hồ sơ do chứa dữ liệu lịch sử tiêm liên kết!");
+        }
+        return "redirect:/customers/detail/" + customerId;
+    }
+
     // ================= CRUD LỊCH SỬ TIÊM =================
 
     @PostMapping("/{customerId}/ho-so/{hoSoId}/lich-su/save")
@@ -219,6 +232,19 @@ public class CustomerController {
                     lichSuForm.getId() != null ? "Cập nhật mũi tiêm thành công!" : "Thêm mũi tiêm mới thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi lưu lịch sử tiêm: " + e.getMessage());
+        }
+        return "redirect:/customers/detail/" + customerId;
+    }
+
+    @PostMapping("/{customerId}/lich-su/delete/{lichSuId}")
+    public String deleteLichSuTiem(@PathVariable("customerId") Long customerId,
+                                   @PathVariable("lichSuId") Long lichSuId,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            customerService.deleteLichSuTiemById(lichSuId);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa bản ghi tiêm thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi xóa bản ghi tiêm!");
         }
         return "redirect:/customers/detail/" + customerId;
     }

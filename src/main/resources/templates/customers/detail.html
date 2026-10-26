@@ -8,16 +8,6 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- Flash Alert -->
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <!-- Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
@@ -119,7 +109,6 @@
                             <div class="card border-0 shadow-sm p-3 mb-3 bg-white rounded-3">
                                 <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
                                     <span class="fw-bold text-primary small"><i class="bi bi-people me-1"></i> Ê-kíp phụ trách</span>
-                                    <!-- Nút Sửa Hồ Sơ -->
                                     <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.8rem;"
                                             data-bs-toggle="modal" th:data-bs-target="'#modalEditHoSo_' + ${hs.id}">
                                         <i class="bi bi-pencil me-1"></i>Sửa Hồ Sơ
@@ -158,9 +147,10 @@
                                         <i class="bi bi-plus-circle me-1"></i> Thêm Mũi Tiêm
                                     </button>
                                     <form th:action="@{/customers/{cId}/ho-so/delete/{hId}(cId=${customer.id}, hId=${hs.id})}"
-                                          method="post" onsubmit="return confirm('Bạn có chắc muốn xóa hồ sơ tiêm này?');">
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa hồ sơ tiêm này?');">
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i> Xóa Hồ Sơ
+                                            <i class="bi bi-trash me-1"></i>Xóa Hồ Sơ
                                         </button>
                                     </form>
                                 </div>
@@ -193,192 +183,20 @@
                                         <td><span class="badge bg-success-subtle text-success" th:text="${rec.trangThai != null ? rec.trangThai : 'Đã tiêm'}">Đã tiêm</span></td>
                                         <td class="text-end pe-3">
                                             <div class="btn-group btn-group-sm">
-                                                <!-- Nút Sửa Mũi Tiêm -->
                                                 <button type="button" class="btn btn-light text-primary" title="Sửa mũi tiêm"
                                                         data-bs-toggle="modal" th:data-bs-target="'#modalEditLichSu_' + ${rec.id}">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <!-- Nút Xóa Mũi Tiêm -->
                                                 <form th:action="@{/customers/{cId}/lich-su/delete/{lsId}(cId=${customer.id}, lsId=${rec.id})}"
                                                       method="post" class="d-inline"
                                                       onsubmit="return confirm('Xóa mũi tiêm này khỏi lịch sử?');">
                                                     <button type="submit" class="btn btn-light text-danger" title="Xóa mũi tiêm"><i class="bi bi-trash"></i></button>
                                                 </form>
                                             </div>
-
-                                            <!-- Modal Sửa Lịch Sử Tiêm -->
-                                            <div class="modal fade text-start" th:id="'modalEditLichSu_' + ${rec.id}" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <form th:action="@{/customers/{cId}/ho-so/{hId}/lich-su/save(cId=${customer.id}, hId=${hs.id})}" method="post">
-                                                            <input type="hidden" name="id" th:value="${rec.id}">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title fw-bold">Chỉnh Sửa Mũi Tiêm</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="mb-3">
-                                                                    <label class="form-label fw-semibold">Mã Tiêm <span class="text-danger">*</span></label>
-                                                                    <input type="text" name="maTiem" th:value="${rec.maTiem}" class="form-control font-monospace" required>
-                                                                </div>
-                                                                <div class="row g-2 mb-3">
-                                                                    <div class="col-6">
-                                                                        <label class="form-label fw-semibold">ID Vaccine <span class="text-danger">*</span></label>
-                                                                        <input type="number" name="idVaccine" th:value="${rec.idVaccine}" class="form-control" required>
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <label class="form-label fw-semibold">ID Lô Vaccine <span class="text-danger">*</span></label>
-                                                                        <input type="number" name="idLoVaccine" th:value="${rec.idLoVaccine}" class="form-control" required>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row g-2 mb-3">
-                                                                    <div class="col-6">
-                                                                        <label class="form-label fw-semibold">Số Mũi Tiêm <span class="text-danger">*</span></label>
-                                                                        <input type="number" name="soMuiTiem" th:value="${rec.soMuiTiem}" class="form-control" min="1" required>
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <label class="form-label fw-semibold">Ngày Tiêm <span class="text-danger">*</span></label>
-                                                                        <input type="date" name="ngayTiem" th:value="${rec.ngayTiem}" class="form-control" th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label fw-semibold">Trạng Thái</label>
-                                                                    <select name="trangThai" class="form-select">
-                                                                        <option value="Đã tiêm" th:selected="${rec.trangThai == 'Đã tiêm'}">Đã tiêm</option>
-                                                                        <option value="Hoàn thành" th:selected="${rec.trangThai == 'Hoàn thành'}">Hoàn thành</option>
-                                                                        <option value="Hủy" th:selected="${rec.trangThai == 'Hủy'}">Hủy</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                                <button type="submit" class="btn btn-primary fw-semibold">Cập Nhật</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
-                            </div>
-
-                            <!-- Modal Thêm Mũi Tiêm Mới -->
-                            <div class="modal fade" th:id="'modalLichSu_' + ${hs.id}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form th:action="@{/customers/{cId}/ho-so/{hId}/lich-su/save(cId=${customer.id}, hId=${hs.id})}"
-                                              th:object="${newLichSuTiem}" method="post">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title fw-bold">Thêm Mũi Tiêm Mới</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Mã Tiêm <span class="text-danger">*</span></label>
-                                                    <input type="text" th:field="*{maTiem}" class="form-control font-monospace" placeholder="MT-001" required>
-                                                </div>
-                                                <div class="row g-2 mb-3">
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-semibold">ID Vaccine <span class="text-danger">*</span></label>
-                                                        <input type="number" th:field="*{idVaccine}" class="form-control" required>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-semibold">ID Lô Vaccine <span class="text-danger">*</span></label>
-                                                        <input type="number" th:field="*{idLoVaccine}" class="form-control" required>
-                                                    </div>
-                                                </div>
-                                                <div class="row g-2 mb-3">
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-semibold">Số Mũi Tiêm <span class="text-danger">*</span></label>
-                                                        <input type="number" th:field="*{soMuiTiem}" class="form-control" value="1" min="1" required>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-semibold">Ngày Tiêm <span class="text-danger">*</span></label>
-                                                        <input type="date" th:field="*{ngayTiem}" class="form-control" th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Trạng Thái</label>
-                                                    <select th:field="*{trangThai}" class="form-select">
-                                                        <option value="Đã tiêm">Đã tiêm</option>
-                                                        <option value="Hoàn thành">Hoàn thành</option>
-                                                        <option value="Hủy">Hủy</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <button type="submit" class="btn btn-success fw-semibold">Lưu Mũi Tiêm</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal Sửa Hồ Sơ Tiêm -->
-                            <div class="modal fade" th:id="'modalEditHoSo_' + ${hs.id}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content">
-                                        <form th:action="@{/customers/{cId}/ho-so/save(cId=${customer.id})}" method="post">
-                                            <input type="hidden" name="id" th:value="${hs.id}">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-pencil-square text-primary me-2"></i>Chỉnh Sửa Hồ Sơ Tiêm</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Mã Hồ Sơ <span class="text-danger">*</span></label>
-                                                    <input type="text" name="maHoSo" th:value="${hs.maHoSo}" class="form-control font-monospace" required>
-                                                </div>
-                                                <div class="row g-3 mb-3">
-                                                    <div class="col-md-6">
-                                                        <label class="form-label fw-semibold">Bác Sĩ Khám <span class="text-danger">*</span></label>
-                                                        <select name="bacSiKham.id" class="form-select" required>
-                                                            <option value="">-- Chọn Bác Sĩ Khám --</option>
-                                                            <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
-                                                                    th:selected="${hs.bacSiKham != null and hs.bacSiKham.id == emp.id}">Bác sĩ</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label class="form-label fw-semibold">Bác Sĩ Tiêm <span class="text-danger">*</span></label>
-                                                        <select name="bacSiTiem.id" class="form-select" required>
-                                                            <option value="">-- Chọn Bác Sĩ Tiêm --</option>
-                                                            <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
-                                                                    th:selected="${hs.bacSiTiem != null and hs.bacSiTiem.id == emp.id}">Bác sĩ</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label class="form-label fw-semibold">Điều Dưỡng <span class="text-danger">*</span></label>
-                                                        <select name="dieuDuong.id" class="form-select" required>
-                                                            <option value="">-- Chọn Điều Dưỡng --</option>
-                                                            <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
-                                                                    th:selected="${hs.dieuDuong != null and hs.dieuDuong.id == emp.id}">Điều dưỡng</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label class="form-label fw-semibold">Nhân Viên Tiếp Đón <span class="text-danger">*</span></label>
-                                                        <select name="tiepDon.id" class="form-select" required>
-                                                            <option value="">-- Chọn Tiếp Đón --</option>
-                                                            <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
-                                                                    th:selected="${hs.tiepDon != null and hs.tiepDon.id == emp.id}">Tiếp đón</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Ghi Chú Theo Dõi</label>
-                                                    <textarea name="ghiChuTheoDoi" th:text="${hs.ghiChuTheoDoi}" class="form-control" rows="3"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy Bỏ</button>
-                                                <button type="submit" class="btn btn-primary fw-semibold">Cập Nhật Hồ Sơ</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>
@@ -388,6 +206,10 @@
 
         </div>
     </div>
+
+    <!-- ========================================== -->
+    <!-- DANH SÁCH MODAL (BÁCH TÁCH NGOÀI ACCORDION) -->
+    <!-- ========================================== -->
 
     <!-- Modal Tạo Hồ Sơ Tiêm Mới -->
     <div class="modal fade" id="modalHoSoMoi" tabindex="-1" aria-hidden="true">
@@ -446,6 +268,180 @@
             </div>
         </div>
     </div>
+
+    <!-- Modals cho từng Hồ Sơ & Mũi Tiêm -->
+    <th:block th:each="hs : ${hoSoList}">
+
+        <!-- Modal Chỉnh Sửa Hồ Sơ -->
+        <div class="modal fade" th:id="'modalEditHoSo_' + ${hs.id}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <form th:action="@{/customers/{cId}/ho-so/save(cId=${customer.id})}" method="post">
+                        <input type="hidden" name="id" th:value="${hs.id}">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold text-dark"><i class="bi bi-pencil-square text-primary me-2"></i>Chỉnh Sửa Hồ Sơ Tiêm</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mã Hồ Sơ <span class="text-danger">*</span></label>
+                                <input type="text" name="maHoSo" th:value="${hs.maHoSo}" class="form-control font-monospace" required>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Bác Sĩ Khám <span class="text-danger">*</span></label>
+                                    <select name="bacSiKham.id" class="form-select" required>
+                                        <option value="">-- Chọn Bác Sĩ Khám --</option>
+                                        <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
+                                                th:selected="${hs.bacSiKham != null and hs.bacSiKham.id == emp.id}">Bác sĩ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Bác Sĩ Tiêm <span class="text-danger">*</span></label>
+                                    <select name="bacSiTiem.id" class="form-select" required>
+                                        <option value="">-- Chọn Bác Sĩ Tiêm --</option>
+                                        <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
+                                                th:selected="${hs.bacSiTiem != null and hs.bacSiTiem.id == emp.id}">Bác sĩ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Điều Dưỡng <span class="text-danger">*</span></label>
+                                    <select name="dieuDuong.id" class="form-select" required>
+                                        <option value="">-- Chọn Điều Dưỡng --</option>
+                                        <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
+                                                th:selected="${hs.dieuDuong != null and hs.dieuDuong.id == emp.id}">Điều dưỡng</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Nhân Viên Tiếp Đón <span class="text-danger">*</span></label>
+                                    <select name="tiepDon.id" class="form-select" required>
+                                        <option value="">-- Chọn Tiếp Đón --</option>
+                                        <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.hoVaTen}"
+                                                th:selected="${hs.tiepDon != null and hs.tiepDon.id == emp.id}">Tiếp đón</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Ghi Chú Theo Dõi</label>
+                                <textarea name="ghiChuTheoDoi" th:text="${hs.ghiChuTheoDoi}" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy Bỏ</button>
+                            <button type="submit" class="btn btn-primary fw-semibold">Cập Nhật Hồ Sơ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Thêm Mũi Tiêm Mới -->
+        <div class="modal fade" th:id="'modalLichSu_' + ${hs.id}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form th:action="@{/customers/{cId}/ho-so/{hId}/lich-su/save(cId=${customer.id}, hId=${hs.id})}"
+                          th:object="${newLichSuTiem}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold">Thêm Mũi Tiêm Mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mã Tiêm <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{maTiem}" class="form-control font-monospace" placeholder="MT-001" required>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">ID Vaccine <span class="text-danger">*</span></label>
+                                    <input type="number" th:field="*{idVaccine}" class="form-control" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">ID Lô Vaccine <span class="text-danger">*</span></label>
+                                    <input type="number" th:field="*{idLoVaccine}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">Số Mũi Tiêm <span class="text-danger">*</span></label>
+                                    <input type="number" th:field="*{soMuiTiem}" class="form-control" value="1" min="1" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">Ngày Tiêm <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{ngayTiem}" class="form-control" th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Trạng Thái</label>
+                                <select th:field="*{trangThai}" class="form-select">
+                                    <option value="Đã tiêm">Đã tiêm</option>
+                                    <option value="Hoàn thành">Hoàn thành</option>
+                                    <option value="Hủy">Hủy</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-success fw-semibold">Lưu Mũi Tiêm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals Sửa Lịch Sử Mũi Tiêm -->
+        <div class="modal fade text-start" th:each="rec : ${hs.lichSuTiemList}" th:id="'modalEditLichSu_' + ${rec.id}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form th:action="@{/customers/{cId}/ho-so/{hId}/lich-su/save(cId=${customer.id}, hId=${hs.id})}" method="post">
+                        <input type="hidden" name="id" th:value="${rec.id}">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold">Chỉnh Sửa Mũi Tiêm</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mã Tiêm <span class="text-danger">*</span></label>
+                                <input type="text" name="maTiem" th:value="${rec.maTiem}" class="form-control font-monospace" required>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">ID Vaccine <span class="text-danger">*</span></label>
+                                    <input type="number" name="idVaccine" th:value="${rec.idVaccine}" class="form-control" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">ID Lô Vaccine <span class="text-danger">*</span></label>
+                                    <input type="number" name="idLoVaccine" th:value="${rec.idLoVaccine}" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">Số Mũi Tiêm <span class="text-danger">*</span></label>
+                                    <input type="number" name="soMuiTiem" th:value="${rec.soMuiTiem}" class="form-control" min="1" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold">Ngày Tiêm <span class="text-danger">*</span></label>
+                                    <input type="date" name="ngayTiem" th:value="${rec.ngayTiem}" class="form-control" th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Trạng Thái</label>
+                                <select name="trangThai" class="form-select">
+                                    <option value="Đã tiêm" th:selected="${rec.trangThai == 'Đã tiêm'}">Đã tiêm</option>
+                                    <option value="Hoàn thành" th:selected="${rec.trangThai == 'Hoàn thành'}">Hoàn thành</option>
+                                    <option value="Hủy" th:selected="${rec.trangThai == 'Hủy'}">Hủy</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary fw-semibold">Cập Nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </th:block>
 
 </div>
 </body>
