@@ -1,5 +1,6 @@
 package com.vaxflow.core.controller;
 
+import com.vaxflow.customer.service.CustomerService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,12 +16,12 @@ import java.math.BigDecimal;
 @Controller
 public class DashboardController {
 
-    private final com.vaxflow.core.service.CustomerService customerService;
+    private final CustomerService customerService;
     private final com.vaxflow.employee.service.EmployeeService employeeService;
     private final com.vaxflow.invoice.service.InvoiceService invoiceService;
     private final com.vaxflow.vaccine.service.VaccineService vaccineService;
 
-    public DashboardController(com.vaxflow.core.service.CustomerService customerService,
+    public DashboardController(CustomerService customerService,
                                com.vaxflow.employee.service.EmployeeService employeeService,
                                com.vaxflow.invoice.service.InvoiceService invoiceService,
                                com.vaxflow.vaccine.service.VaccineService vaccineService) {

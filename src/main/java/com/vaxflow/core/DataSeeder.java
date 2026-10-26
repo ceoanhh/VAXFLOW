@@ -1,14 +1,13 @@
 package com.vaxflow.core;
 
 import com.vaxflow.core.entity.Admin;
-import com.vaxflow.core.entity.Role;
-import com.vaxflow.core.entity.HoSo;
-import com.vaxflow.core.entity.KhachHang;
-import com.vaxflow.core.entity.LichSuTiem;
+import com.vaxflow.customer.entity.HoSo;
+import com.vaxflow.customer.entity.KhachHang;
+import com.vaxflow.customer.entity.LichSuTiem;
 import com.vaxflow.core.repository.AdminRepository;
-import com.vaxflow.core.repository.HoSoRepository;
-import com.vaxflow.core.repository.KhachHangRepository;
-import com.vaxflow.core.repository.LichSuTiemRepository;
+import com.vaxflow.customer.repository.HoSoRepository;
+import com.vaxflow.customer.repository.KhachHangRepository;
+import com.vaxflow.customer.repository.LichSuTiemRepository;
 import com.vaxflow.employee.entity.Department;
 import com.vaxflow.employee.entity.Employee;
 import com.vaxflow.employee.entity.Gender;
@@ -117,17 +116,10 @@ public class DataSeeder implements CommandLineRunner {
             Admin admin = new Admin();
             admin.setTenDangNhap(defaultUsername);
             admin.setMatKhau(passwordEncoder.encode("admin123"));
-            admin.setMatKhauHienThi("admin123");
             admin.setHoTen("Quản trị viên hệ thống");
-            admin.setVaiTro(Role.ROLE_ADMIN);
-            admin.setSoDienThoai("0900000001");
-            admin.setEmail("admin@vaxflow.vn");
             admin.setTrangThai(true);
-            admin.setAccountLocked(false);
-            admin.setFailedAttempts(0);
-            admin.setNgayDoiMatKhau(LocalDateTime.now());
             adminRepository.save(admin);
-            log.info(">>> [He Thong] Da tao tai khoan Admin: admin / admin123 (ROLE_ADMIN)");
+            log.info(">>> [He Thong] Da tao tai khoan Admin: admin / admin123");
         }
     }
 
@@ -217,44 +209,10 @@ public class DataSeeder implements CommandLineRunner {
                 e4.setPhongBan(d3);
                 employeeRepository.save(e4);
 
-                // Cap tai khoan nguoi dung tuong ung cho chuc danh y te
-                if (!adminRepository.existsByTenDangNhap("doctor")) {
-                    Admin docAcc = new Admin("doctor", passwordEncoder.encode("doctor123"), e1.getHoVaTen(), Role.ROLE_DOCTOR, e1.getSdt());
-                    docAcc.setMatKhauHienThi("doctor123");
-                    docAcc.setIdNhanVien(e1.getId());
-                    docAcc.setEmail(e1.getEmail());
-                    adminRepository.save(docAcc);
-                }
-
-                if (!adminRepository.existsByTenDangNhap("nurse")) {
-                    Admin nurseAcc = new Admin("nurse", passwordEncoder.encode("nurse123"), e2.getHoVaTen(), Role.ROLE_NURSE, e2.getSdt());
-                    nurseAcc.setMatKhauHienThi("nurse123");
-                    nurseAcc.setIdNhanVien(e2.getId());
-                    nurseAcc.setEmail(e2.getEmail());
-                    adminRepository.save(nurseAcc);
-                }
-
-                if (!adminRepository.existsByTenDangNhap("staff")) {
-                    Admin staffAcc = new Admin("staff", passwordEncoder.encode("staff123"), e3.getHoVaTen(), Role.ROLE_STAFF, e3.getSdt());
-                    staffAcc.setMatKhauHienThi("staff123");
-                    staffAcc.setIdNhanVien(e3.getId());
-                    staffAcc.setEmail(e3.getEmail());
-                    adminRepository.save(staffAcc);
-                }
-
-                if (!adminRepository.existsByTenDangNhap("manager")) {
-                    Admin mgrAcc = new Admin("manager", passwordEncoder.encode("manager123"), e4.getHoVaTen(), Role.ROLE_MANAGER, e4.getSdt());
-                    mgrAcc.setMatKhauHienThi("manager123");
-                    mgrAcc.setIdNhanVien(e4.getId());
-                    mgrAcc.setEmail(e4.getEmail());
-                    adminRepository.save(mgrAcc);
-                }
-
-                log.info(">>> [Nhan Su] Da khoi tao 4 phong ban, 4 nhan su y te va 4 tai khoan dang nhap theo Role");
+                log.info(">>> [Nhan Su] Da khoi tao 4 phong ban va 4 nhan su y te mau");
             }
         }
     }
-
 
     /**
      * Khoi tao danh muc vac xin va cac lo hang kho duoc GSP
@@ -329,6 +287,7 @@ public class DataSeeder implements CommandLineRunner {
      */
     private void seedCustomersAndVaccinationRecords() {
         if (khachHangRepository.count() == 0) {
+            // 1. Tạo Khách hàng
             KhachHang k1 = new KhachHang();
             k1.setMaKhachHang("KH-001");
             k1.setTenKhachHang("Bé Trần Gia Bảo");
@@ -354,6 +313,21 @@ public class DataSeeder implements CommandLineRunner {
             khachHangRepository.save(k3);
 
             if (lichSuTiemRepository.count() == 0) {
+                // 2. Lấy dữ liệu Employee sẵn có (hoặc dùng getReferenceById nếu đã chắc chắn tồn tại ID)
+                // LƯU Ý: Giả định DB đã có Employee với các ID tương ứng hoặc bạn lấy từ employeeRepository
+                Employee bacSiKhamVaTiem = employeeRepository.findByMaNhanSu("NV-001").orElse(null);
+                Employee dieuDuong = employeeRepository.findByMaNhanSu("NV-002").orElse(null);
+                Employee tiepDon = employeeRepository.findByMaNhanSu("NV-003").orElse(null);
+                KhachHang khachHang1 = khachHangRepository.findByMaKhachHang("KH-001").orElse(null);
+                KhachHang khachHang2 = khachHangRepository.findByMaKhachHang("KH-002").orElse(null);
+                KhachHang khachHang3 = khachHangRepository.findByMaKhachHang("KH-003").orElse(null);
+
+                // Hoặc nếu dùng getReferenceById (Proxy - không query DB ngay):
+                // Employee bacSiKhamVaTiem = employeeRepository.getReferenceById(1L);
+                // Employee dieuDuong = employeeRepository.getReferenceById(2L);
+                // Employee tiepDon = employeeRepository.getReferenceById(4L);
+
+                // --- Lịch sử tiêm 1 ---
                 LichSuTiem lst1 = new LichSuTiem();
                 lst1.setMaTiem("TIEM-2026-001");
                 lst1.setIdVaccine(1L);
@@ -361,21 +335,21 @@ public class DataSeeder implements CommandLineRunner {
                 lst1.setSoMuiTiem(1);
                 lst1.setNgayTiem(LocalDate.now().minusDays(2));
                 lst1.setTrangThai("HOAN_THANH");
-                lst1.getKhachHangSet().add(k1);
-                k1.getLichSuTiemSet().add(lst1);
-                lichSuTiemRepository.save(lst1);
-                khachHangRepository.save(k1);
+                lst1.setKhachHang(k1);
 
+                // --- Hồ sơ 1 ---
                 HoSo hs1 = new HoSo();
                 hs1.setMaHoSo("HS-2026-001");
-                hs1.setIdBacSiKham(1L);
-                hs1.setIdBacSiTiem(1L);
-                hs1.setIdDieuDuong(2L);
-                hs1.setIdTiepDon(4L);
+                hs1.setKhachHang(k1);
+                hs1.setBacSiKham(bacSiKhamVaTiem);
+                hs1.setBacSiTiem(bacSiKhamVaTiem);
+                hs1.setDieuDuong(dieuDuong);
+                hs1.setTiepDon(tiepDon);
                 hs1.setGhiChuTheoDoi("Trẻ khỏe mạnh, không sốt, phản ứng bình thường sau tiêm.");
-                hs1.setLichSuTiem(lst1);
+                hs1.addLichSuTiem(lst1);
                 hoSoRepository.save(hs1);
 
+                // --- Lịch sử tiêm 2 ---
                 LichSuTiem lst2 = new LichSuTiem();
                 lst2.setMaTiem("TIEM-2026-002");
                 lst2.setIdVaccine(2L);
@@ -383,20 +357,41 @@ public class DataSeeder implements CommandLineRunner {
                 lst2.setSoMuiTiem(1);
                 lst2.setNgayTiem(LocalDate.now().minusDays(1));
                 lst2.setTrangThai("HOAN_THANH");
-                lst2.getKhachHangSet().add(k2);
-                k2.getLichSuTiemSet().add(lst2);
-                lichSuTiemRepository.save(lst2);
-                khachHangRepository.save(k2);
+                lst2.setKhachHang(k2);
 
+                // --- Hồ sơ 2 ---
                 HoSo hs2 = new HoSo();
                 hs2.setMaHoSo("HS-2026-002");
-                hs2.setIdBacSiKham(1L);
-                hs2.setIdBacSiTiem(1L);
-                hs2.setIdDieuDuong(2L);
-                hs2.setIdTiepDon(4L);
+                hs2.setKhachHang(k2);
+                hs2.setBacSiKham(bacSiKhamVaTiem);
+                hs2.setBacSiTiem(bacSiKhamVaTiem);
+                hs2.setDieuDuong(dieuDuong);
+                hs2.setTiepDon(tiepDon);
                 hs2.setGhiChuTheoDoi("Khám sàng lọc đủ điều kiện tiêm chủng.");
-                hs2.setLichSuTiem(lst2);
+                hs2.addLichSuTiem(lst2);
                 hoSoRepository.save(hs2);
+
+                // --- Lịch sử tiêm 3 ---
+                LichSuTiem lst3 = new LichSuTiem();
+                lst3.setMaTiem("TIEM-2026-003");
+                lst3.setIdVaccine(2L);
+                lst3.setIdLoVaccine(3L);
+                lst3.setSoMuiTiem(1);
+                lst3.setNgayTiem(LocalDate.now().minusDays(1));
+                lst3.setTrangThai("HOAN_THANH");
+                lst3.setKhachHang(k3);
+
+                // --- Hồ sơ 3 ---
+                HoSo hs3 = new HoSo();
+                hs3.setMaHoSo("HS-2026-003");
+                hs3.setKhachHang(k3);
+                hs3.setBacSiKham(bacSiKhamVaTiem);
+                hs3.setBacSiTiem(bacSiKhamVaTiem);
+                hs3.setDieuDuong(dieuDuong);
+                hs3.setTiepDon(tiepDon);
+                hs3.setGhiChuTheoDoi("Khám sàng lọc đủ điều kiện tiêm chủng.");
+                hs3.addLichSuTiem(lst3);
+                hoSoRepository.save(hs3);
 
                 log.info(">>> [Tiem Chung] Da khoi tao 3 khach hang, 2 lich su tiem va 2 ho so");
             }
