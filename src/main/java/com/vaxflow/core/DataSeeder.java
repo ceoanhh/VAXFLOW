@@ -1,6 +1,7 @@
 package com.vaxflow.core;
 
 import com.vaxflow.core.entity.Admin;
+import com.vaxflow.core.entity.Role;
 import com.vaxflow.customer.entity.HoSo;
 import com.vaxflow.customer.entity.KhachHang;
 import com.vaxflow.customer.entity.LichSuTiem;
@@ -116,10 +117,33 @@ public class DataSeeder implements CommandLineRunner {
             Admin admin = new Admin();
             admin.setTenDangNhap(defaultUsername);
             admin.setMatKhau(passwordEncoder.encode("admin123"));
+            admin.setMatKhauHienThi("admin123");
             admin.setHoTen("Quản trị viên hệ thống");
+            admin.setVaiTro(Role.ROLE_ADMIN);
+            admin.setEmail("admin@vaxflow.vn");
+            admin.setSoDienThoai("0988888888");
             admin.setTrangThai(true);
             adminRepository.save(admin);
             log.info(">>> [He Thong] Da tao tai khoan Admin: admin / admin123");
+        } else {
+            adminRepository.findByTenDangNhap(defaultUsername).ifPresent(admin -> {
+                boolean updated = false;
+                if (admin.getMatKhauHienThi() == null) {
+                    admin.setMatKhauHienThi("admin123");
+                    updated = true;
+                }
+                if (admin.getEmail() == null) {
+                    admin.setEmail("admin@vaxflow.vn");
+                    updated = true;
+                }
+                if (admin.getSoDienThoai() == null) {
+                    admin.setSoDienThoai("0988888888");
+                    updated = true;
+                }
+                if (updated) {
+                    adminRepository.save(admin);
+                }
+            });
         }
     }
 
