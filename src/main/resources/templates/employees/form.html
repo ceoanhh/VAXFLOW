@@ -47,12 +47,13 @@
                         </div>
 
                         <!-- Mã nhân sự -->
-                        <div class="col-md-4">
+                         <!-- <div class="col-md-4">
                             <label for="maNhanSu" class="form-label fw-semibold">Mã Nhân Sự <span class="text-danger">*</span></label>
                             <input type="text" id="maNhanSu" th:field="*{maNhanSu}" class="form-control font-monospace"
                                    placeholder="Ví dụ: NV-005" required>
                             <div class="form-text small">Mã định danh duy nhất trong toàn hệ thống.</div>
-                        </div>
+                        </div> -->
+                        
 
                         <!-- Họ và tên -->
                         <div class="col-md-5">
@@ -123,28 +124,34 @@
                             </h5>
                         </div>
 
-                        <!-- Chức vụ -->
-                        <div class="col-md-4">
-                            <label for="chucVu" class="form-label fw-semibold">Chức Vụ Chuyên Môn <span class="text-danger">*</span></label>
-                            <select id="chucVu" th:field="*{chucVu}" class="form-select" required>
-                                <option value="" disabled>-- Chọn chức vụ --</option>
-                                <option value="DOCTOR">Bác Sĩ (DOCTOR)</option>
-                                <option value="NURSE">Điều Dưỡng (NURSE)</option>
-                                <option value="STAFF">Nhân Viên Y Tế / Dược Sĩ (STAFF)</option>
-                                <option value="MANAGER">Quản Lý / Trưởng Bộ Phận (MANAGER)</option>
-                            </select>
-                        </div>
-
                         <!-- Phòng ban -->
                         <div class="col-md-4">
                             <label for="phongBanSelect" class="form-label fw-semibold">Phòng Ban Trực Thuộc <span class="text-danger">*</span></label>
                             <select id="phongBanSelect" name="departmentId" class="form-select" required>
-                                <option value="" disabled>-- Chọn phòng ban --</option>
+                                <option value="" selected disabled>-- Chọn phòng ban --</option>
                                 <option th:each="dept : ${departments}"
                                         th:value="${dept.id}"
                                         th:text="${dept.ten}"
                                         th:selected="${employee.idPhongBan != null and employee.idPhongBan == dept.id}">
                                 </option>
+                            </select>
+                        </div>
+
+                        <!-- Chức vụ -->
+                        <div class="col-md-4">
+                            <label for="chucVu" class="form-label fw-semibold">Chức Vụ Chuyên Môn <span class="text-danger">*</span></label>
+                            <select id="chucVu" name="chucVu" class="form-select" required>
+                                <!-- Nếu chucVu null (thêm mới), dòng này sẽ được chọn -->
+                                <option value="" th:selected="${employee.chucVu == null}" disabled>-- Chọn chức vụ --</option>
+                                
+                                <!-- Các lựa chọn bên dưới sẽ tự bắt đúng giá trị Enum cũ khi sửa hồ sơ -->
+                                <option value="GIAM_DOC" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'GIAM_DOC'}">Giám đốc</option>
+                                <option value="PHO_GIAM_DOC" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'PHO_GIAM_DOC'}">Phó giám đốc</option>
+                                <option value="TRUONG_PHONG" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'TRUONG_PHONG'}">Trưởng phòng</option>
+                                <option value="PHO_PHONG" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'PHO_PHONG'}">Phó phòng</option>
+                                <option value="BAC_SI" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'BAC_SI'}">Bác sĩ</option>
+                                <option value="DIEU_DUONG" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'DIEU_DUONG'}">Điều dưỡng</option>
+                                <option value="NHAN_VIEN" th:selected="${employee.chucVu != null and employee.chucVu.name() == 'NHAN_VIEN'}">Nhân viên</option>
                             </select>
                         </div>
 
@@ -179,7 +186,7 @@
                 </form>
             </div>
         </div>
-
+       
     </div>
 </body>
 </html>

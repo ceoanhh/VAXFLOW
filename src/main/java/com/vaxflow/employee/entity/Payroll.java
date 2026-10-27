@@ -23,6 +23,9 @@ public class Payroll {
     @JoinColumn(name = "id_nhan_su", nullable = false)
     private Employee nhanSu;
 
+    @Column(name = "ma_bang_luong", nullable = false)
+    private String maBangLuong;
+
     @Column(name = "thang", nullable = false)
     private Integer thang;
 
@@ -32,11 +35,17 @@ public class Payroll {
     @Column(name = "luong_cung", nullable = false, precision = 15, scale = 0)
     private BigDecimal luongCung;
 
-    @Column(name = "thuong", nullable = false, precision = 15, scale = 0)
+    @Column(name = "thuong", nullable = true, precision = 15, scale = 0)
     private BigDecimal thuong;
 
-    @Column(name = "khau_tru", nullable = false, precision = 15, scale = 0)
+    @Column(name = "ly_do_thuong", nullable = true)
+    private String lyDoThuong;
+
+    @Column(name = "khau_tru", nullable = true, precision = 15, scale = 0)
     private BigDecimal khauTru;
+
+    @Column(name = "ly_do_khau_tru", nullable = true)
+    private String lyDoKhauTru;
 
     @Column(name = "thuc_nhan", nullable = false, precision = 15, scale = 0)
     private BigDecimal thucNhan;
@@ -47,6 +56,14 @@ public class Payroll {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getMaBangLuong() {
+        return maBangLuong;
+    }
+
+    public void setMaBangLuong(String maBangLuong) {
+        this.maBangLuong = maBangLuong;
     }
 
     public Employee getNhanSu() {
@@ -89,12 +106,28 @@ public class Payroll {
         this.thuong = thuong;
     }
 
+    public String getLyDoThuong() {
+        return lyDoThuong;
+    }
+
+    public void setLyDoThuong(String lyDoThuong) {
+        this.lyDoThuong = lyDoThuong;
+    }
+
     public BigDecimal getKhauTru() {
         return khauTru;
     }
 
     public void setKhauTru(BigDecimal khauTru) {
         this.khauTru = khauTru;
+    }
+
+    public String getLyDoKhauTru() {
+        return lyDoKhauTru;
+    }
+
+    public void setLyDoKhauTru(String lyDoKhauTru) {
+        this.lyDoKhauTru = lyDoKhauTru;
     }
 
     public BigDecimal getThucNhan() {

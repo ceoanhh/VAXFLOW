@@ -2,31 +2,32 @@ package com.vaxflow.employee.controller;
 
 import com.vaxflow.employee.dto.DepartmentDTO;
 import com.vaxflow.employee.dto.EmployeeDTO;
+import com.vaxflow.employee.dto.PayrollDTO;
 import com.vaxflow.employee.entity.Gender;
 import com.vaxflow.employee.entity.Position;
 import com.vaxflow.employee.service.DepartmentService;
 import com.vaxflow.employee.service.EmployeeService;
+import com.vaxflow.employee.service.PayrollService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.Comparator;
 
 import java.util.List;
 
-/**
- * Controller phu trach phan he Nhan su & Phong ban y te
- * Route prefix: /employees
- */
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
+    private final PayrollService payrollService;
 
-    public EmployeeController(EmployeeService employeeService, DepartmentService departmentService) {
+    public EmployeeController(EmployeeService employeeService, DepartmentService departmentService, PayrollService payrollService) {
         this.employeeService = employeeService;
         this.departmentService = departmentService;
+        this.payrollService = payrollService;
     }
 
     @GetMapping
@@ -108,6 +109,17 @@ public class EmployeeController {
             }
             model.addAttribute("employee", employee);
             model.addAttribute("department", department);
+            // Lấy danh sách lương của nhân viên này, sắp xếp mới nhất lên đầu
+            List<PayrollDTO> payrolls = payrollService.getAll().stream()
+                    .filter(p -> p.getIdNhanSu() != null && p.getIdNhanSu().equals(id))
+                    .sorted(Comparator.comparing(PayrollDTO::getMaBangLuong).reversed()) 
+                    .toList();
+
+            // Lấy bản ghi đầu tiên (mới nhất), nếu không có thì gán null
+            PayrollDTO latestPayroll = payrolls.isEmpty() ? null : payrolls.get(0);
+
+            // Truyền ra ngoài giao diện HTML
+            model.addAttribute("latestPayroll", latestPayroll);
             return "employees/detail";
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy nhân viên với ID: " + id);
@@ -117,24 +129,47 @@ public class EmployeeController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute("employee") EmployeeDTO employeeDTO,
-                       @RequestParam(value = "departmentId", required = false) Long departmentId,
-                       RedirectAttributes redirectAttributes) {
+                    @RequestParam(value = "departmentId", required = false) Long departmentId,
+                    RedirectAttributes redirectAttributes,
+                    Model model) { // 1. Bổ sung tham số Model vào đây
         try {
-            if (departmentId != null) {
-                employeeDTO.setIdPhongBan(departmentId);
-            }
+            if (departmentId != null) employeeDTO.setIdPhongBan(departmentId);
+            
             boolean isNew = (employeeDTO.getId() == null);
             if (isNew) {
                 employeeService.create(employeeDTO);
                 redirectAttributes.addFlashAttribute("successMessage", "Thêm mới nhân sự thành công!");
             } else {
                 employeeService.update(employeeDTO.getId(), employeeDTO);
-                redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hồ sơ nhân sự thành công!");
+                redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hồ sơ thành công!");
             }
             return "redirect:/employees";
-        } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi lưu dữ liệu: " + ex.getMessage());
-            return employeeDTO.getId() == null ? "redirect:/employees/new" : "redirect:/employees/edit/" + employeeDTO.getId();
+            
+        } catch (RuntimeException ex) {
+            // 2. Truyền trực tiếp thông báo lỗi vào Model hiện tại
+            model.addAttribute("errorMessage", ex.getMessage());
+            
+            // 3. Nạp lại các danh sách dropdown để form HTML không bị sập (lấy y hệt như hàm createForm)
+            model.addAttribute("departments", departmentService.getAll());
+            model.addAttribute("positions", Position.values());
+            model.addAttribute("genders", Gender.values());
+            model.addAttribute("isEdit", employeeDTO.getId() != null);
+            
+            // TÙY CHỌN: Nếu bạn muốn tự động xóa trắng ô CCCD khi có lỗi trùng CCCD
+            if (ex.getMessage() != null) {
+                if (ex.getMessage().toLowerCase().contains("cccd") || ex.getMessage().toLowerCase().contains("unique")) {
+                    employeeDTO.setCccd(""); 
+                }
+                if (ex.getMessage().toLowerCase().contains("sđt") || ex.getMessage().toLowerCase().contains("điện thoại")) {
+                    employeeDTO.setSdt(""); 
+                }
+                if (ex.getMessage().toLowerCase().contains("email")) {
+                    employeeDTO.setEmail(""); 
+                }
+            }
+            
+            // 4. Trả thẳng về view HTML (KHÔNG dùng "redirect:")
+            return "employees/form";
         }
     }
 
@@ -147,5 +182,60 @@ public class EmployeeController {
             redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa nhân viên do có dữ liệu liên kết!");
         }
         return "redirect:/employees";
+    }
+
+    @PostMapping("/{id}/payrolls/save")
+    public String savePayroll(@PathVariable Long id, @ModelAttribute("payroll") PayrollDTO payrollDTO) {
+        payrollDTO.setIdNhanSu(id); 
+        payrollService.create(payrollDTO);
+        return "redirect:/employees/" + id + "/payrolls";
+    }
+
+    @GetMapping("/{id}/payrolls/create")
+    public String showCreatePayrollForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            EmployeeDTO employee = employeeService.getById(id);
+            PayrollDTO payroll = new PayrollDTO();
+            
+            // Tự động điền mức lương cứng từ hồ sơ nhân viên vào form
+            payroll.setLuongCung(employee.getLuongCung());
+            
+            model.addAttribute("employee", employee);
+            model.addAttribute("payroll", payroll);
+            return "employees/payroll_form";
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy nhân viên.");
+            return "redirect:/employees";
+        }
+    }
+
+    // 2. Hàm mở màn hình Xem tất cả lịch sử bảng lương
+    @GetMapping("/{id}/payrolls")
+    public String showAllPayrolls(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            EmployeeDTO employee = employeeService.getById(id);
+            
+            // Tạm thời dùng Stream để lọc bảng lương của đúng nhân viên này từ getAll()
+            List<PayrollDTO> payrolls = payrollService.getAll().stream()
+                    .filter(p -> p.getIdNhanSu() != null && p.getIdNhanSu().equals(id))
+                    .sorted(Comparator.comparing(PayrollDTO::getMaBangLuong).reversed()) 
+                    .toList();
+            
+            model.addAttribute("employee", employee);
+            model.addAttribute("payrolls", payrolls);
+            return "employees/payrolls_history";
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy dữ liệu.");
+            return "redirect:/employees";
+        }
+    }
+
+    @GetMapping("/{empId}/payrolls/delete/{payrollId}")
+    public String deletePayroll(@PathVariable("empId") Long empId, @PathVariable("payrollId") Long payrollId) {
+        // Gọi hàm xóa bảng lương
+        payrollService.delete(payrollId);
+        
+        // Xóa xong thì load lại (redirect) về trang lịch sử lương của nhân viên đó
+        return "redirect:/employees/" + empId + "/payrolls";
     }
 }

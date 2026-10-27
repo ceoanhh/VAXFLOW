@@ -7,9 +7,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.vaxflow.core.entity.BaseEntity;
 
@@ -17,13 +21,13 @@ import com.vaxflow.core.entity.BaseEntity;
 @Table(name = "employees")
 public class Employee extends BaseEntity {
 
-    @Column(name = "ma_nhan_su", nullable = false, unique = true, length = 50)
+    @Column(name = "ma_nhan_su", nullable = false, unique = true, length = 6)
     private String maNhanSu;
 
     @Column(name = "ho_va_ten", nullable = false, length = 150)
     private String hoVaTen;
 
-    @Column(name = "cccd", nullable = false, unique = true, length = 20)
+    @Column(name = "cccd", nullable = false, unique = true, length = 12)
     private String cccd;
 
     @Column(name = "ngay_sinh", nullable = false)
@@ -36,10 +40,10 @@ public class Employee extends BaseEntity {
     @Column(name = "dia_chi", length = 255)
     private String diaChi;
 
-    @Column(name = "sdt", nullable = false, length = 20)
+    @Column(name = "sdt", nullable = false, unique = true, length = 10)
     private String sdt;
 
-    @Column(name = "email", length = 150)
+    @Column(name = "email", unique = true, length = 150)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -55,6 +59,18 @@ public class Employee extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_phong_ban", nullable = false)
     private Department phongBan;
+
+    @OneToMany(mappedBy = "nhanSu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Payroll> danhSachLuong = new ArrayList<>();
+
+    // Đừng quên thêm Getter và Setter ở cuối class
+    public List<Payroll> getDanhSachLuong() {
+        return danhSachLuong;
+    }
+
+    public void setDanhSachLuong(List<Payroll> danhSachLuong) {
+        this.danhSachLuong = danhSachLuong;
+    }
 
     public String getMaNhanSu() {
         return maNhanSu;

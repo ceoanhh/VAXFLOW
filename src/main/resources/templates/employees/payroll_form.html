@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Tạo Bảng Lương - VaxFlow</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        
+        <!-- Top Header & Breadcrumb -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}" class="text-decoration-none">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/employees}" class="text-decoration-none">Nhân Sự</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{'/employees/detail/' + ${employee.id}}" class="text-decoration-none" th:text="${employee.hoVaTen}">Tên</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Tạo Bảng Lương</li>
+                    </ol>
+                </nav>
+                <h3 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-file-earmark-spreadsheet text-primary me-2"></i>Khởi Tạo Kỳ Lương
+                </h3>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a th:href="@{'/employees/detail/' + ${employee.id}}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm">
+                    <i class="bi bi-arrow-left"></i> Quay lại hồ sơ
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 p-md-5">
+                
+                <div class="mb-4 bg-light p-3 rounded-3 border">
+                    <h6 class="fw-bold mb-1">Nhân viên: <span class="text-primary fs-5" th:text="${employee.hoVaTen}"></span></h6>
+                    <span class="text-muted small">Mã NV: <span class="font-monospace" th:text="${employee.maNhanSu}"></span></span>
+                </div>
+
+                <form th:action="@{'/employees/' + ${employee.id} + '/payrolls/save'}" th:object="${payroll}" method="post">
+                    <div class="row g-4">
+                        
+                        <!-- Phần 1: Lương Cơ Bản -->
+                        <div class="col-12">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-calendar-month me-2"></i>1. Kỳ Lương & Mức Lương Cơ Bản
+                            </h5>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Tháng <span class="text-danger">*</span></label>
+                            <input type="number" th:field="*{thang}" class="form-control" min="1" max="12" required placeholder="Ví dụ: 10">
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Năm <span class="text-danger">*</span></label>
+                            <input type="number" th:field="*{nam}" class="form-control" min="2000" required placeholder="Ví dụ: 2026">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Lương Cứng (VNĐ) <span class="text-danger">*</span></label>
+                            <input type="number" th:field="*{luongCung}" class="form-control bg-light font-monospace" required readonly>
+                            <div class="form-text small">Hệ thống tự động trích xuất từ hồ sơ.</div>
+                        </div>
+
+                        <!-- Phần 2: Biến Động -->
+                        <div class="col-12 mt-4">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-calculator me-2"></i>2. Biến Động Lương (Tùy Chọn)
+                            </h5>
+                        </div>
+
+                        <!-- Cột Thưởng -->
+                        <div class="col-md-6">
+                            <div class="p-4 border rounded-4 bg-success bg-opacity-10 h-100 border-success-subtle">
+                                <label class="form-label text-success fw-bold">Tổng Thưởng (VNĐ)</label>
+                                <input type="number" th:field="*{thuong}" class="form-control border-success mb-3 font-monospace" placeholder="0" min="0">
+                                
+                                <label class="form-label text-muted small fw-semibold">Chi tiết lý do thưởng</label>
+                                <textarea th:field="*{lyDoThuong}" class="form-control border-success-subtle" rows="2" placeholder="Ví dụ: Thưởng vượt KPIs, thưởng dự án..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Cột Khấu Trừ -->
+                        <div class="col-md-6">
+                            <div class="p-4 border rounded-4 bg-danger bg-opacity-10 h-100 border-danger-subtle">
+                                <label class="form-label text-danger fw-bold">Tổng Khấu Trừ / Phạt (VNĐ)</label>
+                                <input type="number" th:field="*{khauTru}" class="form-control border-danger mb-3 font-monospace" placeholder="0" min="0">
+                                
+                                <label class="form-label text-muted small fw-semibold">Chi tiết lý do khấu trừ</label>
+                                <textarea th:field="*{lyDoKhauTru}" class="form-control border-danger-subtle" rows="2" placeholder="Ví dụ: Đi muộn, khấu trừ BHXH..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Nút Action -->
+                        <div class="col-12 mt-4 pt-3 border-top d-flex gap-2 justify-content-end align-items-center">
+                            <div class="text-muted small me-auto d-none d-md-block">
+                                <i class="bi bi-info-circle me-1"></i> Mã Bảng Lương và Tổng Thực Nhận sẽ được tự động tính sau khi lưu.
+                            </div>
+                            <a th:href="@{'/employees/detail/' + ${employee.id}}" class="btn btn-outline-secondary px-4 fw-semibold">
+                                <i class="bi bi-x-circle me-1"></i> Hủy Bỏ
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                                <i class="bi bi-check2-circle me-1"></i> Xác Nhận Tạo Bảng Lương
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const thuongInput = document.getElementById('thuong');
+                const lyDoThuongInput = document.getElementById('lyDoThuong');
+                const khauTruInput = document.getElementById('khauTru');
+                const lyDoKhauTruInput = document.getElementById('lyDoKhauTru');
+
+                function validateReasons() {
+                    // Dùng (parseFloat(...) || 0) để tránh lỗi NaN khi người dùng xóa trắng ô nhập
+                    if(thuongInput && lyDoThuongInput) {
+                        lyDoThuongInput.required = ((parseFloat(thuongInput.value) || 0) > 0);
+                    }
+                    if(khauTruInput && lyDoKhauTruInput) {
+                        lyDoKhauTruInput.required = ((parseFloat(khauTruInput.value) || 0) > 0);
+                    }
+                }
+
+                // Gọi hàm 1 lần ngay khi load trang để bắt các giá trị mặc định
+                validateReasons();
+
+                // Lắng nghe sự kiện gõ phím
+                if(thuongInput) thuongInput.addEventListener('input', validateReasons);
+                if(khauTruInput) khauTruInput.addEventListener('input', validateReasons);
+            });
+        </script>
+
+    </div>
+</body>
+</html>

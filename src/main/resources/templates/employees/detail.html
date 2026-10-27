@@ -128,6 +128,61 @@
                     </div>
                 </div>
 
+                <div class="card mt-4 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary"><i class="fas fa-money-bill-wave"></i> Bảng Lương Gần Nhất</h5>
+                        <div>
+                            <a th:href="@{/employees/{id}/payrolls(id=${employee.id})}" class="btn btn-sm btn-outline-primary me-2">
+                                <i class="fas fa-history"></i> Xem lịch sử
+                            </a>
+                            <a th:href="@{/employees/{id}/payrolls/create(id=${employee.id})}" class="btn btn-sm btn-success">
+                                <i class="fas fa-plus"></i> Tạo bảng lương
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-0">
+                        <div th:if="${latestPayroll == null}" class="p-4 text-center text-muted">
+                            <em>Nhân viên này chưa có dữ liệu tính lương.</em>
+                        </div>
+
+                        <table th:if="${latestPayroll != null}" class="table table-bordered mb-0">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%" class="bg-light">Mã Bảng Lương</th>
+                                    <td class="fw-bold text-secondary" th:text="${latestPayroll.maBangLuong}"></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Kỳ lương (Tháng/Năm)</th>
+                                    <td th:text="${latestPayroll.thang + '/' + latestPayroll.nam}"></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Lương cứng</th>
+                                    <td th:text="${#numbers.formatDecimal(latestPayroll.luongCung, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-success">Thưởng (+)</th>
+                                    <td>
+                                        <strong class="text-success" th:text="${#numbers.formatDecimal(latestPayroll.thuong, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+                                        <div class="small text-muted mt-1" th:if="${latestPayroll.lyDoThuong != null and !latestPayroll.lyDoThuong.isEmpty()}" th:text="'Lý do: ' + ${latestPayroll.lyDoThuong}"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-danger">Khấu trừ (-)</th>
+                                    <td>
+                                        <strong class="text-danger" th:text="${#numbers.formatDecimal(latestPayroll.khauTru, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+                                        <div class="small text-muted mt-1" th:if="${latestPayroll.lyDoKhauTru != null and !latestPayroll.lyDoKhauTru.isEmpty()}" th:text="'Lý do: ' + ${latestPayroll.lyDoKhauTru}"></div>
+                                    </td>
+                                </tr>
+                                <tr class="table-primary">
+                                    <th>TỔNG THỰC NHẬN</th>
+                                    <td><strong class="fs-5 text-primary" th:text="${#numbers.formatDecimal(latestPayroll.thucNhan, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="card border-0 shadow-sm rounded-4 p-4">
                     <h5 class="fw-bold text-primary mb-3">
                         <i class="bi bi-clock-history me-2"></i>Dữ Liệu Hệ Thống

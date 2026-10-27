@@ -80,14 +80,14 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light text-muted small text-uppercase">
                             <tr>
-                                <th class="ps-4" style="width: 60px;">STT</th>
-                                <th>Mã NV</th>
-                                <th>Họ Và Tên</th>
-                                <th>Chức Vụ</th>
-                                <th>Phòng Ban</th>
-                                <th>Liên Hệ</th>
-                                <th>Lương Cứng</th>
-                                <th class="text-end pe-4" style="width: 160px;">Hành Động</th>
+                                <th class="ps-4" style="width: 5%;">STT</th>
+                                <th style="width: 9%;">Mã NV</th>
+                                <th style="width: 22%;">Họ Và Tên</th>
+                                <th style="width: 13%;">Chức Vụ</th>
+                                <th style="width: 16%;">Phòng Ban</th>
+                                <th style="width: 16%;">Liên Hệ</th>
+                                <th style="width: 110px; white-space: nowrap;">Lương Cứng</th>
+                                <th class="text-end pe-4" style="width: 110px;">Hành Động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -107,40 +107,47 @@
                             <!-- Data Rows -->
                             <tr th:each="emp, stat : ${employees}">
                                 <td class="ps-4 text-muted fw-semibold" th:text="${stat.count}">1</td>
-                                <td>
-                                    <span class="badge bg-light text-dark font-monospace border px-2 py-1"
-                                          th:text="${emp.maNhanSu}">NV-001</span>
+                                <td class="font-monospace fw-medium text-dark" th:text="${emp.maNhanSu}">
+                                    
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center"
-                                             style="width: 36px; height: 36px; font-size: 0.85rem;"
-                                             th:text="${#strings.substring(emp.hoVaTen, 0, 1)}">N</div>
-                                        <div>
-                                            <a th:href="@{'/employees/detail/' + ${emp.id}}"
-                                               class="fw-bold text-decoration-none text-dark hover-primary"
-                                               th:text="${emp.hoVaTen}">Nguyễn Văn An</a>
-                                            <div class="text-muted small" style="font-size: 0.75rem;">
-                                                CCCD: <span th:text="${emp.cccd}">001200001234</span>
-                                            </div>
+                                    <!-- Đã xóa cục avatar tròn ở đây -->
+                                    <div>
+                                        <a th:href="@{'/employees/detail/' + ${emp.id}}"
+                                           class="fw-bold text-decoration-none text-dark hover-primary"
+                                           th:text="${emp.hoVaTen}">Nguyễn Văn An</a>
+                                        <div class="text-muted small" style="font-size: 0.75rem;">
+                                            CCCD: <span th:text="${emp.cccd}">001200001234</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <!-- Position Badge -->
-                                    <span th:if="${emp.chucVu.name() == 'DOCTOR'}"
+                                    <!-- Position Badge Tiếng Việt -->
+                                    <span th:if="${emp.chucVu.name() == 'GIAM_DOC'}"
+                                          class="badge bg-warning-subtle text-warning-emphasis px-2 py-1">
+                                        <i class="bi bi-person-badge-fill me-1"></i> Giám Đốc
+                                    </span>
+                                    <span th:if="${emp.chucVu.name() == 'PHO_GIAM_DOC'}"
+                                          class="badge bg-warning-subtle text-warning-emphasis px-2 py-1">
+                                        <i class="bi bi-person-badge me-1"></i> Phó Giám Đốc
+                                    </span>
+                                    <span th:if="${emp.chucVu.name() == 'TRUONG_PHONG'}"
+                                          class="badge bg-danger-subtle text-danger px-2 py-1">
+                                        <i class="bi bi-star-fill me-1"></i> Trưởng Phòng
+                                    </span>
+                                    <span th:if="${emp.chucVu.name() == 'PHO_PHONG'}"
+                                          class="badge bg-danger-subtle text-danger px-2 py-1">
+                                        <i class="bi bi-star-half me-1"></i> Phó Phòng
+                                    </span>
+                                    <span th:if="${emp.chucVu.name() == 'BAC_SI'}"
                                           class="badge bg-primary-subtle text-primary px-2 py-1">
                                         <i class="bi bi-heart-pulse-fill me-1"></i> Bác Sĩ
                                     </span>
-                                    <span th:if="${emp.chucVu.name() == 'NURSE'}"
+                                    <span th:if="${emp.chucVu.name() == 'DIEU_DUONG'}"
                                           class="badge bg-info-subtle text-info px-2 py-1">
                                         <i class="bi bi-clipboard2-pulse me-1"></i> Điều Dưỡng
                                     </span>
-                                    <span th:if="${emp.chucVu.name() == 'MANAGER'}"
-                                          class="badge bg-warning-subtle text-warning-emphasis px-2 py-1">
-                                        <i class="bi bi-person-badge-fill me-1"></i> Quản Lý
-                                    </span>
-                                    <span th:if="${emp.chucVu.name() == 'STAFF'}"
+                                    <span th:if="${emp.chucVu.name() == 'NHAN_VIEN'}"
                                           class="badge bg-secondary-subtle text-secondary px-2 py-1">
                                         <i class="bi bi-person-fill me-1"></i> Nhân Viên
                                     </span>
@@ -156,26 +163,30 @@
                                         <i class="bi bi-envelope text-muted me-1"></i><span th:text="${emp.email}">email@vaxflow.vn</span>
                                     </div>
                                 </td>
-                                <td>
+                                
+                                <!-- Cột Lương Cứng (Đã ép nowrap) -->
+                                <td style="white-space: nowrap;">
                                     <span class="fw-bold text-success font-monospace"
                                           th:text="${#numbers.formatDecimal(emp.luongCung, 0, 'POINT', 0, 'COMMA') + ' đ'}">
-                                        25,000,000 đ
+                                        25.000.000 đ
                                     </span>
                                 </td>
-                                <td class="text-end pe-4">
-                                    <div class="btn-group btn-group-sm">
+                                
+                                <!-- Cột Hành Động (Đã ép nowrap và dùng flex) -->
+                                <td class="text-end pe-4" style="white-space: nowrap;">
+                                    <div class="d-flex justify-content-end gap-1">
                                         <a th:href="@{'/employees/detail/' + ${emp.id}}"
-                                           class="btn btn-outline-info" title="Xem chi tiết">
+                                           class="btn btn-sm btn-outline-info px-2" title="Xem chi tiết">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         <a th:href="@{'/employees/edit/' + ${emp.id}}"
-                                           class="btn btn-outline-primary" title="Chỉnh sửa">
+                                           class="btn btn-sm btn-outline-primary px-2" title="Chỉnh sửa">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <form th:action="@{'/employees/delete/' + ${emp.id}}" method="post"
-                                              class="d-inline"
-                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên ' + /*[[${emp.hoVaTen}]]*/ 'này' + ' không?');">
-                                            <button type="submit" class="btn btn-outline-danger" title="Xóa">
+                                              class="m-0 p-0"
+                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên này không?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger px-2" title="Xóa">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

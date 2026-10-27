@@ -128,88 +128,187 @@ public class DataSeeder implements CommandLineRunner {
      */
     private void seedDepartmentsAndEmployees() {
         if (departmentRepository.count() == 0) {
+            
+            // 1. Ban Giám đốc
             Department d1 = new Department();
-            d1.setTen("Phòng Khám & Tiêm Chủng");
-            d1.setGhiChu("Khám sàng lọc trước tiêm và thực hiện tiêm chủng");
-            departmentRepository.save(d1);
+            d1.setTen("Ban Giám đốc");
+            d1.setGhiChu("Ban giám đốc và điều phối trung tâm");
+            d1 = departmentRepository.save(d1);
 
+            // 2. Phòng Khám - Tiêm chủng
             Department d2 = new Department();
-            d2.setTen("Phòng Dược & Kho Vắc Xin");
-            d2.setGhiChu("Bảo quản dây chuyền lạnh GSP");
-            departmentRepository.save(d2);
+            d2.setTen("Phòng Khám - Tiêm chủng");
+            d2.setGhiChu("Khám sàng lọc trước tiêm và thực hiện tiêm chủng");
+            d2 = departmentRepository.save(d2);
 
+            // 3. Phòng Dược - Kho thuốc
             Department d3 = new Department();
-            d3.setTen("Phòng Quản Lý & Điều Hành");
-            d3.setGhiChu("Ban giám đốc và điều phối trung tâm");
-            departmentRepository.save(d3);
+            d3.setTen("Phòng Dược - Kho thuốc");
+            d3.setGhiChu("Bảo quản dây chuyền lạnh GSP");
+            d3 = departmentRepository.save(d3);
 
+            // 4. Phòng Tài chính - Kế toán
             Department d4 = new Department();
-            d4.setTen("Phòng Kế Toán & Thu Ngân");
+            d4.setTen("Phòng Tài chính - Kế toán");
             d4.setGhiChu("Thu ngân và xuất hóa đơn");
-            departmentRepository.save(d4);
+            d4 = departmentRepository.save(d4);
+
+            // 5. Phòng Kỹ thuật
+            Department d5 = new Department();
+            d5.setTen("Phòng Kỹ thuật");
+            d5.setGhiChu("Quản trị hệ thống thông tin và phần mềm");
+            d5 = departmentRepository.save(d5);
+
+            // 6. Phòng Hành chính - Nhân sự
+            Department d6 = new Department();
+            d6.setTen("Phòng Hành chính - Nhân sự");
+            d6.setGhiChu("Quản lý hồ sơ nhân sự, lương thưởng");
+            d6 = departmentRepository.save(d6);
 
             if (employeeRepository.count() == 0) {
+                // E1: 1 Giám đốc (Thuộc Ban Giám đốc)
                 Employee e1 = new Employee();
-                e1.setMaNhanSu("NV-001");
-                e1.setHoVaTen("BS. Nguyễn Văn An");
-                e1.setCccd("001200001234");
-                e1.setNgaySinh(LocalDate.of(1985, 5, 20));
-                e1.setGioiTinh(Gender.MALE);
-                e1.setDiaChi("123 Hai Bà Trưng, Quận 1, TP. HCM");
-                e1.setSdt("0901234567");
-                e1.setEmail("vanan.nguyen@vaxflow.vn");
-                e1.setChucVu(Position.DOCTOR);
-                e1.setNgayVaoLam(LocalDate.of(2021, 1, 15));
-                e1.setLuongCung(new BigDecimal("25000000"));
+                e1.setMaNhanSu("VAX001");
+                e1.setHoVaTen("Phạm Thu Trang");
+                e1.setCccd("001200008888");
+                e1.setNgaySinh(LocalDate.of(1980, 3, 14));
+                e1.setGioiTinh(Gender.FEMALE);
+                e1.setDiaChi("12 Nguyễn Huệ, Quận 1, TP. HCM");
+                e1.setSdt("0934567890");
+                e1.setEmail("thutrang.pham@vaxflow.vn");
+                e1.setChucVu(Position.GIAM_DOC);
+                e1.setNgayVaoLam(LocalDate.of(2020, 10, 1));
+                e1.setLuongCung(new BigDecimal("30000000"));
                 e1.setPhongBan(d1);
                 employeeRepository.save(e1);
 
+                // E2: 1 Phó giám đốc (Thuộc Ban Giám đốc)
                 Employee e2 = new Employee();
-                e2.setMaNhanSu("NV-002");
-                e2.setHoVaTen("ĐD. Trần Thị Mai");
-                e2.setCccd("001200005678");
-                e2.setNgaySinh(LocalDate.of(1992, 8, 12));
-                e2.setGioiTinh(Gender.FEMALE);
-                e2.setDiaChi("45 Lê Duẩn, Quận Hải Châu, Đà Nẵng");
-                e2.setSdt("0912345678");
-                e2.setEmail("thimai.tran@vaxflow.vn");
-                e2.setChucVu(Position.NURSE);
-                e2.setNgayVaoLam(LocalDate.of(2022, 3, 1));
-                e2.setLuongCung(new BigDecimal("15000000"));
+                e2.setMaNhanSu("VAX002");
+                e2.setHoVaTen("Nguyễn Hoàng Dũng");
+                e2.setCccd("001200007777");
+                e2.setNgaySinh(LocalDate.of(1982, 5, 20));
+                e2.setGioiTinh(Gender.MALE);
+                e2.setDiaChi("123 Hai Bà Trưng, Quận 1, TP. HCM");
+                e2.setSdt("0901234567");
+                e2.setEmail("hoangdung.nguyen@vaxflow.vn");
+                e2.setChucVu(Position.PHO_GIAM_DOC);
+                e2.setNgayVaoLam(LocalDate.of(2021, 1, 15));
+                e2.setLuongCung(new BigDecimal("25000000"));
                 e2.setPhongBan(d1);
                 employeeRepository.save(e2);
 
+                // E3: 1 Trưởng phòng (Thuộc Phòng Khám - Tiêm chủng)
                 Employee e3 = new Employee();
-                e3.setMaNhanSu("NV-003");
-                e3.setHoVaTen("DS. Lê Hoàng Nam");
-                e3.setCccd("001200009999");
-                e3.setNgaySinh(LocalDate.of(1990, 11, 25));
+                e3.setMaNhanSu("VAX003");
+                e3.setHoVaTen("Lê Đình Duy Bảo");
+                e3.setCccd("001200001234");
+                e3.setNgaySinh(LocalDate.of(1985, 8, 12));
                 e3.setGioiTinh(Gender.MALE);
-                e3.setDiaChi("78 Trần Hưng Đạo, Hà Nội");
-                e3.setSdt("0987654321");
-                e3.setEmail("hoangnam.le@vaxflow.vn");
-                e3.setChucVu(Position.STAFF);
-                e3.setNgayVaoLam(LocalDate.of(2021, 6, 10));
-                e3.setLuongCung(new BigDecimal("18000000"));
+                e3.setDiaChi("45 Lê Duẩn, Đà Nẵng");
+                e3.setSdt("0912345678");
+                e3.setEmail("dinhduybao.le@vaxflow.vn");
+                e3.setChucVu(Position.TRUONG_PHONG);
+                e3.setNgayVaoLam(LocalDate.of(2021, 2, 1));
+                e3.setLuongCung(new BigDecimal("22000000"));
                 e3.setPhongBan(d2);
                 employeeRepository.save(e3);
 
+                // E4: Phó phòng (Thuộc Phòng Khám - Tiêm chủng)
                 Employee e4 = new Employee();
-                e4.setMaNhanSu("NV-004");
-                e4.setHoVaTen("ThS. Phạm Thu Trang");
-                e4.setCccd("001200008888");
-                e4.setNgaySinh(LocalDate.of(1988, 3, 14));
+                e4.setMaNhanSu("VAX004");
+                e4.setHoVaTen("Trần Thị Hoàng Mai");
+                e4.setCccd("001200005678");
+                e4.setNgaySinh(LocalDate.of(1992, 8, 12));
                 e4.setGioiTinh(Gender.FEMALE);
-                e4.setDiaChi("12 Nguyễn Huệ, Quận 1, TP. HCM");
-                e4.setSdt("0934567890");
-                e4.setEmail("thutrang.pham@vaxflow.vn");
-                e4.setChucVu(Position.MANAGER);
-                e4.setNgayVaoLam(LocalDate.of(2020, 10, 1));
-                e4.setLuongCung(new BigDecimal("30000000"));
-                e4.setPhongBan(d3);
+                e4.setDiaChi("45 Lê Duẩn, Đà Nẵng");
+                e4.setSdt("0912345000");
+                e4.setEmail("thihoangmai.tran@vaxflow.vn");
+                e4.setChucVu(Position.PHO_PHONG);
+                e4.setNgayVaoLam(LocalDate.of(2022, 3, 1));
+                e4.setLuongCung(new BigDecimal("18000000"));
+                e4.setPhongBan(d2);
                 employeeRepository.save(e4);
 
-                log.info(">>> [Nhan Su] Da khoi tao 4 phong ban va 4 nhan su y te mau");
+                // E5: Phó phòng (Thuộc Phòng Hành chính - Nhân sự)
+                Employee e5 = new Employee();
+                e5.setMaNhanSu("VAX005");
+                e5.setHoVaTen("Trần Văn Lâm");
+                e5.setCccd("001200009999");
+                e5.setNgaySinh(LocalDate.of(1990, 11, 25));
+                e5.setGioiTinh(Gender.MALE);
+                e5.setDiaChi("78 Trần Hưng Đạo, Hà Nội");
+                e5.setSdt("0987654321");
+                e5.setEmail("vanlam.tran@vaxflow.vn");
+                e5.setChucVu(Position.PHO_PHONG);
+                e5.setNgayVaoLam(LocalDate.of(2021, 6, 10));
+                e5.setLuongCung(new BigDecimal("16000000"));
+                e5.setPhongBan(d6);
+                employeeRepository.save(e5);
+
+                Employee e6 = new Employee();
+                e6.setMaNhanSu("VAX006");
+                e6.setHoVaTen("Trần Hoàng Anh");
+                e6.setCccd("001200009009");
+                e6.setNgaySinh(LocalDate.of(1996, 11, 22));
+                e6.setGioiTinh(Gender.MALE);
+                e6.setDiaChi("78 Hạc Thành, Thanh Hóa");
+                e6.setSdt("0927654321");
+                e6.setEmail("hoanganh.tran@vaxflow.vn");
+                e6.setChucVu(Position.NHAN_VIEN);
+                e6.setNgayVaoLam(LocalDate.of(2021, 4, 10));
+                e6.setLuongCung(new BigDecimal("15000000"));
+                e6.setPhongBan(d5);
+                employeeRepository.save(e6);
+
+                Employee e7 = new Employee();
+                e7.setMaNhanSu("VAX007"); // Set cứng mã VAX007
+                e7.setHoVaTen("Lê Đình Bảo");
+                e7.setCccd("001243001235");
+                e7.setNgaySinh(LocalDate.of(1985, 8, 12));
+                e7.setGioiTinh(Gender.MALE);
+                e7.setDiaChi("45 Lê Duẩn, Đà Nẵng");
+                e7.setSdt("0912345988");
+                e7.setEmail("dinhbao.le@vaxflow.vn");
+                e7.setChucVu(Position.BAC_SI);
+                e7.setNgayVaoLam(LocalDate.of(2021, 2, 1));
+                e7.setLuongCung(new BigDecimal("22000000"));
+                e7.setPhongBan(d2);
+                employeeRepository.save(e7);
+
+                // 2. Điều dưỡng (Thuộc Phòng Khám - Tiêm chủng - d2)
+                Employee e8 = new Employee();
+                e8.setMaNhanSu("VAX008"); // Set cứng mã VAX008
+                e8.setHoVaTen("Trần Thị Mai");
+                e8.setCccd("001200006578");
+                e8.setNgaySinh(LocalDate.of(1992, 8, 12));
+                e8.setGioiTinh(Gender.FEMALE);
+                e8.setDiaChi("45 Lê Duẩn, Đà Nẵng");
+                e8.setSdt("0912345020");
+                e8.setEmail("thimai.tran@vaxflow.vn");
+                e8.setChucVu(Position.DIEU_DUONG);
+                e8.setNgayVaoLam(LocalDate.of(2022, 3, 1));
+                e8.setLuongCung(new BigDecimal("15000000"));
+                e8.setPhongBan(d2);
+                employeeRepository.save(e8);
+
+                // 3. Nhân viên tiếp đón (Thuộc Phòng Hành chính - Nhân sự - d6)
+                Employee e9 = new Employee();
+                e9.setMaNhanSu("VAX009"); // Set cứng mã VAX009
+                e9.setHoVaTen("Trần Hậu Lam");
+                e9.setCccd("001200009219");
+                e9.setNgaySinh(LocalDate.of(1995, 11, 25));
+                e9.setGioiTinh(Gender.MALE);
+                e9.setDiaChi("78 Trần Hưng Đạo, Hà Nội");
+                e9.setSdt("0987654322");
+                e9.setEmail("haulam.tran@vaxflow.vn");
+                e9.setChucVu(Position.NHAN_VIEN);
+                e9.setNgayVaoLam(LocalDate.of(2021, 6, 10));
+                e9.setLuongCung(new BigDecimal("10000000"));
+                e9.setPhongBan(d6); 
+                employeeRepository.save(e9);
+
+                log.info(">>> [Nhan Su] Da khoi tao 6 phong ban va bo khung lanh dao mau");
             }
         }
     }
@@ -315,9 +414,9 @@ public class DataSeeder implements CommandLineRunner {
             if (lichSuTiemRepository.count() == 0) {
                 // 2. Lấy dữ liệu Employee sẵn có (hoặc dùng getReferenceById nếu đã chắc chắn tồn tại ID)
                 // LƯU Ý: Giả định DB đã có Employee với các ID tương ứng hoặc bạn lấy từ employeeRepository
-                Employee bacSiKhamVaTiem = employeeRepository.findByMaNhanSu("NV-001").orElse(null);
-                Employee dieuDuong = employeeRepository.findByMaNhanSu("NV-002").orElse(null);
-                Employee tiepDon = employeeRepository.findByMaNhanSu("NV-003").orElse(null);
+                Employee bacSiKhamVaTiem = employeeRepository.findByMaNhanSu("VAX007").orElse(null);
+                Employee dieuDuong = employeeRepository.findByMaNhanSu("VAX008").orElse(null);
+                Employee tiepDon = employeeRepository.findByMaNhanSu("VAX009").orElse(null);
                 KhachHang khachHang1 = khachHangRepository.findByMaKhachHang("KH-001").orElse(null);
                 KhachHang khachHang2 = khachHangRepository.findByMaKhachHang("KH-002").orElse(null);
                 KhachHang khachHang3 = khachHangRepository.findByMaKhachHang("KH-003").orElse(null);

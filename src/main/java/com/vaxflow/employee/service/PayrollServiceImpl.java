@@ -6,6 +6,8 @@ import com.vaxflow.employee.entity.Payroll;
 import com.vaxflow.employee.repository.EmployeeRepository;
 import com.vaxflow.employee.repository.PayrollRepository;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,14 @@ public class PayrollServiceImpl implements PayrollService {
     public PayrollDTO create(PayrollDTO payrollDTO) {
         Payroll payroll = new Payroll();
         copyToEntity(payrollDTO, payroll);
+        BigDecimal luong = payroll.getLuongCung() != null ? payroll.getLuongCung() : BigDecimal.ZERO;
+        BigDecimal thuong = payroll.getThuong() != null ? payroll.getThuong() : BigDecimal.ZERO;
+        BigDecimal khauTru = payroll.getKhauTru() != null ? payroll.getKhauTru() : BigDecimal.ZERO;
+        payroll.setThucNhan(luong.add(thuong).subtract(khauTru));
+        String maNV = payroll.getNhanSu().getMaNhanSu();
+        String nam_format = String.valueOf(payroll.getNam());
+        String thang_format = String.format("%02d", payroll.getThang());
+        payroll.setMaBangLuong(maNV + nam_format + thang_format);
         return toDTO(payrollRepository.save(payroll));
     }
 
@@ -61,23 +71,30 @@ public class PayrollServiceImpl implements PayrollService {
 
     private void copyToEntity(PayrollDTO dto, Payroll entity) {
         entity.setNhanSu(findEmployeeById(dto.getIdNhanSu()));
+        entity.setMaBangLuong(dto.getMaBangLuong());
         entity.setThang(dto.getThang());
         entity.setNam(dto.getNam());
         entity.setLuongCung(dto.getLuongCung());
         entity.setThuong(dto.getThuong());
+        entity.setLyDoThuong(dto.getLyDoThuong());
         entity.setKhauTru(dto.getKhauTru());
+        entity.setLyDoKhauTru(dto.getLyDoKhauTru());
         entity.setThucNhan(dto.getThucNhan());
+        
     }
 
     private PayrollDTO toDTO(Payroll entity) {
         PayrollDTO dto = new PayrollDTO();
         dto.setId(entity.getId());
         dto.setIdNhanSu(entity.getNhanSu() != null ? entity.getNhanSu().getId() : null);
+        dto.setMaBangLuong(entity.getMaBangLuong());
         dto.setThang(entity.getThang());
         dto.setNam(entity.getNam());
         dto.setLuongCung(entity.getLuongCung());
         dto.setThuong(entity.getThuong());
+        dto.setLyDoThuong(entity.getLyDoThuong());
         dto.setKhauTru(entity.getKhauTru());
+        dto.setLyDoKhauTru(entity.getLyDoKhauTru());
         dto.setThucNhan(entity.getThucNhan());
         return dto;
     }

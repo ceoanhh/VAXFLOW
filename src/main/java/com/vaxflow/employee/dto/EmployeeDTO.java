@@ -5,6 +5,7 @@ import com.vaxflow.employee.entity.Position;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class EmployeeDTO {
 
@@ -12,12 +13,14 @@ public class EmployeeDTO {
     private String maNhanSu;
     private String hoVaTen;
     private String cccd;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate ngaySinh;
     private Gender gioiTinh;
     private String diaChi;
     private String sdt;
     private String email;
     private Position chucVu;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate ngayVaoLam;
     private BigDecimal luongCung;
     private Long idPhongBan;

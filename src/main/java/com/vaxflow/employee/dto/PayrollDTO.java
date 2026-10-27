@@ -6,11 +6,14 @@ public class PayrollDTO {
 
     private Long id;
     private Long idNhanSu;
+    private String maBangLuong;
     private Integer thang;
     private Integer nam;
     private BigDecimal luongCung;
     private BigDecimal thuong;
+    private String lyDoThuong;
     private BigDecimal khauTru;
+    private String lyDoKhauTru;
     private BigDecimal thucNhan;
 
     public Long getId() {
@@ -27,6 +30,14 @@ public class PayrollDTO {
 
     public void setIdNhanSu(Long idNhanSu) {
         this.idNhanSu = idNhanSu;
+    }
+
+    public String getMaBangLuong() {
+        return maBangLuong;
+    }
+
+    public void setMaBangLuong(String maBangLuong) {
+        this.maBangLuong = maBangLuong;
     }
 
     public Integer getThang() {
@@ -58,7 +69,15 @@ public class PayrollDTO {
     }
 
     public void setThuong(BigDecimal thuong) {
-        this.thuong = thuong;
+        this.thuong = (thuong == null) ? BigDecimal.ZERO : thuong;
+    }
+
+    public String getLyDoThuong() {
+        return lyDoThuong;
+    }
+
+    public void setLyDoThuong(String lyDoThuong) {
+        this.lyDoThuong = lyDoThuong;
     }
 
     public BigDecimal getKhauTru() {
@@ -66,7 +85,15 @@ public class PayrollDTO {
     }
 
     public void setKhauTru(BigDecimal khauTru) {
-        this.khauTru = khauTru;
+        this.khauTru = (khauTru == null) ? BigDecimal.ZERO : khauTru;
+    }
+
+    public String getLyDoKhauTru() {
+        return lyDoKhauTru;
+    }
+
+    public void setLyDoKhauTru(String lyDoKhauTru) {
+        this.lyDoKhauTru = lyDoKhauTru;
     }
 
     public BigDecimal getThucNhan() {
