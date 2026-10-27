@@ -13,6 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    private final CustomAuthHandler customAuthHandler;
+
+    public SecurityConfig(CustomAuthHandler customAuthHandler) {
+        this.customAuthHandler = customAuthHandler;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -44,6 +50,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/",
                     "/login",
+                    "/forgot-password/**",
+                    "/reset-password/**",
                     "/error",
                     "/css/**",
                     "/js/**",
@@ -56,7 +64,8 @@ public class SecurityConfig {
 
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .successHandler(customAuthHandler)
+                .failureHandler(customAuthHandler)
                 .permitAll()
             )
 
