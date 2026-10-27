@@ -176,11 +176,30 @@
                                     </tr>
                                     <tr th:each="rec : ${hs.lichSuTiemList}">
                                         <td class="ps-3"><span class="badge bg-light text-dark border font-monospace" th:text="${rec.maTiem}">T-001</span></td>
-                                        <td>Vaccine #<span th:text="${rec.idVaccine}">1</span></td>
-                                        <td>Lô #<span th:text="${rec.idLoVaccine}">1</span></td>
+
+                                        <!-- Hiển thị tên Vaccine -->
+                                        <td>
+                                            <span class="fw-semibold text-dark" th:text="${rec.vacXin != null ? rec.vacXin.tenVacXin : 'N/A'}">Vaccine</span>
+                                        </td>
+
+                                        <!-- Hiển thị mã Lô Vaccine -->
+                                        <td>
+                                            <span class="badge bg-secondary-subtle text-secondary font-monospace"
+                                                  th:text="${rec.loVacXin != null ? rec.loVacXin.maLo : 'N/A'}">LO-001</span>
+                                        </td>
+
                                         <td class="fw-bold text-primary" th:text="'Mũi ' + ${rec.soMuiTiem}">Mũi 1</td>
                                         <td th:text="${#temporals.format(rec.ngayTiem, 'dd/MM/yyyy')}">10/05/2026</td>
-                                        <td><span class="badge bg-success-subtle text-success" th:text="${rec.trangThai != null ? rec.trangThai : 'Đã tiêm'}">Đã tiêm</span></td>
+
+                                        <!-- Tự động đổi màu Badge Trạng Thái -->
+                                        <td>
+                                            <span class="badge"
+                                                  th:classappend="${rec.trangThai == 'HOAN_THANH' or rec.trangThai == 'Hoàn thành' ? 'bg-success-subtle text-success' : (rec.trangThai == 'Hủy' ? 'bg-danger-subtle text-danger' : 'bg-info-subtle text-info')}"
+                                                  th:text="${rec.trangThai == 'HOAN_THANH' ? 'Hoàn thành' : (rec.trangThai != null ? rec.trangThai : 'Đã tiêm')}">
+                                                Đã tiêm
+                                            </span>
+                                        </td>
+
                                         <td class="text-end pe-3">
                                             <div class="btn-group btn-group-sm">
                                                 <button type="button" class="btn btn-light text-primary" title="Sửa mũi tiêm"
@@ -208,7 +227,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- DANH SÁCH MODAL (BÁCH TÁCH NGOÀI ACCORDION) -->
+    <!-- DANH SÁCH MODAL (TÁCH NGOÀI ACCORDION) -->
     <!-- ========================================== -->
 
     <!-- Modal Tạo Hồ Sơ Tiêm Mới -->
@@ -352,12 +371,17 @@
                             </div>
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold">ID Vaccine <span class="text-danger">*</span></label>
-                                    <input type="number" th:field="*{idVaccine}" class="form-control" required>
+                                    <label class="form-label fw-semibold">Vaccine <span class="text-danger">*</span></label>
+                                    <select th:field="*{vacXin.id}" class="form-select select-vaccine" required>
+                                        <option value="">-- Chọn Vaccine --</option>
+                                        <option th:each="v : ${vacXinList}" th:value="${v.id}" th:text="${v.tenVacXin}"></option>
+                                    </select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold">ID Lô Vaccine <span class="text-danger">*</span></label>
-                                    <input type="number" th:field="*{idLoVaccine}" class="form-control" required>
+                                    <label class="form-label fw-semibold">Lô Vaccine <span class="text-danger">*</span></label>
+                                    <select th:field="*{loVacXin.id}" class="form-select select-batch" required disabled>
+                                        <option value="">-- Chọn Vaccine trước --</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row g-2 mb-3">
@@ -374,7 +398,7 @@
                                 <label class="form-label fw-semibold">Trạng Thái</label>
                                 <select th:field="*{trangThai}" class="form-select">
                                     <option value="Đã tiêm">Đã tiêm</option>
-                                    <option value="Hoàn thành">Hoàn thành</option>
+                                    <option value="HOAN_THANH">Hoàn thành</option>
                                     <option value="Hủy">Hủy</option>
                                 </select>
                             </div>
@@ -405,12 +429,24 @@
                             </div>
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold">ID Vaccine <span class="text-danger">*</span></label>
-                                    <input type="number" name="idVaccine" th:value="${rec.idVaccine}" class="form-control" required>
+                                    <label class="form-label fw-semibold">Vaccine <span class="text-danger">*</span></label>
+                                    <select name="vacXin.id" class="form-select select-vaccine" required>
+                                        <option th:each="v : ${vacXinList}"
+                                                th:value="${v.id}"
+                                                th:text="${v.tenVacXin}"
+                                                th:selected="${rec.vacXin != null and rec.vacXin.id == v.id}">
+                                        </option>
+                                    </select>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold">ID Lô Vaccine <span class="text-danger">*</span></label>
-                                    <input type="number" name="idLoVaccine" th:value="${rec.idLoVaccine}" class="form-control" required>
+                                    <label class="form-label fw-semibold">Lô Vaccine <span class="text-danger">*</span></label>
+                                    <select name="loVacXin.id" class="form-select select-batch" required>
+                                        <option th:each="lo : ${loVacXinList}"
+                                                th:value="${lo.id}"
+                                                th:text="${lo.maLo}"
+                                                th:selected="${rec.loVacXin != null and rec.loVacXin.id == lo.id}">
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row g-2 mb-3">
@@ -427,7 +463,7 @@
                                 <label class="form-label fw-semibold">Trạng Thái</label>
                                 <select name="trangThai" class="form-select">
                                     <option value="Đã tiêm" th:selected="${rec.trangThai == 'Đã tiêm'}">Đã tiêm</option>
-                                    <option value="Hoàn thành" th:selected="${rec.trangThai == 'Hoàn thành'}">Hoàn thành</option>
+                                    <option value="HOAN_THANH" th:selected="${rec.trangThai == 'HOAN_THANH' or rec.trangThai == 'Hoàn thành'}">Hoàn thành</option>
                                     <option value="Hủy" th:selected="${rec.trangThai == 'Hủy'}">Hủy</option>
                                 </select>
                             </div>
@@ -442,6 +478,66 @@
         </div>
 
     </th:block>
+
+    <!-- ========================================== -->
+    <!-- SCRIPT CASCADE DROPDOWN (LỌC LÔ THEO VACCINE) -->
+    <!-- ========================================== -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Lắng nghe sự kiện chọn Vaccine trong tất cả Modal
+            document.addEventListener("change", function (event) {
+                if (event.target && event.target.classList.contains("select-vaccine")) {
+                    const vaccineSelect = event.target;
+                    const vaccineId = vaccineSelect.value;
+
+                    // Lấy ô chọn Lô Vaccine thuộc cùng một Modal
+                    const modalBody = vaccineSelect.closest(".modal-body");
+                    if (!modalBody) return;
+
+                    const batchSelect = modalBody.querySelector(".select-batch");
+                    if (!batchSelect) return;
+
+                    // Reset trạng thái hiển thị
+                    batchSelect.innerHTML = '<option value="">-- Đang tải lô khả dụng... --</option>';
+                    batchSelect.disabled = true;
+
+                    if (!vaccineId) {
+                        batchSelect.innerHTML = '<option value="">-- Chọn Vaccine trước --</option>';
+                        return;
+                    }
+
+                    // Gọi Endpoint API đã khai báo ở VaccineController
+                    fetch(`/vaccines/api/batches?vaccineId=${vaccineId}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error("Lỗi tải dữ liệu từ máy chủ");
+                            return response.json();
+                        })
+                        .then(batches => {
+                            batchSelect.innerHTML = '<option value="">-- Chọn Lô Vaccine --</option>';
+
+                            if (!batches || batches.length === 0) {
+                                batchSelect.innerHTML = '<option value="">-- Hết lô khả dụng / hết hạn --</option>';
+                                return;
+                            }
+
+                            batches.forEach(batch => {
+                                const option = document.createElement("option");
+                                option.value = batch.id;
+                                option.textContent = `${batch.maLo} (Tồn: ${batch.soLuongConLai} - HSD: ${batch.hanSuDung})`;
+                                batchSelect.appendChild(option);
+                            });
+
+                            batchSelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Lỗi Cascade Dropdown:", error);
+                            batchSelect.innerHTML = '<option value="">-- Lỗi tải danh sách lô --</option>';
+                        });
+                }
+            });
+        });
+    </script>
 
 </div>
 </body>

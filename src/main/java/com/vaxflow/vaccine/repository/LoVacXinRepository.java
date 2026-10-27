@@ -2,6 +2,7 @@ package com.vaxflow.vaccine.repository;
 
 import com.vaxflow.vaccine.entity.LoVacXin;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,16 @@ public interface LoVacXinRepository extends JpaRepository<LoVacXin, Long> {
 
     @Query("SELECT SUM(l.soLuongConLai) FROM LoVacXin l WHERE l.vacXin.id = :idVacXin AND l.hanSuDung >= CURRENT_DATE")
     Integer getTotalAvailableStock(@Param("idVacXin") Long idVacXin);
+
+    // Trừ số lượng tồn kho nếu kho còn đủ hàng
+    @Modifying
+    @Query("UPDATE LoVacXin l SET l.soLuongConLai = l.soLuongConLai - :quantity " +
+            "WHERE l.id = :id AND l.soLuongConLai >= :quantity")
+    int decreaseStock(@Param("id") Long id, @Param("quantity") int quantity);
+
+    // Hoàn lại kho khi hủy hoặc xóa mũi tiêm
+    @Modifying
+    @Query("UPDATE LoVacXin l SET l.soLuongConLai = l.soLuongConLai + :quantity " +
+            "WHERE l.id = :id")
+    int increaseStock(@Param("id") Long id, @Param("quantity") int quantity);
 }

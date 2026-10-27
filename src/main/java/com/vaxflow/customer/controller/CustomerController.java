@@ -6,6 +6,7 @@ import com.vaxflow.customer.entity.LichSuTiem;
 import com.vaxflow.customer.service.CustomerService;
 import com.vaxflow.employee.entity.Employee;
 import com.vaxflow.employee.repository.EmployeeRepository;
+import com.vaxflow.vaccine.service.VaccineService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,10 +28,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final EmployeeRepository employeeRepository;
+    private final VaccineService vaccineService;
 
-    public CustomerController(CustomerService customerService, EmployeeRepository employeeRepository) {
+    public CustomerController(CustomerService customerService, EmployeeRepository employeeRepository, VaccineService vaccineService) {
         this.customerService = customerService;
         this.employeeRepository = employeeRepository;
+        this.vaccineService = vaccineService;
     }
 
     @GetMapping
@@ -86,6 +89,8 @@ public class CustomerController {
         model.addAttribute("employees", employees);
         model.addAttribute("newHoSo", newHoSo);
         model.addAttribute("newLichSuTiem", new LichSuTiem());
+        model.addAttribute("vacXinList", vaccineService.findAll());
+        model.addAttribute("loVacXinList", vaccineService.findAllBatches());
 
         return "customers/detail";
     }
@@ -216,8 +221,8 @@ public class CustomerController {
                 recordToSave = customerService.findLichSuTiemById(lichSuForm.getId())
                         .orElseThrow(() -> new IllegalArgumentException("Bản ghi tiêm không tồn tại"));
                 recordToSave.setMaTiem(lichSuForm.getMaTiem());
-                recordToSave.setIdVaccine(lichSuForm.getIdVaccine());
-                recordToSave.setIdLoVaccine(lichSuForm.getIdLoVaccine());
+                recordToSave.setVacXin(lichSuForm.getVacXin());
+                recordToSave.setLoVacXin(lichSuForm.getLoVacXin());
                 recordToSave.setSoMuiTiem(lichSuForm.getSoMuiTiem());
                 recordToSave.setNgayTiem(lichSuForm.getNgayTiem());
                 recordToSave.setTrangThai(lichSuForm.getTrangThai());
@@ -230,21 +235,24 @@ public class CustomerController {
             customerService.saveLichSuTiem(recordToSave);
             redirectAttributes.addFlashAttribute("successMessage",
                     lichSuForm.getId() != null ? "Cập nhật mũi tiêm thành công!" : "Thêm mũi tiêm mới thành công!");
+        } catch (IllegalStateException e) {
+            // Bắt lỗi khi hết tồn kho
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi lưu lịch sử tiêm: " + e.getMessage());
         }
         return "redirect:/customers/detail/" + customerId;
     }
 
-    @PostMapping("/{customerId}/lich-su/delete/{lichSuId}")
+    @PostMapping("/customers/{customerId}/lich-su/delete/{lichSuId}")
     public String deleteLichSuTiem(@PathVariable("customerId") Long customerId,
                                    @PathVariable("lichSuId") Long lichSuId,
                                    RedirectAttributes redirectAttributes) {
         try {
-            customerService.deleteLichSuTiemById(lichSuId);
-            redirectAttributes.addFlashAttribute("successMessage", "Đã xóa bản ghi tiêm thành công!");
+            customerService.deleteLichSuTiem(lichSuId);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa mũi tiêm thành công và đã hoàn lại 1 liều vào kho!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi xóa bản ghi tiêm!");
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi xóa mũi tiêm: " + e.getMessage());
         }
         return "redirect:/customers/detail/" + customerId;
     }

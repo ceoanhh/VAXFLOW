@@ -52,7 +52,6 @@ public class HoSo extends BaseEntity {
     @Column(name = "ghi_chu_theo_doi")
     private String ghiChuTheoDoi;
 
-    // --- ĐÃ ĐỔI: Một Hồ Sơ có nhiều Lịch Sử Tiêm ---
     @OneToMany(mappedBy = "hoSo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LichSuTiem> lichSuTiemList = new ArrayList<>();
 

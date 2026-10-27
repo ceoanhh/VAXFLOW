@@ -7,6 +7,7 @@ import com.vaxflow.vaccine.repository.VacXinRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,5 +61,13 @@ public class VaccineService {
         return loVacXinRepository.findAll().stream()
                 .filter(l -> l.getSoLuongConLai() <= 10)
                 .count();
+    }
+
+    @Transactional(readOnly = true)
+    public List<LoVacXin> getAvailableBatches(Long vaccineId) {
+        if (vaccineId == null) {
+            return Collections.emptyList();
+        }
+        return loVacXinRepository.findAvailableBatchesForFIFO(vaccineId);
     }
 }

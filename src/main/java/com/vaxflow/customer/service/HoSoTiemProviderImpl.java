@@ -30,7 +30,9 @@ public class HoSoTiemProviderImpl implements HoSoTiemProvider {
             lichSuTiemRepository.findById(id).ifPresent(record -> {
                 HoSoTiemThongTin info = new HoSoTiemThongTin();
                 info.setVaccinationRecordId(record.getId());
-                info.setVaccineId(record.getIdVaccine());
+                if (record.getVacXin() != null) {
+                    info.setVaccineId(record.getVacXin().getId());
+                }
                 info.setQuantity(1);
                 info.setEligibleForInvoice(true);
 

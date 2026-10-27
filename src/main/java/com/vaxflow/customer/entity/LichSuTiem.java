@@ -1,6 +1,8 @@
 package com.vaxflow.customer.entity;
 
 import com.vaxflow.core.entity.BaseEntity;
+import com.vaxflow.vaccine.entity.LoVacXin;
+import com.vaxflow.vaccine.entity.VacXin;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -24,13 +26,17 @@ public class LichSuTiem extends BaseEntity {
     @JoinColumn(name = "id_khach_hang")
     private KhachHang khachHang;
 
-    @NotNull(message = "Vui lòng nhập ID Vaccine")
-    @Column(name = "id_vaccine", nullable = false)
-    private Long idVaccine;
+    // Quan hệ N-1 với VacXin
+    @NotNull(message = "Vui lòng chọn Vaccine")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_vaccine", nullable = false)
+    private VacXin vacXin;
 
-    @NotNull(message = "Vui lòng nhập ID Lô Vaccine")
-    @Column(name = "id_lo_vaccine", nullable = false)
-    private Long idLoVaccine;
+    // Quan hệ N-1 với LoVacXin
+    @NotNull(message = "Vui lòng chọn Lô Vaccine")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_lo_vaccine", nullable = false)
+    private LoVacXin loVacXin;
 
     @NotNull(message = "Vui lòng nhập số mũi tiêm")
     @Min(value = 1, message = "Mũi tiêm phải từ mũi 1 trở lên")
@@ -73,20 +79,20 @@ public class LichSuTiem extends BaseEntity {
         this.khachHang = khachHang;
     }
 
-    public Long getIdVaccine() {
-        return idVaccine;
+    public VacXin getVacXin() {
+        return vacXin;
     }
 
-    public void setIdVaccine(Long idVaccine) {
-        this.idVaccine = idVaccine;
+    public void setVacXin(VacXin vacXin) {
+        this.vacXin = vacXin;
     }
 
-    public Long getIdLoVaccine() {
-        return idLoVaccine;
+    public LoVacXin getLoVacXin() {
+        return loVacXin;
     }
 
-    public void setIdLoVaccine(Long idLoVaccine) {
-        this.idLoVaccine = idLoVaccine;
+    public void setLoVacXin(LoVacXin loVacXin) {
+        this.loVacXin = loVacXin;
     }
 
     public Integer getSoMuiTiem() {

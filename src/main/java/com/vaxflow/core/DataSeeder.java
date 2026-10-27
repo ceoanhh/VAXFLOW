@@ -313,25 +313,31 @@ public class DataSeeder implements CommandLineRunner {
             khachHangRepository.save(k3);
 
             if (lichSuTiemRepository.count() == 0) {
-                // 2. Lấy dữ liệu Employee sẵn có (hoặc dùng getReferenceById nếu đã chắc chắn tồn tại ID)
-                // LƯU Ý: Giả định DB đã có Employee với các ID tương ứng hoặc bạn lấy từ employeeRepository
+                // Lấy thông tin Nhân sự
                 Employee bacSiKhamVaTiem = employeeRepository.findByMaNhanSu("NV-001").orElse(null);
                 Employee dieuDuong = employeeRepository.findByMaNhanSu("NV-002").orElse(null);
                 Employee tiepDon = employeeRepository.findByMaNhanSu("NV-003").orElse(null);
-                KhachHang khachHang1 = khachHangRepository.findByMaKhachHang("KH-001").orElse(null);
-                KhachHang khachHang2 = khachHangRepository.findByMaKhachHang("KH-002").orElse(null);
-                KhachHang khachHang3 = khachHangRepository.findByMaKhachHang("KH-003").orElse(null);
 
-                // Hoặc nếu dùng getReferenceById (Proxy - không query DB ngay):
-                // Employee bacSiKhamVaTiem = employeeRepository.getReferenceById(1L);
-                // Employee dieuDuong = employeeRepository.getReferenceById(2L);
-                // Employee tiepDon = employeeRepository.getReferenceById(4L);
+                // Lấy thông tin Vaccine & Lô Vaccine tương ứng
+                VacXin v1 = vacXinRepository.findById(1L).orElse(null);
+                VacXin v2 = vacXinRepository.findById(2L).orElse(null);
+                VacXin v3 = vacXinRepository.findById(3L).orElse(null);
+
+                LoVacXin l1 = loVacXinRepository.findAll().stream()
+                        .filter(l -> "LO-HEXA-2026A".equals(l.getMaLo()))
+                        .findFirst().orElse(null);
+                LoVacXin l2 = loVacXinRepository.findAll().stream()
+                        .filter(l -> "LO-PREV-2026B".equals(l.getMaLo()))
+                        .findFirst().orElse(null);
+                LoVacXin l3 = loVacXinRepository.findAll().stream()
+                        .filter(l -> "LO-GARD-2026C".equals(l.getMaLo()))
+                        .findFirst().orElse(null);
 
                 // --- Lịch sử tiêm 1 ---
                 LichSuTiem lst1 = new LichSuTiem();
                 lst1.setMaTiem("TIEM-2026-001");
-                lst1.setIdVaccine(1L);
-                lst1.setIdLoVaccine(1L);
+                lst1.setVacXin(v1);      // Gán đối tượng VacXin
+                lst1.setLoVacXin(l1);    // Gán đối tượng LoVacXin
                 lst1.setSoMuiTiem(1);
                 lst1.setNgayTiem(LocalDate.now().minusDays(2));
                 lst1.setTrangThai("HOAN_THANH");
@@ -352,8 +358,8 @@ public class DataSeeder implements CommandLineRunner {
                 // --- Lịch sử tiêm 2 ---
                 LichSuTiem lst2 = new LichSuTiem();
                 lst2.setMaTiem("TIEM-2026-002");
-                lst2.setIdVaccine(2L);
-                lst2.setIdLoVaccine(2L);
+                lst2.setVacXin(v2);      // Gán đối tượng VacXin
+                lst2.setLoVacXin(l2);    // Gán đối tượng LoVacXin
                 lst2.setSoMuiTiem(1);
                 lst2.setNgayTiem(LocalDate.now().minusDays(1));
                 lst2.setTrangThai("HOAN_THANH");
@@ -374,8 +380,8 @@ public class DataSeeder implements CommandLineRunner {
                 // --- Lịch sử tiêm 3 ---
                 LichSuTiem lst3 = new LichSuTiem();
                 lst3.setMaTiem("TIEM-2026-003");
-                lst3.setIdVaccine(2L);
-                lst3.setIdLoVaccine(3L);
+                lst3.setVacXin(v3);      // Gán đối tượng VacXin
+                lst3.setLoVacXin(l3);    // Gán đối tượng LoVacXin
                 lst3.setSoMuiTiem(1);
                 lst3.setNgayTiem(LocalDate.now().minusDays(1));
                 lst3.setTrangThai("HOAN_THANH");
@@ -393,7 +399,7 @@ public class DataSeeder implements CommandLineRunner {
                 hs3.addLichSuTiem(lst3);
                 hoSoRepository.save(hs3);
 
-                log.info(">>> [Tiem Chung] Da khoi tao 3 khach hang, 2 lich su tiem va 2 ho so");
+                log.info(">>> [Tiem Chung] Da khoi tao 3 khach hang, 3 lich su tiem va 3 ho so");
             }
         }
     }
