@@ -63,11 +63,33 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<EmployeeDTO> search(String keyword, Long departmentId) {
+        List<EmployeeDTO> employees = getAll();
+        //Lọc theo từ khóa
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String kw = keyword.trim().toLowerCase();
+            employees = employees.stream()
+                    .filter(e -> (e.getHoVaTen() != null && e.getHoVaTen().toLowerCase().contains(kw))
+                            || (e.getMaNhanSu() != null && e.getMaNhanSu().toLowerCase().contains(kw))
+                            || (e.getSdt() != null && e.getSdt().contains(kw))
+                            || (e.getCccd() != null && e.getCccd().contains(kw)))
+                    .toList();
+        }
+        //Lọc theo ID phòng ban
+        if (departmentId != null) {
+            employees = employees.stream()
+                    .filter(e -> e.getIdPhongBan() != null && e.getIdPhongBan().equals(departmentId))
+                    .toList();
+        }
+        return employees;
+    }
+
+    @Override
     public Optional<EmployeeDTO> findByMaNhanSu(String maNhanSu) {
         return employeeRepository.findByMaNhanSu(maNhanSu).map(this::toDTO);
     }
 
-    @Override
+    @Override  
     public boolean existsByMaNhanSu(String maNhanSu) {
         return employeeRepository.existsByMaNhanSu(maNhanSu);
     }

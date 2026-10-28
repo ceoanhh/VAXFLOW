@@ -125,31 +125,31 @@
                                     <!-- Position Badge Tiếng Việt -->
                                     <span th:if="${emp.chucVu.name() == 'GIAM_DOC'}"
                                           class="badge bg-warning-subtle text-warning-emphasis px-2 py-1">
-                                        <i class="bi bi-person-badge-fill me-1"></i> Giám Đốc
+                                        <i class="bi bi-person-badge-fill me-1"></i> Giám đốc
                                     </span>
                                     <span th:if="${emp.chucVu.name() == 'PHO_GIAM_DOC'}"
                                           class="badge bg-warning-subtle text-warning-emphasis px-2 py-1">
-                                        <i class="bi bi-person-badge me-1"></i> Phó Giám Đốc
+                                        <i class="bi bi-person-badge me-1"></i> Phó giám đốc
                                     </span>
                                     <span th:if="${emp.chucVu.name() == 'TRUONG_PHONG'}"
                                           class="badge bg-danger-subtle text-danger px-2 py-1">
-                                        <i class="bi bi-star-fill me-1"></i> Trưởng Phòng
+                                        <i class="bi bi-star-fill me-1"></i> Trưởng phòng
                                     </span>
                                     <span th:if="${emp.chucVu.name() == 'PHO_PHONG'}"
                                           class="badge bg-danger-subtle text-danger px-2 py-1">
-                                        <i class="bi bi-star-half me-1"></i> Phó Phòng
+                                        <i class="bi bi-star-half me-1"></i> Phó phòng
                                     </span>
                                     <span th:if="${emp.chucVu.name() == 'BAC_SI'}"
                                           class="badge bg-primary-subtle text-primary px-2 py-1">
-                                        <i class="bi bi-heart-pulse-fill me-1"></i> Bác Sĩ
+                                        <i class="bi bi-heart-pulse-fill me-1"></i> Bác sĩ
                                     </span>
                                     <span th:if="${emp.chucVu.name() == 'DIEU_DUONG'}"
                                           class="badge bg-info-subtle text-info px-2 py-1">
-                                        <i class="bi bi-clipboard2-pulse me-1"></i> Điều Dưỡng
+                                        <i class="bi bi-clipboard2-pulse me-1"></i> Điều dưỡng
                                     </span>
                                     <span th:if="${emp.chucVu.name() == 'NHAN_VIEN'}"
                                           class="badge bg-secondary-subtle text-secondary px-2 py-1">
-                                        <i class="bi bi-person-fill me-1"></i> Nhân Viên
+                                        <i class="bi bi-person-fill me-1"></i> Nhân viên
                                     </span>
                                 </td>
                                 <td>
@@ -158,16 +158,26 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div><i class="bi bi-telephone text-muted me-1"></i><span th:text="${emp.sdt}">0901234567</span></div>
-                                    <div class="small text-muted" th:if="${emp.email != null}">
-                                        <i class="bi bi-envelope text-muted me-1"></i><span th:text="${emp.email}">email@vaxflow.vn</span>
+                                    <div class="text-nowrap mb-1">
+                                        <i class="bi bi-telephone text-muted me-1"></i>
+                                        <span th:text="${emp.sdt}">0901234567</span>
                                     </div>
+                                    <!-- <div class="small text-muted d-flex align-items-center" th:if="${emp.email != null and !emp.email.isEmpty()}">
+                                        <i class="bi bi-envelope text-muted me-1"></i>
+                                        <span class="d-inline-block text-truncate" 
+                                            style="max-width: 150px;" 
+                                            th:title="${emp.email}" 
+                                            th:text="${emp.email}">
+                                            email_dai_thoong_loong@vaxflow.vn
+                                        </span>
+                                    </div> -->
+                                    
                                 </td>
                                 
                                 <!-- Cột Lương Cứng (Đã ép nowrap) -->
                                 <td style="white-space: nowrap;">
                                     <span class="fw-bold text-success font-monospace"
-                                          th:text="${#numbers.formatDecimal(emp.luongCung, 0, 'POINT', 0, 'COMMA') + ' đ'}">
+                                          th:text="${#numbers.formatDecimal(emp.luongCung, 0, 'POINT', 0, 'COMMA')}">
                                         25.000.000 đ
                                     </span>
                                 </td>

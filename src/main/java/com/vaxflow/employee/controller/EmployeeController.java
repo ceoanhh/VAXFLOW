@@ -32,25 +32,11 @@ public class EmployeeController {
 
     @GetMapping
     public String list(@RequestParam(value = "keyword", required = false) String keyword,
-                       @RequestParam(value = "departmentId", required = false) Long departmentId,
-                       Model model) {
-        List<EmployeeDTO> employees = employeeService.getAll();
-
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            String kw = keyword.trim().toLowerCase();
-            employees = employees.stream()
-                    .filter(e -> (e.getHoVaTen() != null && e.getHoVaTen().toLowerCase().contains(kw))
-                            || (e.getMaNhanSu() != null && e.getMaNhanSu().toLowerCase().contains(kw))
-                            || (e.getSdt() != null && e.getSdt().contains(kw))
-                            || (e.getCccd() != null && e.getCccd().contains(kw)))
-                    .toList();
-        }
-
-        if (departmentId != null) {
-            employees = employees.stream()
-                    .filter(e -> e.getIdPhongBan() != null && e.getIdPhongBan().equals(departmentId))
-                    .toList();
-        }
+                   @RequestParam(value = "departmentId", required = false) Long departmentId,
+                   Model model) {
+    
+        // Controller giờ chỉ làm nhiệm vụ gọi Service
+        List<EmployeeDTO> employees = employeeService.search(keyword, departmentId);
 
         List<DepartmentDTO> departments = departmentService.getAll();
 

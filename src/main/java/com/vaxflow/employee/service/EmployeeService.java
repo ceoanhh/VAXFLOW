@@ -16,6 +16,8 @@ public interface EmployeeService {
 
     void delete(Long id);
 
+    List<EmployeeDTO> search(String keyword, Long departmenId);
+
     Optional<EmployeeDTO> findByMaNhanSu(String maNhanSu);
 
     boolean existsByMaNhanSu(String maNhanSu);
