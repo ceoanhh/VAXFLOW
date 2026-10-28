@@ -6,7 +6,10 @@ import com.vaxflow.customer.entity.LichSuTiem;
 import com.vaxflow.customer.repository.HoSoRepository;
 import com.vaxflow.customer.repository.KhachHangRepository;
 import com.vaxflow.customer.repository.LichSuTiemRepository;
+import com.vaxflow.vaccine.entity.LoVacXin;
+import com.vaxflow.vaccine.entity.VacXin;
 import com.vaxflow.vaccine.repository.LoVacXinRepository;
+import com.vaxflow.vaccine.repository.VacXinRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +24,14 @@ public class CustomerService {
     private final LichSuTiemRepository lichSuTiemRepository;
     private final HoSoRepository hoSoRepository;
     private final LoVacXinRepository loVacXinRepository;
+    private final VacXinRepository vacXinRepository;
 
-    public CustomerService(KhachHangRepository khachHangRepository, LichSuTiemRepository lichSuTiemRepository, HoSoRepository hoSoRepository, LoVacXinRepository loVacXinRepository) {
+    public CustomerService(KhachHangRepository khachHangRepository, LichSuTiemRepository lichSuTiemRepository, HoSoRepository hoSoRepository, LoVacXinRepository loVacXinRepository, VacXinRepository vacXinRepository) {
         this.khachHangRepository = khachHangRepository;
         this.lichSuTiemRepository = lichSuTiemRepository;
         this.hoSoRepository = hoSoRepository;
         this.loVacXinRepository = loVacXinRepository;
+        this.vacXinRepository = vacXinRepository;
 
     }
 
@@ -91,42 +96,81 @@ public class CustomerService {
         lichSuTiemRepository.deleteById(id);
     }
 
-    public LichSuTiem saveLichSuTiem(LichSuTiem recordToSave) {
-        if (recordToSave.getId() == null) {
-            // === THÀNH PHẦN 1: TẠO MỚI ===
-            // Nếu tạo mới và trạng thái không phải Hủy -> Trừ 1 tồn kho
-            if (!"Hủy".equalsIgnoreCase(recordToSave.getTrangThai())) {
-                Long loId = recordToSave.getLoVacXin().getId();
-                int updatedRows = loVacXinRepository.decreaseStock(loId, 1);
-                if (updatedRows == 0) {
-                    throw new IllegalStateException("Lô vắc xin đã hết hàng hoặc không khả dụng!");
-                }
-            }
-        } else {
-            // === THÀNH PHẦN 2: CẬP NHẬT TRẠNG THÁI ===
-            LichSuTiem oldRecord = lichSuTiemRepository.findById(recordToSave.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Bản ghi tiêm không tồn tại"));
+    @Transactional
+    public LichSuTiem saveLichSuTiem(LichSuTiem formInput, Long hoSoId, Long customerId) {
 
-            String oldStatus = oldRecord.getTrangThai();
-            String newStatus = recordToSave.getTrangThai();
+        // 1. Nếu là tạo mới
+        if (formInput.getId() == null) {
+            HoSo hoSo = hoSoRepository.findById(hoSoId).orElseThrow();
+            KhachHang customer = khachHangRepository.findById(customerId).orElseThrow();
 
-            // TH 2a: Chuyển từ Đã tiêm/Hoàn thành -> Hủy => HOÀN TỒN KHO (+1)
-            if (!"Hủy".equalsIgnoreCase(oldStatus) && "Hủy".equalsIgnoreCase(newStatus)) {
-                if (oldRecord.getLoVacXin() != null) {
-                    loVacXinRepository.increaseStock(oldRecord.getLoVacXin().getId(), 1);
-                }
+            formInput.setHoSo(hoSo);
+            formInput.setKhachHang(customer);
+
+            if (!"Hủy".equalsIgnoreCase(formInput.getTrangThai())) {
+                Long newLoId = formInput.getLoVacXin().getId();
+                int rows = loVacXinRepository.decreaseStock(newLoId, 1);
+                if (rows == 0) throw new IllegalStateException("Lô vắc xin đã hết hàng!");
             }
-            // TH 2b: Chuyển từ Hủy -> Đã tiêm/Hoàn thành => TRỪ TỒN KHO LẠI (-1)
-            else if ("Hủy".equalsIgnoreCase(oldStatus) && !"Hủy".equalsIgnoreCase(newStatus)) {
-                Long loId = recordToSave.getLoVacXin().getId();
-                int updatedRows = loVacXinRepository.decreaseStock(loId, 1);
-                if (updatedRows == 0) {
-                    throw new IllegalStateException("Lô vắc xin không đủ tồn kho để khôi phục trạng thái tiêm!");
-                }
+            return lichSuTiemRepository.save(formInput);
+        }
+
+        // 2. Nếu là Chỉnh sửa: Lấy bản ghi GỐC từ Database ra trước (để lấy oldLoId chính xác)
+        LichSuTiem oldRecord = lichSuTiemRepository.findById(formInput.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Bản ghi không tồn tại"));
+
+        Long oldLoId = oldRecord.getLoVacXin() != null ? oldRecord.getLoVacXin().getId() : null;
+        Long newLoId = formInput.getLoVacXin() != null ? formInput.getLoVacXin().getId() : null;
+
+        String oldStatus = oldRecord.getTrangThai();
+        String newStatus = formInput.getTrangThai();
+
+        boolean isOldActive = !"Hủy".equalsIgnoreCase(oldStatus);
+        boolean isNewActive = !"Hủy".equalsIgnoreCase(newStatus);
+
+        // TH 1: Đổi Lô Vắc-xin khi cả 2 trạng thái đều Đang tiêm/Hoàn thành
+        if (isOldActive && isNewActive && oldLoId != null && newLoId != null && !oldLoId.equals(newLoId)) {
+            // Cộng trả 1 liều cho lô cũ
+            loVacXinRepository.increaseStock(oldLoId, 1);
+
+            // Trừ 1 liều ở lô mới
+            int updatedRows = loVacXinRepository.decreaseStock(newLoId, 1);
+            if (updatedRows == 0) {
+                // Rollback lại kho lô cũ nếu lô mới không đủ tồn
+                loVacXinRepository.decreaseStock(oldLoId, 1);
+                throw new IllegalStateException("Lô vắc xin mới được chọn đã hết hàng!");
+            }
+        }
+        // TH 2: Chuyển từ Đang tiêm -> HỦY
+        else if (isOldActive && !isNewActive && oldLoId != null) {
+            loVacXinRepository.increaseStock(oldLoId, 1);
+        }
+        // TH 3: Chuyển từ HỦY -> Đang tiêm
+        else if (!isOldActive && isNewActive && newLoId != null) {
+            int updatedRows = loVacXinRepository.decreaseStock(newLoId, 1);
+            if (updatedRows == 0) {
+                throw new IllegalStateException("Lô vắc xin không đủ tồn kho để khôi phục!");
             }
         }
 
-        return lichSuTiemRepository.save(recordToSave);
+        // Cập nhật các trường thông tin mới từ formInput vào oldRecord
+        oldRecord.setMaTiem(formInput.getMaTiem());
+
+        // Load đối tượng VacXin và LoVacXin thực tế từ DB để gán vào
+        if (newLoId != null) {
+            LoVacXin newLo = loVacXinRepository.findById(newLoId).orElseThrow();
+            oldRecord.setLoVacXin(newLo);
+        }
+        if (formInput.getVacXin() != null && formInput.getVacXin().getId() != null) {
+            VacXin newVacXin = vacXinRepository.findById(formInput.getVacXin().getId()).orElseThrow();
+            oldRecord.setVacXin(newVacXin);
+        }
+
+        oldRecord.setSoMuiTiem(formInput.getSoMuiTiem());
+        oldRecord.setNgayTiem(formInput.getNgayTiem());
+        oldRecord.setTrangThai(formInput.getTrangThai());
+
+        return lichSuTiemRepository.save(oldRecord);
     }
 
     /**
@@ -142,5 +186,13 @@ public class CustomerService {
         }
 
         lichSuTiemRepository.delete(record);
+    }
+
+    public Optional<HoSo> findHoSoByMaHoSo(String maHoSo) {
+        return hoSoRepository.findByMaHoSo(maHoSo);
+    }
+
+    public Optional<LichSuTiem> findLichSuTiemByMaTiem(String maTiem) {
+        return lichSuTiemRepository.findByMaTiem(maTiem);
     }
 }

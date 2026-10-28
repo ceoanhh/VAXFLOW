@@ -96,7 +96,19 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("customer") KhachHang customer, RedirectAttributes redirectAttributes) {
+    public String save(@Valid @ModelAttribute("customer") KhachHang customer,
+                       BindingResult bindingResult,
+                       Model model,
+                       RedirectAttributes redirectAttributes) {
+
+        // 1. Kiểm tra nếu có lỗi Validation từ Entity
+        if (bindingResult.hasErrors()) {
+            boolean isNew = (customer.getId() == null);
+            model.addAttribute("isEdit", !isNew);
+            // Trả về view form trực tiếp để Thymeleaf hiển thị lỗi bên dưới từng ô input
+            return "customers/form";
+        }
+
         try {
             boolean isNew = (customer.getId() == null);
             customerService.save(customer);
@@ -104,8 +116,9 @@ public class CustomerController {
                     isNew ? "Thêm mới hồ sơ khách hàng thành công!" : "Cập nhật thông tin khách hàng thành công!");
             return "redirect:/customers";
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi lưu dữ liệu: " + ex.getMessage());
-            return customer.getId() == null ? "redirect:/customers/new" : "redirect:/customers/edit/" + customer.getId();
+            model.addAttribute("errorMessage", "Lỗi lưu dữ liệu: " + ex.getMessage());
+            model.addAttribute("isEdit", customer.getId() != null);
+            return "customers/form";
         }
     }
 
@@ -140,6 +153,18 @@ public class CustomerController {
         try {
             KhachHang customer = customerService.findById(customerId)
                     .orElseThrow(() -> new IllegalArgumentException("Khách hàng không tồn tại ID: " + customerId));
+
+            // 1. KIỂM TRA TRÙNG LẶP MÃ HỒ SƠ (maHoSo)
+            if (hoSoForm.getMaHoSo() != null && !hoSoForm.getMaHoSo().trim().isEmpty()) {
+                String cleanMaHoSo = hoSoForm.getMaHoSo().trim();
+                Optional<HoSo> existingHoSo = customerService.findHoSoByMaHoSo(cleanMaHoSo);
+
+                // Nếu tìm thấy mã hồ sơ trong DB và không phải chính là hồ sơ đang sửa -> Báo lỗi
+                if (existingHoSo.isPresent() &&
+                        (hoSoForm.getId() == null || !hoSoForm.getId().equals(existingHoSo.get().getId()))) {
+                    throw new IllegalArgumentException("Mã hồ sơ '" + cleanMaHoSo + "' đã tồn tại trong hệ thống!");
+                }
+            }
 
             HoSo hoSoToSave;
             if (hoSoForm.getId() != null) {
@@ -205,46 +230,36 @@ public class CustomerController {
             String errorMsg = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .findFirst()
-                    .orElse("Thông tin mũi tiêm không hợp lệ!");
+                    .orElse("Thông tin lịch sử tiêm không hợp lệ!");
             redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
             return "redirect:/customers/detail/" + customerId;
         }
 
         try {
-            HoSo hoSo = customerService.findHoSoById(hoSoId)
-                    .orElseThrow(() -> new IllegalArgumentException("Hồ sơ không tồn tại"));
-            KhachHang customer = customerService.findById(customerId)
-                    .orElseThrow(() -> new IllegalArgumentException("Khách hàng không tồn tại"));
+            // 2. KIỂM TRA TRÙNG LẶP MÃ LỊCH SỬ TIÊM (maTiem)
+            if (lichSuForm.getMaTiem() != null && !lichSuForm.getMaTiem().trim().isEmpty()) {
+                String cleanMaTiem = lichSuForm.getMaTiem().trim();
+                Optional<LichSuTiem> existingLichSu = customerService.findLichSuTiemByMaTiem(cleanMaTiem);
 
-            LichSuTiem recordToSave;
-            if (lichSuForm.getId() != null) {
-                recordToSave = customerService.findLichSuTiemById(lichSuForm.getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Bản ghi tiêm không tồn tại"));
-                recordToSave.setMaTiem(lichSuForm.getMaTiem());
-                recordToSave.setVacXin(lichSuForm.getVacXin());
-                recordToSave.setLoVacXin(lichSuForm.getLoVacXin());
-                recordToSave.setSoMuiTiem(lichSuForm.getSoMuiTiem());
-                recordToSave.setNgayTiem(lichSuForm.getNgayTiem());
-                recordToSave.setTrangThai(lichSuForm.getTrangThai());
-            } else {
-                recordToSave = lichSuForm;
-                recordToSave.setHoSo(hoSo);
-                recordToSave.setKhachHang(customer);
+                // Nếu tìm thấy mã tiêm trùng trong DB và không phải chính bản ghi đang chỉnh sửa -> Báo lỗi
+                if (existingLichSu.isPresent() &&
+                        (lichSuForm.getId() == null || !lichSuForm.getId().equals(existingLichSu.get().getId()))) {
+                    throw new IllegalArgumentException("Mã mũi tiêm '" + cleanMaTiem + "' đã tồn tại trong hệ thống!");
+                }
             }
 
-            customerService.saveLichSuTiem(recordToSave);
+            // Truyền trực tiếp lichSuForm (chứa thông tin cập nhật từ Modal) vào Service
+            customerService.saveLichSuTiem(lichSuForm, hoSoId, customerId);
+
             redirectAttributes.addFlashAttribute("successMessage",
-                    lichSuForm.getId() != null ? "Cập nhật mũi tiêm thành công!" : "Thêm mũi tiêm mới thành công!");
-        } catch (IllegalStateException e) {
-            // Bắt lỗi khi hết tồn kho
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+                    lichSuForm.getId() != null ? "Cập nhật lịch sử tiêm thành công!" : "Thêm mới mũi tiêm thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi lưu lịch sử tiêm: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
         return "redirect:/customers/detail/" + customerId;
     }
 
-    @PostMapping("/customers/{customerId}/lich-su/delete/{lichSuId}")
+    @PostMapping("/{customerId}/lich-su/delete/{lichSuId}")
     public String deleteLichSuTiem(@PathVariable("customerId") Long customerId,
                                    @PathVariable("lichSuId") Long lichSuId,
                                    RedirectAttributes redirectAttributes) {

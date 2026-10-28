@@ -1,7 +1,10 @@
 package com.vaxflow.customer.entity;
 
 import com.vaxflow.core.entity.BaseEntity;
+import com.vaxflow.customer.customannotation.UniqueCustomerCode;
+import com.vaxflow.customer.customannotation.UniquePhone;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -9,20 +12,32 @@ import java.util.Set;
 
 @Entity
 @Table(name = "khach_hang")
+@UniquePhone(message = "Số điện thoại này đã tồn tại trong hệ thống!")
+@UniqueCustomerCode(message = "Mã khách hàng này đã tồn tại!")
 public class KhachHang extends BaseEntity {
 
+    @NotBlank(message = "Mã khách hàng không được để trống")
+    @Size(max = 20, message = "Mã khách hàng không vượt quá 20 ký tự")
     @Column(name = "ma_khach_hang", nullable = false, unique = true)
     private String maKhachHang;
 
+    @NotBlank(message = "Họ và tên không được để trống")
+    @Size(min = 2, max = 100, message = "Họ và tên phải từ 2 đến 100 ký tự")
     @Column(name = "ten_khach_hang", nullable = false)
     private String tenKhachHang;
 
-    @Column(name = "sdt", nullable = false)
-    private String sdt;
-
+    @NotNull(message = "Ngày sinh không được để trống")
+    @PastOrPresent(message = "Ngày sinh không thể lớn hơn ngày hiện tại")
     @Column(name = "ngay_sinh", nullable = false)
     private LocalDate ngaySinh;
 
+    @NotBlank(message = "Số điện thoại không được để trống")
+    // Ràng buộc CHỈ chứa chữ số (\\d+) và có độ dài từ 9 đến 11 ký tự (chuẩn SĐT Việt Nam: 03x, 05x, 07x, 08x, 09x)
+    @Pattern(regexp = "^0\\d{8,10}$", message = "Số điện thoại chỉ được chứa các chữ số, bắt đầu bằng số 0 và dài từ 9-11 số")
+    @Column(name = "sdt", nullable = false, unique = true)
+    private String sdt;
+
+    @NotBlank(message = "Địa chỉ thường trú không được để trống")
     @Column(name = "dia_chi", nullable = false)
     private String diaChi;
 

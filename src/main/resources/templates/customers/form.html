@@ -30,42 +30,81 @@
         </div>
     </div>
 
+    <!-- Thông báo lỗi chung (nếu có ngoại lệ Exception từ Service) -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3 mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}">Lỗi xử lý dữ liệu</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <!-- Form Card -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4 p-md-5">
-            <form th:action="@{/customers/save}" th:object="${customer}" method="post">
+            <form th:action="@{/customers/save}" th:object="${customer}" method="post" novalidate>
                 <input type="hidden" th:field="*{id}">
 
                 <div class="row g-4">
+                    <!-- Mã Khách Hàng -->
                     <div class="col-md-4">
                         <label for="maKhachHang" class="form-label fw-semibold">Mã Khách Hàng <span class="text-danger">*</span></label>
-                        <input type="text" id="maKhachHang" th:field="*{maKhachHang}" class="form-control font-monospace"
-                               placeholder="KH-001" required>
+                        <input type="text" id="maKhachHang" th:field="*{maKhachHang}"
+                               class="form-control font-monospace"
+                               th:classappend="${#fields.hasErrors('maKhachHang')} ? 'is-invalid' : ''"
+                               placeholder="KH-001">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('maKhachHang')}" th:errors="*{maKhachHang}">
+                            Mã khách hàng không hợp lệ
+                        </div>
                     </div>
 
+                    <!-- Họ Và Tên -->
                     <div class="col-md-5">
                         <label for="tenKhachHang" class="form-label fw-semibold">Họ Và Tên <span class="text-danger">*</span></label>
-                        <input type="text" id="tenKhachHang" th:field="*{tenKhachHang}" class="form-control"
-                               placeholder="Nguyễn Văn A" required>
+                        <input type="text" id="tenKhachHang" th:field="*{tenKhachHang}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('tenKhachHang')} ? 'is-invalid' : ''"
+                               placeholder="Nguyễn Văn A">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tenKhachHang')}" th:errors="*{tenKhachHang}">
+                            Họ và tên không hợp lệ
+                        </div>
                     </div>
 
+                    <!-- Ngày Sinh -->
                     <div class="col-md-3">
                         <label for="ngaySinh" class="form-label fw-semibold">Ngày Sinh <span class="text-danger">*</span></label>
-                        <input type="date" id="ngaySinh" th:field="*{ngaySinh}" class="form-control"accept="" th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                        <input type="date" id="ngaySinh" th:field="*{ngaySinh}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('ngaySinh')} ? 'is-invalid' : ''"
+                               th:max="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}">
+                            Ngày sinh không hợp lệ
+                        </div>
                     </div>
 
+                    <!-- Số Điện Thoại -->
                     <div class="col-md-4">
                         <label for="sdt" class="form-label fw-semibold">Số Điện Thoại <span class="text-danger">*</span></label>
-                        <input type="text" id="sdt" th:field="*{sdt}" class="form-control"
-                               placeholder="0988776655" required>
+                        <input type="text" id="sdt" th:field="*{sdt}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('sdt')} ? 'is-invalid' : ''"
+                               placeholder="0988776655">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('sdt')}" th:errors="*{sdt}">
+                            Số điện thoại không hợp lệ
+                        </div>
                     </div>
 
+                    <!-- Địa Chỉ Thường Trú -->
                     <div class="col-md-8">
                         <label for="diaChi" class="form-label fw-semibold">Địa Chỉ Thường Trú <span class="text-danger">*</span></label>
-                        <input type="text" id="diaChi" th:field="*{diaChi}" class="form-control"
-                               placeholder="Số nhà, đường, quận/huyện, tỉnh/thành..." required>
+                        <input type="text" id="diaChi" th:field="*{diaChi}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('diaChi')} ? 'is-invalid' : ''"
+                               placeholder="Số nhà, đường, quận/huyện, tỉnh/thành...">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('diaChi')}" th:errors="*{diaChi}">
+                            Địa chỉ không được để trống
+                        </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="col-12 mt-4 pt-3 border-top d-flex gap-2 justify-content-end">
                         <a th:href="@{/customers}" class="btn btn-outline-secondary px-4">Hủy Bỏ</a>
                         <button type="submit" class="btn btn-success px-4 fw-semibold shadow-sm">

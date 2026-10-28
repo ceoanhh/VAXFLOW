@@ -15,4 +15,6 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Long> {
     boolean existsByMaKhachHang(String maKhachHang);
 
     List<KhachHang> findByTenKhachHangContainingIgnoreCaseOrSdtContaining(String tenKhachHang, String sdt);
+
+    Optional<KhachHang> findBySdt(String sdt);
 }

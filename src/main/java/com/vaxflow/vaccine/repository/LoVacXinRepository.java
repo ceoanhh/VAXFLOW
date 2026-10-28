@@ -18,14 +18,13 @@ public interface LoVacXinRepository extends JpaRepository<LoVacXin, Long> {
     Integer getTotalAvailableStock(@Param("idVacXin") Long idVacXin);
 
     // Trừ số lượng tồn kho nếu kho còn đủ hàng
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE LoVacXin l SET l.soLuongConLai = l.soLuongConLai - :quantity " +
             "WHERE l.id = :id AND l.soLuongConLai >= :quantity")
     int decreaseStock(@Param("id") Long id, @Param("quantity") int quantity);
 
     // Hoàn lại kho khi hủy hoặc xóa mũi tiêm
-    @Modifying
-    @Query("UPDATE LoVacXin l SET l.soLuongConLai = l.soLuongConLai + :quantity " +
-            "WHERE l.id = :id")
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE LoVacXin l SET l.soLuongConLai = l.soLuongConLai + :quantity WHERE l.id = :id")
     int increaseStock(@Param("id") Long id, @Param("quantity") int quantity);
 }
