@@ -39,9 +39,15 @@
                             <span class="input-group-text bg-light border-end-0 text-muted">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" id="keyword" name="keyword" th:value="${keyword}"
-                                   class="form-control border-start-0 ps-0"
-                                   placeholder="Họ tên, mã NV, CCCD, SĐT...">
+                            <input type="text" 
+                                name="keyword" 
+                                th:value="${keyword}" 
+                                class="form-control" 
+                                placeholder="Nhập 3 số cuối mã nhân sự (VD: 001)..."
+                                minlength="3" 
+                                maxlength="3" 
+                                pattern="[0-9]{3}" 
+                                title="Vui lòng nhập đúng 3 chữ số">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -111,7 +117,6 @@
                                     
                                 </td>
                                 <td>
-                                    <!-- Đã xóa cục avatar tròn ở đây -->
                                     <div>
                                         <a th:href="@{'/employees/detail/' + ${emp.id}}"
                                            class="fw-bold text-decoration-none text-dark hover-primary"
@@ -174,7 +179,7 @@
                                     
                                 </td>
                                 
-                                <!-- Cột Lương Cứng (Đã ép nowrap) -->
+                                <!-- Cột Lương Cứng -->
                                 <td style="white-space: nowrap;">
                                     <span class="fw-bold text-success font-monospace"
                                           th:text="${#numbers.formatDecimal(emp.luongCung, 0, 'POINT', 0, 'COMMA')}">
@@ -182,7 +187,7 @@
                                     </span>
                                 </td>
                                 
-                                <!-- Cột Hành Động (Đã ép nowrap và dùng flex) -->
+                                <!-- Cột Hành Động -->
                                 <td class="text-end pe-4" style="white-space: nowrap;">
                                     <div class="d-flex justify-content-end gap-1">
                                         <a th:href="@{'/employees/detail/' + ${emp.id}}"

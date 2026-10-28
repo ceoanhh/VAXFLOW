@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -36,6 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeDTO create(EmployeeDTO employeeDTO) {
         validateDuLieuDuyNhat(employeeDTO, null);
         validateQuyTacNhanSu(employeeDTO);
@@ -57,6 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         payrollRepository.deleteAllByNhanSuId(id);
         employeeRepository.delete(findEntityById(id));
@@ -64,24 +67,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeDTO> search(String keyword, Long departmentId) {
-        List<EmployeeDTO> employees = getAll();
-        //Lọc theo từ khóa
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            String kw = keyword.trim().toLowerCase();
-            employees = employees.stream()
-                    .filter(e -> (e.getHoVaTen() != null && e.getHoVaTen().toLowerCase().contains(kw))
-                            || (e.getMaNhanSu() != null && e.getMaNhanSu().toLowerCase().contains(kw))
-                            || (e.getSdt() != null && e.getSdt().contains(kw))
-                            || (e.getCccd() != null && e.getCccd().contains(kw)))
-                    .toList();
-        }
-        //Lọc theo ID phòng ban
-        if (departmentId != null) {
-            employees = employees.stream()
-                    .filter(e -> e.getIdPhongBan() != null && e.getIdPhongBan().equals(departmentId))
-                    .toList();
-        }
-        return employees;
+        return getAll().stream()
+                .filter(e -> departmentId == null || departmentId.equals(e.getIdPhongBan()))
+                .filter(e -> keyword == null || keyword.trim().isEmpty() || 
+                             (e.getMaNhanSu() != null && e.getMaNhanSu().endsWith(keyword.trim())))
+                .toList();
     }
 
     @Override
@@ -89,10 +79,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findByMaNhanSu(maNhanSu).map(this::toDTO);
     }
 
-    @Override  
+    /*@Override  
     public boolean existsByMaNhanSu(String maNhanSu) {
         return employeeRepository.existsByMaNhanSu(maNhanSu);
-    }
+    } */
+    
 
     private Employee findEntityById(Long id) {
         return employeeRepository.findById(id)
@@ -104,7 +95,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new EntityNotFoundException("Khong tim thay phong ban voi id: " + id));
     }
 
-    // 3. THÊM HÀM LOGIC NÀY VÀO CUỐI CLASS
     private void validateDuLieuDuyNhat(EmployeeDTO dto, Long id) {
         // Nếu là Update, lấy bản ghi cũ lên để đối chiếu (tránh việc tự báo trùng với chính mình)
         Employee oldEmp = (id != null) ? findEntityById(id) : null;
@@ -134,7 +124,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    // Đừng quên @Autowired DepartmentRepository nếu chưa có
     private void validateQuyTacNhanSu(EmployeeDTO dto) {
         // Lấy tên phòng ban từ ID
         Department dept = departmentRepository.findById(dto.getIdPhongBan())
@@ -158,7 +147,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
-        // 2. KIỂM TRA SỐ LƯỢNG (Giới hạn "ghế")
+        // 2. KIỂM TRA SỐ LƯỢNG (Giới hạn ghế)
         long soLuongHienTai = employeeRepository.countByPhongBanIdAndChucVu(dept.getId(), viTri);
         
         // Nếu là thao tác Cập nhật (Edit) và chính nhân viên này đang ngồi ghế đó thì trừ đi 1 để không tự chặn mình

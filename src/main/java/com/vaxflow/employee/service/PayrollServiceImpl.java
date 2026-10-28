@@ -28,11 +28,6 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
-    public PayrollDTO getById(Long id) {
-        return toDTO(findEntityById(id));
-    }
-
-    @Override
     public PayrollDTO create(PayrollDTO payrollDTO) {
         Payroll payroll = new Payroll();
         copyToEntity(payrollDTO, payroll);
@@ -44,13 +39,6 @@ public class PayrollServiceImpl implements PayrollService {
         String nam_format = String.valueOf(payroll.getNam());
         String thang_format = String.format("%02d", payroll.getThang());
         payroll.setMaBangLuong(maNV + nam_format + thang_format);
-        return toDTO(payrollRepository.save(payroll));
-    }
-
-    @Override
-    public PayrollDTO update(Long id, PayrollDTO payrollDTO) {
-        Payroll payroll = findEntityById(id);
-        copyToEntity(payrollDTO, payroll);
         return toDTO(payrollRepository.save(payroll));
     }
 
@@ -67,6 +55,14 @@ public class PayrollServiceImpl implements PayrollService {
     private Employee findEmployeeById(Long id) {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Khong tim thay nhan su voi id: " + id));
+    }
+
+    public List<PayrollDTO> getPayrollsByNhanSuId(Long nhanSuId) {
+        // Gọi thẳng truy vấn tối ưu từ Repository đã viết sẵn
+        return payrollRepository.findByNhanSuIdOrderByNamDescThangDesc(nhanSuId)
+                .stream()
+                .map(this::toDTO) // Chuyển đổi từ dữ liệu thô (Entity) sang DTO để trả về
+                .toList();
     }
 
     private void copyToEntity(PayrollDTO dto, Payroll entity) {

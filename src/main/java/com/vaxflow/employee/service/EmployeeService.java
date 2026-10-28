@@ -20,5 +20,5 @@ public interface EmployeeService {
 
     Optional<EmployeeDTO> findByMaNhanSu(String maNhanSu);
 
-    boolean existsByMaNhanSu(String maNhanSu);
+    //boolean existsByMaNhanSu(String maNhanSu);
 }

@@ -51,26 +51,30 @@
                         <tr th:each="payroll : ${payrolls}">
                             <td class="text-muted font-monospace" th:text="${payroll.maBangLuong}"></td>
                             <td class="fw-bold text-center" th:text="${payroll.thang + '/' + payroll.nam}"></td>
-                            <td class="text-end" th:text="${#numbers.formatDecimal(payroll.luongCung, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(payroll.luongCung, 0, 'COMMA', 0, 'POINT')}"></td>
                             
                             <td class="text-end">
-                                <strong class="text-success" th:text="${#numbers.formatDecimal(payroll.thuong, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+                                <strong class="text-success" th:text="${#numbers.formatDecimal(payroll.thuong, 0, 'COMMA', 0, 'POINT')}"></strong>
                                 <div class="small text-muted mt-1" th:if="${payroll.lyDoThuong != null and !payroll.lyDoThuong.isEmpty()}" th:text="${payroll.lyDoThuong}"></div>
                             </td>
                             
                             <td class="text-end">
-                                <strong class="text-danger" th:text="${#numbers.formatDecimal(payroll.khauTru, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong>
+                                <strong class="text-danger" th:text="${#numbers.formatDecimal(payroll.khauTru, 0, 'COMMA', 0, 'POINT')}"></strong>
                                 <div class="small text-muted mt-1" th:if="${payroll.lyDoKhauTru != null and !payroll.lyDoKhauTru.isEmpty()}" th:text="${payroll.lyDoKhauTru}"></div>
                             </td>
                             
-                            <td class="fw-bold text-primary text-end fs-6" th:text="${#numbers.formatDecimal(payroll.thucNhan, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                            <td class="fw-bold text-primary text-end fs-6" th:text="${#numbers.formatDecimal(payroll.thucNhan, 0, 'COMMA', 0, 'POINT')}"></td>
 
                             <td class="text-center">
-                                <a th:href="@{'/employees/' + ${employee.id} + '/payrolls/delete/' + ${payroll.id}}"
-                                    class="btn btn-outline-danger btn-sm shadow-sm"
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa bảng lương này không? Dữ liệu này không thể khôi phục.');">
-                                    <i class="bi bi-trash3"></i>
-                                </a>
+                                <form th:action="@{/employees/{empId}/payrolls/delete/{payrollId}(empId=${employee.id}, payrollId=${payroll.id})}" 
+                                    method="post" 
+                                    style="display: inline-block;">
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa bảng lương này? Hành động này không thể hoàn tác!');">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(payrolls)}">

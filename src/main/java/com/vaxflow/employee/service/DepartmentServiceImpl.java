@@ -26,33 +26,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         return toDTO(findEntityById(id));
     }
 
-    @Override
-    public DepartmentDTO create(DepartmentDTO departmentDTO) {
-        Department department = new Department();
-        copyToEntity(departmentDTO, department);
-        return toDTO(departmentRepository.save(department));
-    }
-
-    @Override
-    public DepartmentDTO update(Long id, DepartmentDTO departmentDTO) {
-        Department department = findEntityById(id);
-        copyToEntity(departmentDTO, department);
-        return toDTO(departmentRepository.save(department));
-    }
-
-    @Override
-    public void delete(Long id) {
-        departmentRepository.delete(findEntityById(id));
-    }
-
     private Department findEntityById(Long id) {
         return departmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Khong tim thay phong ban voi id: " + id));
-    }
-
-    private void copyToEntity(DepartmentDTO dto, Department entity) {
-        entity.setTen(dto.getTen());
-        entity.setGhiChu(dto.getGhiChu());
     }
 
     private DepartmentDTO toDTO(Department entity) {

@@ -66,7 +66,7 @@
                         <div class="col-md-3">
                             <label for="cccd" class="form-label fw-semibold">Số CCCD / CMND <span class="text-danger">*</span></label>
                             <input type="text" id="cccd" th:field="*{cccd}" class="form-control font-monospace"
-                                   placeholder="12 chữ số" required maxlength="20">
+                                   placeholder="12 chữ số" required minlength = "12" maxlength="12">
                         </div>
 
                         <!-- Ngày sinh -->
@@ -100,7 +100,7 @@
                         <div class="col-md-4">
                             <label for="sdt" class="form-label fw-semibold">Số Điện Thoại <span class="text-danger">*</span></label>
                             <input type="text" id="sdt" th:field="*{sdt}" class="form-control"
-                                   placeholder="0901234567" required maxlength="20">
+                                   placeholder="10 chữ số" required minlength = "10" maxlength="10">
                         </div>
 
                         <!-- Email -->

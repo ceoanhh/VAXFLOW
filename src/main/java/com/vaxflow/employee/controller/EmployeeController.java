@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.Comparator;
 
 import java.util.List;
 
@@ -35,7 +34,6 @@ public class EmployeeController {
                    @RequestParam(value = "departmentId", required = false) Long departmentId,
                    Model model) {
     
-        // Controller giờ chỉ làm nhiệm vụ gọi Service
         List<EmployeeDTO> employees = employeeService.search(keyword, departmentId);
 
         List<DepartmentDTO> departments = departmentService.getAll();
@@ -95,16 +93,14 @@ public class EmployeeController {
             }
             model.addAttribute("employee", employee);
             model.addAttribute("department", department);
-            // Lấy danh sách lương của nhân viên này, sắp xếp mới nhất lên đầu
-            List<PayrollDTO> payrolls = payrollService.getAll().stream()
-                    .filter(p -> p.getIdNhanSu() != null && p.getIdNhanSu().equals(id))
-                    .sorted(Comparator.comparing(PayrollDTO::getMaBangLuong).reversed()) 
-                    .toList();
+            
+            // 1. Kéo danh sách bảng lương đã lọc & sắp xếp sẵn từ Service
+            List<PayrollDTO> payrolls = payrollService.getPayrollsByNhanSuId(id);
 
-            // Lấy bản ghi đầu tiên (mới nhất), nếu không có thì gán null
+            // 2. Lấy bản ghi đầu tiên (mới nhất), nếu không có thì gán null
             PayrollDTO latestPayroll = payrolls.isEmpty() ? null : payrolls.get(0);
 
-            // Truyền ra ngoài giao diện HTML
+            // 3. Truyền ra ngoài giao diện HTML
             model.addAttribute("latestPayroll", latestPayroll);
             return "employees/detail";
         } catch (Exception ex) {
@@ -141,7 +137,7 @@ public class EmployeeController {
             model.addAttribute("genders", Gender.values());
             model.addAttribute("isEdit", employeeDTO.getId() != null);
             
-            // TÙY CHỌN: Nếu bạn muốn tự động xóa trắng ô CCCD khi có lỗi trùng CCCD
+            // Tự động xóa trắng ô CCCD khi có lỗi trùng CCCD
             if (ex.getMessage() != null) {
                 if (ex.getMessage().toLowerCase().contains("cccd") || ex.getMessage().toLowerCase().contains("unique")) {
                     employeeDTO.setCccd(""); 
@@ -195,17 +191,14 @@ public class EmployeeController {
         }
     }
 
-    // 2. Hàm mở màn hình Xem tất cả lịch sử bảng lương
+    // Hàm mở màn hình Xem tất cả lịch sử bảng lương
     @GetMapping("/{id}/payrolls")
     public String showAllPayrolls(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             EmployeeDTO employee = employeeService.getById(id);
             
-            // Tạm thời dùng Stream để lọc bảng lương của đúng nhân viên này từ getAll()
-            List<PayrollDTO> payrolls = payrollService.getAll().stream()
-                    .filter(p -> p.getIdNhanSu() != null && p.getIdNhanSu().equals(id))
-                    .sorted(Comparator.comparing(PayrollDTO::getMaBangLuong).reversed()) 
-                    .toList();
+            // Controller chỉ việc gọi Service, không cần tính toán gì thêm
+            List<PayrollDTO> payrolls = payrollService.getPayrollsByNhanSuId(id);
             
             model.addAttribute("employee", employee);
             model.addAttribute("payrolls", payrolls);
@@ -216,7 +209,7 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/{empId}/payrolls/delete/{payrollId}")
+    @PostMapping("/{empId}/payrolls/delete/{payrollId}")
     public String deletePayroll(@PathVariable("empId") Long empId, @PathVariable("payrollId") Long payrollId) {
         // Gọi hàm xóa bảng lương
         payrollService.delete(payrollId);
